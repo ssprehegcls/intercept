@@ -1,0 +1,16 @@
+name: Core
+description: 'Provides core components required by other features.'
+type: module
+core: 8.x
+dependencies:
+  - duration_field
+  - field
+  - intercept_equipment
+  - media
+  - node
+  - options
+  - path
+  - taxonomy
+  - text
+  - user
+package: Intercept

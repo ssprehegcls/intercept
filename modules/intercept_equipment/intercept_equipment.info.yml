@@ -1,0 +1,16 @@
+name: Equipment
+description: 'Provides Equipment content type and related configuration. Equipment for use.'
+type: module
+core: 8.x
+dependencies:
+  - duration_field
+  - field
+  - intercept_core
+  - menu_ui
+  - node
+  - path
+  - stories_media
+  - taxonomy
+  - text
+  - user
+package: Intercept

@@ -1,0 +1,8 @@
+bundle: intercept
+excluded:
+  - core.entity_form_display.node.equipment.default
+  - core.entity_view_display.node.equipment.default
+  - field.field.node.equipment.field_duration_min
+  - field.field.taxonomy_term.evaluation_criteria.field_evaluation
+  - taxonomy.vocabulary.evaluation_criteria
+required: true

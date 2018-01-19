@@ -1,0 +1,21 @@
+name: Location
+description: 'Provides Location content type and related configuration. Buildings or Branches'
+type: module
+core: 8.x
+dependencies:
+  - address
+  - entity_browser
+  - field
+  - field_group
+  - intercept_core
+  - link
+  - menu_ui
+  - node
+  - office_hours
+  - path
+  - stories_media
+  - taxonomy
+  - telephone
+  - text
+  - user
+package: Intercept
