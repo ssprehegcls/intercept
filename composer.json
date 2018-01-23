@@ -1,0 +1,33 @@
+{
+    "name": "drupal/intercept",
+    "description": "Drupal InterCEPT module.",
+    "type": "drupal-module",
+    "license": "GPL-2.0+",
+    "minimum-stability": "dev",
+    "prefer-stable": true,
+    "require": {
+        "bower-asset/dropzone": "^5.1"
+    },
+    "repositories": {
+       "drupal": {
+            "type": "composer",
+            "url": "https://packages.drupal.org/8"
+        },
+        "asset-packagist": {
+            "type": "composer",
+            "url": "https://asset-packagist.org"
+        }
+    },
+    "extra": {
+        "installer-paths": {
+            "docroot/libraries/{$name}": [
+                "type:bower-asset",
+                "type:npm-asset"
+            ]
+        },
+        "installer-types": [
+            "bower-asset",
+            "npm-asset"
+        ]
+    }
+}
