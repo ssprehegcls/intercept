@@ -1,0 +1,7 @@
+langcode: en
+status: true
+dependencies: {  }
+id: registered_customer
+label: 'Registered Customer'
+roles:
+  administrator: '0'

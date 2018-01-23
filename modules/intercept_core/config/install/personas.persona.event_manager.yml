@@ -1,0 +1,7 @@
+langcode: en
+status: true
+dependencies: {  }
+id: event_manager
+label: 'Event Manager'
+roles:
+  administrator: '0'
