@@ -1,6 +1,11 @@
 bundle: intercept
 excluded:
   - core.entity_form_display.node.equipment.default
+  - core.entity_form_display.block_content.basic.default
   - core.entity_view_display.node.equipment.default
+  - core.entity_view_display.block_content.basic.default
   - field.field.node.equipment.field_duration_min
+  - field.field.block_content.basic.body
+  - contact.form.feedback
+  - block_content.type.basic
 required: true
