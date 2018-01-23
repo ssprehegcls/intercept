@@ -2,7 +2,6 @@ langcode: en
 status: true
 dependencies:
   config:
-    - entity_browser.browser.stories_image
     - field.field.node.location.field_address
     - field.field.node.location.field_contact_number
     - field.field.node.location.field_image_primary
@@ -13,8 +12,9 @@ dependencies:
     - node.type.location
   module:
     - address
-    - entity_browser
+    - entity_browser_entity_form
     - field_group
+    - inline_entity_form
     - link
     - office_hours
     - path
@@ -66,16 +66,17 @@ content:
   field_image_primary:
     weight: 1
     settings:
-      entity_browser: stories_image
-      field_widget_display: rendered_entity
-      field_widget_edit: true
-      field_widget_remove: true
-      open: true
-      selection_mode: selection_append
-      field_widget_display_settings:
-        view_mode: stories_eb_selection
-    third_party_settings: {  }
-    type: entity_browser_entity_reference
+      form_mode: default
+      label_singular: ''
+      label_plural: ''
+      allow_new: true
+      allow_existing: true
+      match_operator: CONTAINS
+      override_labels: false
+    third_party_settings:
+      entity_browser_entity_form:
+        entity_browser_id: stories_image_uploader
+    type: inline_entity_form_complex
     region: content
   field_location_hours:
     weight: 7

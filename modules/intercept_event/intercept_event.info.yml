@@ -4,11 +4,17 @@ type: module
 core: 8.x
 dependencies:
   - date_recur
+  - datetime_range
   - field
+  - intercept_core
+  - intercept_equipment
   - intercept_event
+  - intercept_location
+  - jsonapi_extras
   - menu_ui
   - node
   - path
+  - stories_media
   - taxonomy
   - text
   - user

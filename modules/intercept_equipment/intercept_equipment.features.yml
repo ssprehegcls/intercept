@@ -1,4 +1,2 @@
 bundle: intercept
-excluded:
-  - field.storage.node.field_duration_min
 required: true

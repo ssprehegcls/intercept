@@ -6,6 +6,8 @@ dependencies:
   - duration_field
   - field
   - intercept_core
+  - jsonapi_extras
+  - media
   - menu_ui
   - node
   - path

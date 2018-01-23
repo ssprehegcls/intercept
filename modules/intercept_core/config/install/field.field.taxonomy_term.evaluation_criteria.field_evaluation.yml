@@ -1,4 +1,3 @@
-uuid: cffc729c-9803-41ac-b773-e620593aeecd
 langcode: en
 status: true
 dependencies:
@@ -7,8 +6,6 @@ dependencies:
     - taxonomy.vocabulary.evaluation_criteria
   module:
     - options
-_core:
-  default_config_hash: mwA48RxFoGJifsf_SycIemIwh4KF8xnPdJAf5gZKKsY
 id: taxonomy_term.evaluation_criteria.field_evaluation
 field_name: field_evaluation
 entity_type: taxonomy_term

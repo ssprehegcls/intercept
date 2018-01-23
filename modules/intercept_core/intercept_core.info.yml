@@ -3,14 +3,31 @@ description: 'Provides core components required by other features.'
 type: module
 core: 8.x
 dependencies:
+  - block
+  - block_content
+  - consumers
+  - contact
   - duration_field
+  - editor
+  - entity_browser
+  - features
   - field
+  - filter
   - intercept_equipment
+  - jsonapi_extras
   - media
+  - menu_link_content
   - node
   - options
+  - paragraphs
   - path
+  - rdf
+  - search
+  - shortcut
+  - simple_oauth
+  - system
   - taxonomy
   - text
   - user
+  - views
 package: Intercept

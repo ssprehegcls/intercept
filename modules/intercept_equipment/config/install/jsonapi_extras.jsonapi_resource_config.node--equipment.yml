@@ -1,0 +1,142 @@
+langcode: en
+status: true
+dependencies:
+  config:
+    - node.type.equipment
+id: node--equipment
+disabled: false
+path: node/equipment
+resourceType: node--equipment
+resourceFields:
+  nid:
+    fieldName: nid
+    publicName: nid
+    enhancer:
+      id: ''
+    disabled: false
+  uuid:
+    fieldName: uuid
+    publicName: uuid
+    enhancer:
+      id: ''
+    disabled: false
+  vid:
+    fieldName: vid
+    publicName: vid
+    enhancer:
+      id: ''
+    disabled: false
+  langcode:
+    fieldName: langcode
+    publicName: langcode
+    enhancer:
+      id: ''
+    disabled: false
+  type:
+    disabled: true
+    fieldName: type
+    publicName: type
+    enhancer:
+      id: ''
+  revision_timestamp:
+    fieldName: revision_timestamp
+    publicName: revision_timestamp
+    enhancer:
+      id: ''
+    disabled: false
+  revision_uid:
+    fieldName: revision_uid
+    publicName: revision_uid
+    enhancer:
+      id: ''
+    disabled: false
+  revision_log:
+    fieldName: revision_log
+    publicName: revision_log
+    enhancer:
+      id: ''
+    disabled: false
+  status:
+    fieldName: status
+    publicName: status
+    enhancer:
+      id: ''
+    disabled: false
+  title:
+    fieldName: title
+    publicName: title
+    enhancer:
+      id: ''
+    disabled: false
+  uid:
+    fieldName: uid
+    publicName: uid
+    enhancer:
+      id: ''
+    disabled: false
+  created:
+    fieldName: created
+    publicName: created
+    enhancer:
+      id: ''
+    disabled: false
+  changed:
+    fieldName: changed
+    publicName: changed
+    enhancer:
+      id: ''
+    disabled: false
+  promote:
+    fieldName: promote
+    publicName: promote
+    enhancer:
+      id: ''
+    disabled: false
+  sticky:
+    fieldName: sticky
+    publicName: sticky
+    enhancer:
+      id: ''
+    disabled: false
+  default_langcode:
+    fieldName: default_langcode
+    publicName: default_langcode
+    enhancer:
+      id: ''
+    disabled: false
+  revision_translation_affected:
+    disabled: true
+    fieldName: revision_translation_affected
+    publicName: revision_translation_affected
+    enhancer:
+      id: ''
+  path:
+    fieldName: path
+    publicName: path
+    enhancer:
+      id: ''
+    disabled: false
+  field_duration_min:
+    fieldName: field_duration_min
+    publicName: field_duration_min
+    enhancer:
+      id: ''
+    disabled: false
+  field_equipment_type:
+    fieldName: field_equipment_type
+    publicName: field_equipment_type
+    enhancer:
+      id: ''
+    disabled: false
+  field_image_primary:
+    fieldName: field_image_primary
+    publicName: field_image_primary
+    enhancer:
+      id: ''
+    disabled: false
+  field_text_content:
+    fieldName: field_text_content
+    publicName: field_text_content
+    enhancer:
+      id: ''
+    disabled: false

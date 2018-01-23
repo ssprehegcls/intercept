@@ -1,0 +1,8 @@
+langcode: en
+status: true
+dependencies: {  }
+name: 'LC Subject Heading'
+vid: lc_subject
+description: 'Library of Congress subject heading'
+hierarchy: 0
+weight: 0
