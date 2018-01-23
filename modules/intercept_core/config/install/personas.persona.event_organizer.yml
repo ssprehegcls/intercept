@@ -1,0 +1,7 @@
+langcode: en
+status: true
+dependencies: {  }
+id: event_organizer
+label: 'Event Organizer'
+roles:
+  administrator: '0'

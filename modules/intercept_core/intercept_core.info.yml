@@ -4,6 +4,7 @@ type: module
 core: 8.x
 dependencies:
   - duration_field
+  - personas
   - field
   - intercept_equipment
   - media
