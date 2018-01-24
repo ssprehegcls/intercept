@@ -1,7 +1,7 @@
 langcode: en
 status: true
 dependencies: {  }
-id: registered_customer
-label: 'Registered Customer'
+id: intercept_system_admin
+label: 'InterCEPT System Admin'
 roles:
   administrator: '0'
