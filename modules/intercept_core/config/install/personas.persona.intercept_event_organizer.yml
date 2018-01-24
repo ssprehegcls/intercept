@@ -1,7 +1,7 @@
 langcode: en
 status: true
 dependencies: {  }
-id: system_admin
-label: 'System Admin'
+id: intercept_event_organizer
+label: 'InterCEPT Event Organizer'
 roles:
   administrator: '0'

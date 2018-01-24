@@ -1,7 +1,7 @@
 langcode: en
 status: true
 dependencies: {  }
-id: event_manager
-label: 'Event Manager'
+id: intercept_staff
+label: 'InterCEPT Staff'
 roles:
   administrator: '0'
