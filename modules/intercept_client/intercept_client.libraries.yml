@@ -1,0 +1,4 @@
+interceptClient:
+  js:
+    js/dist/interceptClient.js:
+      preprocess: false

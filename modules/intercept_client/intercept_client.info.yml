@@ -1,0 +1,5 @@
+name: Intercept Client
+type: module
+description: Provides a client side library for interacting with the Intercept API.
+core: 8.x
+package: Intercept

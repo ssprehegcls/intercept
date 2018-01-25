@@ -1,0 +1,48 @@
+{
+  "name": "intercept_location",
+  "version": "0.1.0",
+  "main": "dist/index.js",
+  "author": "John Ferris <john@pixel-whip.com>",
+  "license": "MIT",
+  "scripts": {
+    "watch:js": "./node_modules/.bin/webpack --watch --config webpack.config.dev.js",
+    "lint:js": "./node_modules/.bin/eslint -c .eslintrc.json ./src",
+    "build:js": "yarn run build:js-helpers && BABEL_ENV=production ./node_modules/.bin/webpack --progress --display-reasons --display-modules --config webpack.config.js",
+    "build:js-helpers": "./node_modules/.bin/babel-external-helpers | ./node_modules/.bin/minify --mangle false > dist/babelHelpers.js"
+  },
+  "dependencies": {
+    "@orbit/core": "^0.15.7",
+    "material-ui": "next",
+    "material-ui-icons": "^1.0.0-beta.17",
+    "prop-types": "^15.6.0",
+    "react": "^16.0.0",
+    "react-dom": "^16.0.0",
+    "react-orbitjs": "^0.1.6"
+  },
+  "devDependencies": {
+    "babel-cli": "^6.26.0",
+    "babel-core": "^6.26.0",
+    "babel-eslint": "^8.0.1",
+    "babel-loader": "^7.1.2",
+    "babel-minify": "^0.2.0",
+    "babel-minify-webpack-plugin": "^0.2.0",
+    "babel-plugin-external-helpers": "^6.22.0",
+    "babel-plugin-transform-class-properties": "^6.24.1",
+    "babel-plugin-transform-decorators-legacy": "^1.3.4",
+    "babel-plugin-transform-es3-member-expression-literals": "^6.22.0",
+    "babel-plugin-transform-es3-property-literals": "^6.22.0",
+    "babel-plugin-transform-object-rest-spread": "^6.26.0",
+    "babel-preset-env": "^1.6.0",
+    "babel-preset-es2015": "^6.24.1",
+    "babel-preset-react": "^6.24.1",
+    "babel-preset-stage-0": "^6.24.1",
+    "eslint": "^3.19.0 || ^4.3.0",
+    "eslint-config-airbnb": "^15.1.0",
+    "eslint-plugin-import": "^2.7.0",
+    "eslint-plugin-jsx-a11y": "^5.1.1",
+    "eslint-plugin-react": "^7.1.0",
+    "serve": "^6.1.0",
+    "webpack": "^3.6.0",
+    "webpack-dev-server": "^2.9.1"
+  }
+}
