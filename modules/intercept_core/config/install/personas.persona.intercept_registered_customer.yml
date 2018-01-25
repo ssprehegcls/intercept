@@ -1,7 +1,0 @@
-langcode: en
-status: true
-dependencies: {  }
-id: intercept_registered_customer
-label: 'InterCEPT Registered Customer'
-roles:
-  administrator: '0'

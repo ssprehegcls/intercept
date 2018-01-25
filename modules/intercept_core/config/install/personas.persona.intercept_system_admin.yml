@@ -1,7 +1,0 @@
-langcode: en
-status: true
-dependencies: {  }
-id: intercept_system_admin
-label: 'InterCEPT System Admin'
-roles:
-  administrator: '0'

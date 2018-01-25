@@ -21,7 +21,6 @@ dependencies:
   - options
   - paragraphs
   - path
-  - personas
   - rdf
   - search
   - shortcut
