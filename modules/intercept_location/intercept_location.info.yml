@@ -18,6 +18,7 @@ dependencies:
   - node
   - office_hours
   - path
+  - pathauto
   - stories_media
   - taxonomy
   - telephone

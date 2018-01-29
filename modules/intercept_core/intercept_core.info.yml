@@ -10,8 +10,10 @@ dependencies:
   - duration_field
   - editor
   - entity_browser
+  - evaluate
   - features
   - field
+  - file
   - filter
   - intercept_equipment
   - jsonapi_extras

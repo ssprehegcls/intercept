@@ -4,13 +4,16 @@ type: module
 core: 8.x
 dependencies:
   - duration_field
+  - entity_browser_entity_form
   - field
+  - inline_entity_form
   - intercept_core
   - jsonapi_extras
   - media
   - menu_ui
   - node
   - path
+  - pathauto
   - stories_media
   - taxonomy
   - text
