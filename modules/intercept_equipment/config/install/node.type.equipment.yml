@@ -10,7 +10,7 @@ third_party_settings:
     parent: 'main:'
 name: Equipment
 type: equipment
-description: 'Equipment for use.'
+description: 'Equipment to be checked out by staff members. '
 help: ''
 new_revision: true
 preview_mode: 0

@@ -3,13 +3,12 @@ status: true
 dependencies:
   module:
     - node
-    - text
-id: node.field_room_equipment
-field_name: field_room_equipment
+id: node.field_affiliated
+field_name: field_affiliated
 entity_type: node
-type: text_long
+type: boolean
 settings: {  }
-module: text
+module: core
 locked: false
 cardinality: 1
 translatable: true

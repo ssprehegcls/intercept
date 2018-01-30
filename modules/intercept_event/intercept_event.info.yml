@@ -5,7 +5,10 @@ core: 8.x
 dependencies:
   - date_recur
   - datetime_range
+  - entity_browser_entity_form
   - field
+  - field_group
+  - inline_entity_form
   - intercept_core
   - intercept_equipment
   - intercept_event

@@ -10,7 +10,7 @@ third_party_settings:
     parent: 'main:'
 name: Location
 type: location
-description: 'Buildings or Branches'
+description: 'Buildings or branches of a library system or individual locations in the community.'
 help: ''
 new_revision: true
 preview_mode: 1

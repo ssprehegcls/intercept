@@ -3,6 +3,6 @@ status: true
 dependencies: {  }
 name: Audience
 vid: audience
-description: ''
+description: 'Age groups and type categorization for events '
 hierarchy: 0
 weight: 0

@@ -3,6 +3,6 @@ status: true
 dependencies: {  }
 name: Tag
 vid: tag
-description: ''
+description: 'Keywords for categorizing events'
 hierarchy: 0
 weight: 0

@@ -12,6 +12,7 @@ dependencies:
     - field.field.node.event.field_event_type
     - field.field.node.event.field_has_waitlist
     - field.field.node.event.field_image_primary
+    - field.field.node.event.field_location
     - field.field.node.event.field_must_register
     - field.field.node.event.field_room
     - field.field.node.event.field_text_content
@@ -20,8 +21,58 @@ dependencies:
     - node.type.event
   module:
     - datetime_range
+    - entity_browser_entity_form
+    - field_group
+    - inline_entity_form
     - path
     - text
+third_party_settings:
+  field_group:
+    group_attendees:
+      children:
+        - field_capacity_max
+        - field_must_register
+        - field_has_waitlist
+      parent_name: ''
+      weight: 18
+      format_type: fieldset
+      format_settings:
+        id: ''
+        classes: ''
+        description: ''
+        required_fields: false
+      label: Attendees
+      region: content
+    group_logistics:
+      children:
+        - field_location
+        - field_room
+      parent_name: ''
+      weight: 12
+      format_type: fieldset
+      format_settings:
+        id: ''
+        classes: ''
+        description: ''
+        required_fields: true
+      label: Logistics
+      region: content
+    group_metadata:
+      children:
+        - field_event_series
+        - field_event_type
+        - field_event_subject_heading
+        - field_event_tags
+      parent_name: ''
+      weight: 17
+      format_type: fieldset
+      format_settings:
+        id: ''
+        classes: ''
+        description: ''
+        required_fields: false
+      label: Metadata
+      region: content
 id: node.event.default
 targetEntityType: node
 bundle: event
@@ -29,41 +80,38 @@ mode: default
 content:
   created:
     type: datetime_timestamp
-    weight: 10
+    weight: 2
     region: content
     settings: {  }
     third_party_settings: {  }
   field_capacity_max:
-    weight: 134
+    weight: 18
     settings:
       placeholder: ''
     third_party_settings: {  }
     type: number
     region: content
   field_date_time:
-    weight: 131
+    weight: 11
     settings: {  }
     third_party_settings: {  }
     type: daterange_default
     region: content
   field_event_is_template:
-    weight: 123
+    weight: 19
     settings:
       display_label: true
     third_party_settings: {  }
     type: boolean_checkbox
     region: content
-  field_event_recurrence:
-    weight: 122
-    settings:
-      match_operator: CONTAINS
-      size: 60
-      placeholder: ''
-    third_party_settings: {  }
-    type: entity_reference_autocomplete
+  field_event_series:
+    type: options_select
+    weight: 13
     region: content
+    settings: {  }
+    third_party_settings: {  }
   field_event_subject_heading:
-    weight: 130
+    weight: 15
     settings:
       match_operator: CONTAINS
       size: 60
@@ -72,7 +120,7 @@ content:
     type: entity_reference_autocomplete
     region: content
   field_event_tags:
-    weight: 129
+    weight: 16
     settings:
       match_operator: CONTAINS
       size: 60
@@ -81,48 +129,54 @@ content:
     type: entity_reference_autocomplete
     region: content
   field_event_type:
-    weight: 128
-    settings:
-      match_operator: CONTAINS
-      size: 60
-      placeholder: ''
+    weight: 14
+    settings: {  }
     third_party_settings: {  }
-    type: entity_reference_autocomplete
+    type: options_buttons
     region: content
   field_has_waitlist:
-    weight: 135
+    weight: 21
     settings:
       display_label: true
     third_party_settings: {  }
     type: boolean_checkbox
     region: content
   field_image_primary:
-    weight: 124
+    weight: 7
     settings:
+      form_mode: default
+      label_singular: ''
+      label_plural: ''
+      allow_new: true
+      allow_existing: true
       match_operator: CONTAINS
-      size: 60
-      placeholder: ''
+      override_labels: false
+    third_party_settings:
+      entity_browser_entity_form:
+        entity_browser_id: stories_image_uploader
+    type: inline_entity_form_complex
+    region: content
+  field_location:
+    weight: 12
+    settings: {  }
     third_party_settings: {  }
-    type: entity_reference_autocomplete
+    type: options_select
     region: content
   field_must_register:
-    weight: 133
+    weight: 19
     settings:
       display_label: true
     third_party_settings: {  }
     type: boolean_checkbox
     region: content
   field_room:
-    weight: 132
-    settings:
-      match_operator: CONTAINS
-      size: 60
-      placeholder: ''
+    weight: 13
+    settings: {  }
     third_party_settings: {  }
-    type: entity_reference_autocomplete
+    type: options_select
     region: content
   field_text_content:
-    weight: 127
+    weight: 10
     settings:
       rows: 5
       placeholder: ''
@@ -130,7 +184,7 @@ content:
     type: text_textarea
     region: content
   field_text_intro:
-    weight: 126
+    weight: 9
     settings:
       rows: 5
       placeholder: ''
@@ -138,7 +192,7 @@ content:
     type: text_textarea
     region: content
   field_text_teaser:
-    weight: 125
+    weight: 8
     settings:
       rows: 5
       placeholder: ''
@@ -147,7 +201,7 @@ content:
     region: content
   path:
     type: path
-    weight: 30
+    weight: 5
     region: content
     settings: {  }
     third_party_settings: {  }
@@ -155,26 +209,26 @@ content:
     type: boolean_checkbox
     settings:
       display_label: true
-    weight: 15
+    weight: 3
     region: content
     third_party_settings: {  }
   status:
     type: boolean_checkbox
     settings:
       display_label: true
-    weight: 120
+    weight: 6
     region: content
     third_party_settings: {  }
   sticky:
     type: boolean_checkbox
     settings:
       display_label: true
-    weight: 16
+    weight: 4
     region: content
     third_party_settings: {  }
   title:
     type: string_textfield
-    weight: -5
+    weight: 0
     region: content
     settings:
       size: 60
@@ -182,7 +236,7 @@ content:
     third_party_settings: {  }
   uid:
     type: entity_reference_autocomplete
-    weight: 5
+    weight: 1
     settings:
       match_operator: CONTAINS
       size: 60
@@ -190,4 +244,4 @@ content:
     region: content
     third_party_settings: {  }
 hidden:
-  field_event_series: true
+  field_event_recurrence: true

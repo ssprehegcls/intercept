@@ -3,6 +3,6 @@ status: true
 dependencies: {  }
 name: 'Equipment Type'
 vid: equipment_type
-description: ''
-hierarchy: 1
+description: 'Equipment categorization'
+hierarchy: 0
 weight: 0

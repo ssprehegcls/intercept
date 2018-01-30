@@ -10,7 +10,7 @@ third_party_settings:
     parent: 'main:'
 name: 'Event Series'
 type: event_series
-description: ''
+description: 'Method for grouping events together (e.g. Summer Reading Challenge).'
 help: ''
 new_revision: true
 preview_mode: 0

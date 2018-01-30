@@ -3,6 +3,6 @@ status: true
 dependencies: {  }
 name: 'Room Type'
 vid: room_type
-description: ''
+description: 'Room categorization'
 hierarchy: 0
 weight: 0

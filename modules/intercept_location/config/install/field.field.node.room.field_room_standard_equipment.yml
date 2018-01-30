@@ -2,12 +2,10 @@ langcode: en
 status: true
 dependencies:
   config:
-    - field.storage.node.field_room_equipment
+    - field.storage.node.field_room_standard_equipment
     - node.type.room
-  module:
-    - text
-id: node.room.field_room_equipment
-field_name: field_room_equipment
+id: node.room.field_room_standard_equipment
+field_name: field_room_standard_equipment
 entity_type: node
 bundle: room
 label: 'Equipment in Room'
@@ -17,4 +15,4 @@ translatable: false
 default_value: {  }
 default_value_callback: ''
 settings: {  }
-field_type: text_long
+field_type: string

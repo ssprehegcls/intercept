@@ -12,6 +12,7 @@ dependencies:
   - inline_entity_form
   - intercept_core
   - intercept_equipment
+  - intercept_event
   - jsonapi_extras
   - link
   - menu_ui
