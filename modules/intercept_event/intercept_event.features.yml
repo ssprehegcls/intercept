@@ -1,2 +1,5 @@
 bundle: intercept
+excluded:
+  - jsonapi_extras.jsonapi_resource_config.node--event
+  - jsonapi_extras.jsonapi_resource_config.node--event_series
 required: true

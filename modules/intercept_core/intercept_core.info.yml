@@ -16,7 +16,6 @@ dependencies:
   - file
   - filter
   - intercept_equipment
-  - jsonapi_extras
   - media
   - menu_link_content
   - node

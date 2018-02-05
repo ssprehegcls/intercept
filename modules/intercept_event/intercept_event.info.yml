@@ -13,7 +13,7 @@ dependencies:
   - intercept_equipment
   - intercept_event
   - intercept_location
-  - jsonapi_extras
+  - media
   - menu_ui
   - node
   - path

@@ -8,7 +8,6 @@ excluded:
   - field.field.block_content.basic.body
   - contact.form.feedback
   - block_content.type.basic
-  - system.menu.devel
   - core.entity_view_mode.block.token
   - core.entity_view_mode.block_content.token
   - core.entity_view_mode.consumer.token

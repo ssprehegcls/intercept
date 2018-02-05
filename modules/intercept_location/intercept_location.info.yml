@@ -13,8 +13,8 @@ dependencies:
   - intercept_core
   - intercept_equipment
   - intercept_event
-  - jsonapi_extras
   - link
+  - media
   - menu_ui
   - node
   - office_hours
