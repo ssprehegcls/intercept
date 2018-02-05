@@ -4,8 +4,10 @@ dependencies:
   config:
     - field.field.node.event.field_capacity_max
     - field.field.node.event.field_date_time
+    - field.field.node.event.field_event_audience
     - field.field.node.event.field_event_is_template
     - field.field.node.event.field_event_recurrence
+    - field.field.node.event.field_event_register_period
     - field.field.node.event.field_event_series
     - field.field.node.event.field_event_subject_heading
     - field.field.node.event.field_event_tags
@@ -18,9 +20,11 @@ dependencies:
     - field.field.node.event.field_text_content
     - field.field.node.event.field_text_intro
     - field.field.node.event.field_text_teaser
+    - image.style.medium
     - node.type.event
   module:
     - datetime_range
+    - media
     - text
     - user
 id: node.event.default
@@ -29,7 +33,7 @@ bundle: event
 mode: default
 content:
   field_capacity_max:
-    weight: 114
+    weight: 7
     label: above
     settings:
       thousand_separator: ''
@@ -38,7 +42,7 @@ content:
     type: number_integer
     region: content
   field_date_time:
-    weight: 111
+    weight: 4
     label: above
     settings:
       separator: '-'
@@ -47,26 +51,34 @@ content:
     third_party_settings: {  }
     type: daterange_default
     region: content
-  field_event_is_template:
-    weight: 103
-    label: above
-    settings:
-      format: default
-      format_custom_false: ''
-      format_custom_true: ''
-    third_party_settings: {  }
-    type: boolean
-    region: content
-  field_event_recurrence:
-    weight: 102
+  field_event_audience:
+    weight: 14
     label: above
     settings:
       link: true
     third_party_settings: {  }
     type: entity_reference_label
     region: content
+  field_event_register_period:
+    weight: 9
+    label: above
+    settings:
+      separator: '-'
+      format_type: medium
+      timezone_override: ''
+    third_party_settings: {  }
+    type: daterange_default
+    region: content
+  field_event_series:
+    type: entity_reference_label
+    weight: 12
+    region: content
+    label: above
+    settings:
+      link: true
+    third_party_settings: {  }
   field_event_subject_heading:
-    weight: 110
+    weight: 15
     label: above
     settings:
       link: true
@@ -74,7 +86,7 @@ content:
     type: entity_reference_label
     region: content
   field_event_tags:
-    weight: 109
+    weight: 16
     label: above
     settings:
       link: true
@@ -82,7 +94,7 @@ content:
     type: entity_reference_label
     region: content
   field_event_type:
-    weight: 108
+    weight: 13
     label: above
     settings:
       link: true
@@ -90,7 +102,7 @@ content:
     type: entity_reference_label
     region: content
   field_has_waitlist:
-    weight: 115
+    weight: 10
     label: above
     settings:
       format: default
@@ -100,15 +112,16 @@ content:
     type: boolean
     region: content
   field_image_primary:
-    weight: 104
-    label: above
+    weight: 0
+    label: hidden
     settings:
-      link: true
+      image_style: medium
+      image_link: ''
     third_party_settings: {  }
-    type: entity_reference_label
+    type: media_thumbnail
     region: content
   field_location:
-    weight: 116
+    weight: 5
     label: above
     settings:
       link: true
@@ -116,7 +129,7 @@ content:
     type: entity_reference_label
     region: content
   field_must_register:
-    weight: 113
+    weight: 8
     label: above
     settings:
       format: default
@@ -126,7 +139,7 @@ content:
     type: boolean
     region: content
   field_room:
-    weight: 112
+    weight: 6
     label: above
     settings:
       link: true
@@ -134,28 +147,31 @@ content:
     type: entity_reference_label
     region: content
   field_text_content:
-    weight: 107
+    weight: 3
     label: above
     settings: {  }
     third_party_settings: {  }
     type: text_default
     region: content
   field_text_intro:
-    weight: 106
+    weight: 2
     label: above
     settings: {  }
     third_party_settings: {  }
     type: text_default
     region: content
   field_text_teaser:
-    weight: 105
+    weight: 1
     label: above
     settings: {  }
     third_party_settings: {  }
     type: basic_string
     region: content
   links:
-    weight: 100
+    weight: 11
     region: content
+    settings: {  }
+    third_party_settings: {  }
 hidden:
-  field_event_series: true
+  field_event_is_template: true
+  field_event_recurrence: true

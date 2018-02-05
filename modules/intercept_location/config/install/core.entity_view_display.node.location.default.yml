@@ -10,10 +10,12 @@ dependencies:
     - field.field.node.location.field_map_link
     - field.field.node.location.field_text_content
     - field.field.node.location.field_text_intro
+    - image.style.medium
     - node.type.location
   module:
     - address
     - link
+    - media
     - office_hours
     - telephone
     - text
@@ -50,11 +52,12 @@ content:
     region: content
   field_image_primary:
     weight: 0
-    label: above
+    label: hidden
     settings:
-      link: true
+      image_style: medium
+      image_link: ''
     third_party_settings: {  }
-    type: entity_reference_label
+    type: media_thumbnail
     region: content
   field_location_hours:
     weight: 6

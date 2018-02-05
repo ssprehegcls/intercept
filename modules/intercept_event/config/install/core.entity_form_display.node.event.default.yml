@@ -4,8 +4,10 @@ dependencies:
   config:
     - field.field.node.event.field_capacity_max
     - field.field.node.event.field_date_time
+    - field.field.node.event.field_event_audience
     - field.field.node.event.field_event_is_template
     - field.field.node.event.field_event_recurrence
+    - field.field.node.event.field_event_register_period
     - field.field.node.event.field_event_series
     - field.field.node.event.field_event_subject_heading
     - field.field.node.event.field_event_tags
@@ -32,6 +34,7 @@ third_party_settings:
       children:
         - field_capacity_max
         - field_must_register
+        - field_event_register_period
         - field_has_waitlist
       parent_name: ''
       weight: 18
@@ -61,6 +64,7 @@ third_party_settings:
       children:
         - field_event_series
         - field_event_type
+        - field_event_audience
         - field_event_subject_heading
         - field_event_tags
       parent_name: ''
@@ -97,20 +101,7 @@ content:
     third_party_settings: {  }
     type: daterange_default
     region: content
-  field_event_is_template:
-    weight: 19
-    settings:
-      display_label: true
-    third_party_settings: {  }
-    type: boolean_checkbox
-    region: content
-  field_event_series:
-    type: options_select
-    weight: 13
-    region: content
-    settings: {  }
-    third_party_settings: {  }
-  field_event_subject_heading:
+  field_event_audience:
     weight: 15
     settings:
       match_operator: CONTAINS
@@ -119,8 +110,36 @@ content:
     third_party_settings: {  }
     type: entity_reference_autocomplete
     region: content
-  field_event_tags:
+  field_event_is_template:
+    weight: 19
+    settings:
+      display_label: true
+    third_party_settings: {  }
+    type: boolean_checkbox
+    region: content
+  field_event_register_period:
+    weight: 20
+    settings: {  }
+    third_party_settings: {  }
+    type: daterange_default
+    region: content
+  field_event_series:
+    type: options_select
+    weight: 13
+    region: content
+    settings: {  }
+    third_party_settings: {  }
+  field_event_subject_heading:
     weight: 16
+    settings:
+      match_operator: CONTAINS
+      size: 60
+      placeholder: ''
+    third_party_settings: {  }
+    type: entity_reference_autocomplete
+    region: content
+  field_event_tags:
+    weight: 17
     settings:
       match_operator: CONTAINS
       size: 60

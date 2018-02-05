@@ -6,9 +6,11 @@ dependencies:
     - field.field.node.equipment.field_equipment_type
     - field.field.node.equipment.field_image_primary
     - field.field.node.equipment.field_text_content
+    - image.style.medium
     - node.type.equipment
   module:
     - duration_field
+    - media
     - text
     - user
 id: node.equipment.default
@@ -17,7 +19,7 @@ bundle: equipment
 mode: default
 content:
   field_duration_min:
-    weight: 104
+    weight: 3
     label: above
     settings:
       text_length: full
@@ -26,7 +28,7 @@ content:
     type: duration_human_display
     region: content
   field_equipment_type:
-    weight: 102
+    weight: 2
     label: above
     settings:
       link: true
@@ -34,21 +36,24 @@ content:
     type: entity_reference_label
     region: content
   field_image_primary:
-    weight: 101
-    label: above
+    weight: 0
+    label: hidden
     settings:
-      link: true
+      image_style: medium
+      image_link: ''
     third_party_settings: {  }
-    type: entity_reference_label
+    type: media_thumbnail
     region: content
   field_text_content:
-    weight: 103
+    weight: 1
     label: above
     settings: {  }
     third_party_settings: {  }
     type: text_default
     region: content
   links:
-    weight: 100
+    weight: 4
     region: content
+    settings: {  }
+    third_party_settings: {  }
 hidden: {  }

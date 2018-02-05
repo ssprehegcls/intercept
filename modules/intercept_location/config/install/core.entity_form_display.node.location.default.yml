@@ -59,10 +59,9 @@ content:
     region: content
   field_affiliated:
     weight: 26
-    settings:
-      display_label: true
+    settings: {  }
     third_party_settings: {  }
-    type: boolean_checkbox
+    type: options_buttons
     region: content
   field_contact_number:
     weight: 4

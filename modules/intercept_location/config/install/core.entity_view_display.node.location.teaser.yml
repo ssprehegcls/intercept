@@ -22,8 +22,10 @@ content:
     region: content
 hidden:
   field_address: true
+  field_affiliated: true
   field_contact_number: true
   field_image_primary: true
+  field_location_hours: true
   field_map_link: true
   field_text_content: true
   field_text_intro: true
