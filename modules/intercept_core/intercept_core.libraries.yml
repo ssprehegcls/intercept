@@ -10,6 +10,11 @@ babelHelpers:
     js/dist/babelHelpers.js:
       preprocess: false
 
+interceptCommon:
+  js:
+    js/dist/interceptCommon.js:
+      preprocess: false
+
 interceptClient:
   js:
     js/dist/interceptClient.js:

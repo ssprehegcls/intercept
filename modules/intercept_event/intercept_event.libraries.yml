@@ -1,7 +1,7 @@
 
-locationsList:
+eventList:
   js:
-    js/dist/locationsList.js:
+    js/dist/eventList.js:
       preprocess: false
 
   dependencies:

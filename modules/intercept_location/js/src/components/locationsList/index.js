@@ -26,7 +26,10 @@ class LocationsList extends Component {
   }
 
   render() {
-    const locations = this.props.locations.map(location => <p key={location.id}>{location.attributes.title}</p>)
+    const locations = this.props.locations
+      ? this.props.locations.map(location => <p key={location.id}>{location.attributes.title}</p>)
+      : <p>No locations have been loaded.</p>;
+
     return (
       <div className="locationsList">
         {locations}
@@ -42,7 +45,7 @@ const mapRecordsToProps = (ownProps) => {
 }
 
 LocationsList.propTypes = {
-  locations: PropTypes.object.isRequired,
+  locations: PropTypes.array.isRequired,
 };
 
 export default LocationsList = withData(mapRecordsToProps)(withStyles(styles)(LocationsList));
