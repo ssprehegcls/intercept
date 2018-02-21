@@ -5,7 +5,7 @@ const webpack = require('webpack');
 // Create an object map of entry file arrays keyed by submodule.
 const entries = {
   intercept_event: ['eventList'],
-  intercept_location: ['locationsList']
+  intercept_location: ['locationsList'],
 };
 
 const babelLoader = {
@@ -18,14 +18,15 @@ const babelLoader = {
       'transform-class-properties',
       'transform-decorators-legacy',
       'transform-object-rest-spread',
-      'transform-es3-member-expression-literals'
+      'transform-es3-member-expression-literals',
     ],
     presets: [
       'react',
       'stage-0',
       'es2015',
       [
-        'env', {
+        'env',
+        {
           modules: false,
           targets: {
             browsers: ['last 2 versions'],
@@ -46,16 +47,16 @@ const babelLoader = {
  *   A valid Webpack entry config object
  */
 function createEntryConfig(entries) {
-  let output = {};
+  const output = {};
 
   // Loop over each module.
-  Object.keys(entries).forEach(module => {
+  Object.keys(entries).forEach((module) => {
     // Loop over each entry.
-    entries[module].forEach(entry => {
+    entries[module].forEach((entry) => {
       // Set the entry name to a relative path to the output directory so it
       // can be used as a dynamic placeholder in the output config.
       output[`modules/${module}/js/dist/${entry}`] = `./modules/${module}/js/src/${entry}.js`;
-    })
+    });
   });
 
   return output;
@@ -64,7 +65,7 @@ function createEntryConfig(entries) {
 /**
  * Webpack config
  */
-module.exports = function(env) {
+module.exports = function config(env) {
   const isProduction = env.production === true;
 
   return [
@@ -76,27 +77,25 @@ module.exports = function(env) {
       },
       resolve: {
         // Allow common modules in the root module to be referenced.
-        modules: [path.resolve(__dirname, "js/src"), "node_modules"]
+        modules: [path.resolve(__dirname, 'js/src'), 'node_modules'],
       },
-      devtool: (() => {
-        return isProduction
-          ? 'none'
-          : 'cheap-module-eval-source-map'
-      })(),
+      devtool: (() => (isProduction ? 'none' : 'cheap-module-eval-source-map'))(),
       plugins: (() => {
         const nodeEnv = isProduction ? 'production' : 'development';
-        let plugins = [
+        const plugins = [
           new webpack.DefinePlugin({ 'process.env': { NODE_ENV: JSON.stringify(nodeEnv) } }),
           new webpack.optimize.CommonsChunkPlugin({
             name: 'modules/intercept_core/js/dist/interceptCommon',
             filename: '[name].js',
-          })
-        ]
+          }),
+        ];
 
         if (isProduction) {
-          plugins.push(new Minify({
-            "deadcode": false
-          }));
+          plugins.push(
+            new Minify({
+              deadcode: false,
+            }),
+          );
         }
 
         return plugins;
@@ -105,18 +104,18 @@ module.exports = function(env) {
         const prod = {
           react: 'React',
           'react-dom': 'ReactDOM',
-          'interceptClient': 'interceptClient'
+          interceptClient: 'interceptClient',
+          redis: 'redis',
         };
         const dev = {
-          'interceptClient': 'interceptClient'
+          interceptClient: 'interceptClient',
+          redis: 'redis',
         };
 
         return isProduction ? prod : dev;
       })(),
       module: {
-        loaders: [
-          babelLoader
-        ],
+        loaders: [babelLoader],
       },
     },
 
@@ -126,22 +125,23 @@ module.exports = function(env) {
     //
     {
       entry: {
-        "modules/intercept_core/js/dist/interceptClient": "./modules/intercept_core/js/src/interceptClient.js"
+        'modules/intercept_core/js/dist/interceptClient':
+          './modules/intercept_core/js/src/interceptClient.js',
       },
       output: {
         filename: '[name].js',
         path: path.resolve(__dirname),
-        libraryTarget: 'umd'
+        libraryTarget: 'umd',
       },
       resolve: {
         // Allow common modules in the root module to be referenced.
-        modules: [path.resolve(__dirname, "js/src"), "node_modules"]
+        modules: [path.resolve(__dirname, 'js/src'), 'node_modules'],
       },
       plugins: (() => {
         const nodeEnv = isProduction ? 'production' : 'development';
-        let plugins = [
-          new webpack.DefinePlugin({ 'process.env': { NODE_ENV: JSON.stringify(nodeEnv) } })
-        ]
+        const plugins = [
+          new webpack.DefinePlugin({ 'process.env': { NODE_ENV: JSON.stringify(nodeEnv) } }),
+        ];
 
         if (isProduction) {
           plugins.push(new Minify());
@@ -150,16 +150,18 @@ module.exports = function(env) {
         return plugins;
       })(),
       externals: (() => {
-        const prod = {};
-        const dev = {};
+        const prod = {
+          redis: 'redis',
+        };
+        const dev = {
+          redis: 'redis',
+        };
 
         return isProduction ? prod : dev;
       })(),
       module: {
-        loaders: [
-          babelLoader
-        ],
+        loaders: [babelLoader],
       },
     },
-  ]
+  ];
 };

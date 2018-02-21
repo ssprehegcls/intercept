@@ -19,6 +19,7 @@
           ".jsx"
         ]
       }
-    ]
+    ],
+    "react/forbid-prop-types": [0]
   }
 }

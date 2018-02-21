@@ -1,51 +1,29 @@
 import React, { Component } from 'react';
-import { withData } from 'react-orbitjs';
 import PropTypes from 'prop-types';
 import { withStyles } from 'material-ui/styles';
+import map from 'lodash/map';
 
-const styles = theme => ({
-  card: {
-    minWidth: 275,
-  },
-  title: {
-    marginBottom: 16,
-    fontSize: 14,
-    color: theme.palette.text.secondary,
-  },
-  pos: {
-    marginBottom: 12,
-    color: theme.palette.text.secondary,
-  },
-});
+const styles = theme => ({});
 
-class LocationsList extends Component {
+class LocationList extends Component {
   state = {};
 
-  componentDidMount() {
-    interceptClient.store.query(q => q.findRecords('node--location'));
-  }
-
   render() {
-    const locations = this.props.locations
-      ? this.props.locations.map(location => <p key={location.id}>{location.attributes.title}</p>)
-      : <p>No locations have been loaded.</p>;
+    const { locations } = this.props;
 
-    return (
-      <div className="locationsList">
-        {locations}
-      </div>
-    );
+    const list =
+      Object.keys(locations).length > 0 ? (
+        map(locations, (location, id) => <p key={id}>{location.data.title}</p>)
+      ) : (
+        <p>No locations have been loaded.</p>
+      );
+
+    return <div className="locationList">{list}</div>;
   }
 }
 
-const mapRecordsToProps = (ownProps) => {
-  return {
-    locations: q => q.findRecords("node--location").sort('title')
-  }
-}
-
-LocationsList.propTypes = {
-  locations: PropTypes.array.isRequired,
+LocationList.propTypes = {
+  locations: PropTypes.object.isRequired,
 };
 
-export default LocationsList = withData(mapRecordsToProps)(withStyles(styles)(LocationsList));
+export default withStyles(styles, { withTheme: true })(LocationList);

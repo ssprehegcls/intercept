@@ -12,12 +12,11 @@
     "generate:schema": "node ./scripts/generate-schema.js"
   },
   "dependencies": {
-    "@orbit/coordinator": "^0.15.8",
-    "@orbit/data": "^0.15.8",
-    "@orbit/indexeddb": "^0.15.8",
-    "@orbit/jsonapi": "^0.15.8",
-    "@orbit/store": "^0.15.8",
-    "intercept-client": "^1.0.5"
+    "babel-polyfill": "^6.26.0",
+    "intercept-client": "^1.1.12",
+    "redux": "^3.7.2",
+    "redux-thunk": "^2.2.0",
+    "reselect": "^3.0.1"
   },
   "devDependencies": {
     "babel-cli": "^6.26.0",

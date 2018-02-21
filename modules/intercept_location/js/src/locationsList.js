@@ -1,12 +1,13 @@
 import React from 'react';
 import { render } from 'react-dom';
-import { DataProvider } from 'react-orbitjs';
-import LocationsList from './components/locationsList';
+import { Provider } from 'react-redux';
 import interceptClient from 'interceptClient';
+import LocationsList from './components/locationsList';
 
 const store = interceptClient.store;
 render(
-  <DataProvider dataStore={store}>
-  <LocationsList />
-  </DataProvider>
-, document.getElementById('locationsListRoot'));
+  <Provider store={store}>
+    <LocationsList location={{}} />
+  </Provider>,
+  document.getElementById('locationsListRoot'),
+);

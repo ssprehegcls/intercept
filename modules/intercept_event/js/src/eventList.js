@@ -1,12 +1,13 @@
 import React from 'react';
 import { render } from 'react-dom';
-import { DataProvider } from 'react-orbitjs';
-import EventList from './components/EventList';
+import { Provider } from 'react-redux';
 import interceptClient from 'interceptClient';
+import BrowseEventsApp from './components/BrowseEventsApp';
 
 const store = interceptClient.store;
 render(
-  <DataProvider dataStore={store}>
-  <EventList />
-  </DataProvider>
-, document.getElementById('eventListRoot'));
+  <Provider store={store}>
+    <BrowseEventsApp />
+  </Provider>,
+  document.getElementById('eventListRoot'),
+);
