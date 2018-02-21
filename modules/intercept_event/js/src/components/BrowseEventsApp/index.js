@@ -57,7 +57,10 @@ class BrowseEventsApp extends Component {
   };
 
   componentDidMount() {
-    this.props.fetchEvents({ filters: generateFilters() });
+    this.props.fetchEvents({
+      filters: generateFilters(),
+      include: ['field_image_primary', 'field_image_primary.field_media_image'],
+    });
   }
 
   render() {
@@ -67,6 +70,7 @@ class BrowseEventsApp extends Component {
       purge();
       fetchEvents({
         filters: generateFilters(values),
+        include: ['field_image_primary', 'field_image_primary.field_media_image'],
       });
     }
 
