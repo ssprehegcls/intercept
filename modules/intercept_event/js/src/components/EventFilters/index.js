@@ -7,6 +7,7 @@ import interceptClient from 'interceptClient';
 // Components
 import SelectEventType from 'intercept/SelectEventType';
 import SelectLocation from 'intercept/SelectLocation';
+import SelectAudience from 'intercept/SelectAudience';
 
 const { select, api } = interceptClient;
 
@@ -23,12 +24,14 @@ class EventFilters extends Component {
         location: [],
         startDate: [],
         endDate: [],
+        audience: [],
       },
     };
 
     this.onFilterChange = this.onFilterChange.bind(this);
     this.onEventTypeChange = this.onFilterChange('type').bind(this);
     this.onLocationChange = this.onFilterChange('location').bind(this);
+    this.onAudienceChange = this.onFilterChange('audience').bind(this);
   }
 
   onFilterChange(key) {
@@ -45,6 +48,7 @@ class EventFilters extends Component {
         <div>Filters</div>
         <SelectEventType handleChange={this.onEventTypeChange} />
         <SelectLocation handleChange={this.onLocationChange} />
+        <SelectAudience handleChange={this.onAudienceChange} />
       </div>
     );
   }

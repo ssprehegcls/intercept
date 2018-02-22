@@ -29,7 +29,6 @@ export const bundle = (resource, id) => (state) => {
   // @todo This should probably be handled better and a warning or exception thrown
   //  as it could result in unintended side effects.
   if (!base) {
-    window.console.warn(`Not data found for ${resource}: ${id}. Falling back to uuid`);
     return id;
   }
 
@@ -51,6 +50,14 @@ export const bundle = (resource, id) => (state) => {
 export const bundles = resource => state =>
   mapValues(records(resource)(state),
     (value, id) => bundle(resource, id)(state));
+
+//
+// Audience
+//
+export const audience = id => record('taxonomy_term--audience', id);
+export const audiences = records('taxonomy_term--audience');
+export const audiencesOptions = keyValues(audiences, 'name');
+export const audiencesLabels = peek(audiences, 'name');
 
 //
 // Event Types

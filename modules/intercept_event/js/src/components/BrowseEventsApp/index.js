@@ -9,6 +9,7 @@ import EventFilters from './../EventFilters';
 import EventList from './../EventList';
 
 const { select, api } = interceptClient;
+const eventIncludes = ['field_image_primary', 'field_image_primary.field_media_image', 'field_room'];
 
 const styles = theme => ({});
 
@@ -27,6 +28,7 @@ function generateFilters(values) {
   const types = [
     { id: 'type', path: 'field_event_type.uuid', conjunction: 'OR' },
     { id: 'location', path: 'field_location.uuid', conjunction: 'OR' },
+    { id: 'audience', path: 'field_event_audience.uuid', conjunction: 'OR' },
   ];
 
   types.forEach((type) => {
@@ -59,7 +61,7 @@ class BrowseEventsApp extends Component {
   componentDidMount() {
     this.props.fetchEvents({
       filters: generateFilters(),
-      include: ['field_image_primary', 'field_image_primary.field_media_image'],
+      include: eventIncludes,
     });
   }
 
@@ -70,7 +72,7 @@ class BrowseEventsApp extends Component {
       purge();
       fetchEvents({
         filters: generateFilters(values),
-        include: ['field_image_primary', 'field_image_primary.field_media_image'],
+        include: eventIncludes,
       });
     }
 
@@ -84,7 +86,7 @@ class BrowseEventsApp extends Component {
 }
 
 const mapStateToProps = (state, ownProps) => ({
-  events: select.events(state),
+  events: select.bundles('node--event')(state),
 });
 
 const mapDispatchToProps = dispatch => ({
