@@ -18,18 +18,22 @@ export const keyValues = (selector, field) =>
     })),
   );
 
-export const getRecords = resource => state => state[resource].items;
+export const record = (resource, id) => state => state[resource].items[id];
 
-export const getRecord = (resource, id) => state => state[resource].items[id];
+export const records = resource => state => state[resource].items;
 
-export const getBundle = (resource, id) => (state) => {
-  const record = getRecord(resource, id)(state);
+export const bundle = (resource, id) => (state) => {
+  const base = record(resource, id)(state);
 
-  if (!record) {
+  // Just return an id if no record is found.
+  // @todo This should probably be handled better and a warning or exception thrown
+  //  as it could result in unintended side effects.
+  if (!base) {
+    window.console.warn(`Not data found for ${resource}: ${id}. Falling back to uuid`);
     return id;
   }
 
-  const entity = Object.assign({}, record).data;
+  const entity = Object.assign({}, base).data;
   const model = intercept.models[resource];
   // Get all relationships with reducers.
   const relationships = model
@@ -38,17 +42,21 @@ export const getBundle = (resource, id) => (state) => {
   relationships.forEach((rel) => {
     // Replace the uuid with the entity object.
     entity[rel] = Array.isArray(entity[rel])
-      ? entity[rel].map(item => getBundle(model.schema[rel].model, item)(state))
-      : getBundle(model.schema[rel].model, entity[rel])(state);
+      ? entity[rel].map(item => bundle(model.schema[rel].model, item)(state))
+      : bundle(model.schema[rel].model, entity[rel])(state);
   });
   return entity;
 };
 
+export const bundles = resource => state =>
+  mapValues(records(resource)(state),
+    (value, id) => bundle(resource, id)(state));
+
 //
 // Event Types
 //
-export const eventType = id => getRecord('taxonomy_term--event_type', id);
-export const eventTypes = getRecords('taxonomy_term--event_type');
+export const eventType = id => record('taxonomy_term--event_type', id);
+export const eventTypes = records('taxonomy_term--event_type');
 export const eventTypesOptions = keyValues(eventTypes, 'name');
 export const eventTypesLabels = peek(eventTypes, 'name');
 
