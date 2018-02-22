@@ -2,6 +2,7 @@ import { createSelector } from 'reselect';
 import map from 'lodash/map';
 import mapValues from 'lodash/mapValues';
 import pickBy from 'lodash/pickBy';
+import intercept from 'intercept-client';
 
 export const published = selector =>
   createSelector(selector, items => pickBy(items, item => item.data.status === '1'));
@@ -10,16 +11,44 @@ export const peek = (selector, field) =>
   createSelector(selector, items => mapValues(items, item => item.data[field]));
 
 export const keyValues = (selector, field) =>
-  createSelector(selector, items => map(items, (item, key) => ({
-    key,
-    value: item.data[field],
-  })));
+  createSelector(selector, items =>
+    map(items, (item, key) => ({
+      key,
+      value: item.data[field],
+    })),
+  );
+
+export const getRecords = resource => state => state[resource].items;
+
+export const getRecord = (resource, id) => state => state[resource].items[id];
+
+export const getBundle = (resource, id) => (state) => {
+  const record = getRecord(resource, id)(state);
+
+  if (!record) {
+    return id;
+  }
+
+  const entity = Object.assign({}, record).data;
+  const model = intercept.models[resource];
+  // Get all relationships with reducers.
+  const relationships = model
+    .getRelationshipAliases()
+    .filter(rel => model.schema[rel].model in state);
+  relationships.forEach((rel) => {
+    // Replace the uuid with the entity object.
+    entity[rel] = Array.isArray(entity[rel])
+      ? entity[rel].map(item => getBundle(model.schema[rel].model, item)(state))
+      : getBundle(model.schema[rel].model, entity[rel])(state);
+  });
+  return entity;
+};
 
 //
 // Event Types
 //
-export const eventType = id => state => state['taxonomy_term--event_type'].items[id];
-export const eventTypes = state => state['taxonomy_term--event_type'].items;
+export const eventType = id => getRecord('taxonomy_term--event_type', id);
+export const eventTypes = getRecords('taxonomy_term--event_type');
 export const eventTypesOptions = keyValues(eventTypes, 'name');
 export const eventTypesLabels = peek(eventTypes, 'name');
 
