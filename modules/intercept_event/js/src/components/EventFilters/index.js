@@ -5,9 +5,11 @@ import map from 'lodash/map';
 import { withStyles } from 'material-ui/styles';
 import interceptClient from 'interceptClient';
 // Components
+import DateFilter from 'intercept/DateFilter';
 import SelectEventType from 'intercept/SelectEventType';
 import SelectLocation from 'intercept/SelectLocation';
 import SelectAudience from 'intercept/SelectAudience';
+import SelectTag from 'intercept/SelectTag';
 
 const { select, api } = interceptClient;
 
@@ -25,13 +27,16 @@ class EventFilters extends Component {
         startDate: [],
         endDate: [],
         audience: [],
+        tag: [],
       },
     };
 
     this.onFilterChange = this.onFilterChange.bind(this);
+    this.onDateChange = this.onFilterChange('date').bind(this);
     this.onEventTypeChange = this.onFilterChange('type').bind(this);
     this.onLocationChange = this.onFilterChange('location').bind(this);
     this.onAudienceChange = this.onFilterChange('audience').bind(this);
+    this.onTagChange = this.onFilterChange('tag').bind(this);
   }
 
   onFilterChange(key) {
@@ -47,8 +52,10 @@ class EventFilters extends Component {
       <div>
         <div>Filters</div>
         <SelectEventType handleChange={this.onEventTypeChange} />
+        <DateFilter handleChange={this.onDateChange} />
         <SelectLocation handleChange={this.onLocationChange} />
         <SelectAudience handleChange={this.onAudienceChange} />
+        <SelectTag handleChange={this.onTagChange} />
       </div>
     );
   }

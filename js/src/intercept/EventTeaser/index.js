@@ -1,6 +1,7 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import MetaField from './../MetaField';
+import moment from 'moment';
 
 const EventTeaser = (props) => {
   const { event } = props;
@@ -10,23 +11,25 @@ const EventTeaser = (props) => {
     name: item.name,
   });
 
+  const date = moment(event['field_date_time'].value + 'Z', moment.ISO_8601);
+
   const eventTypeValues = event['field_event_type'].map(termMap);
   const eventTypes =
-    eventTypeValues.length > 0
-      ? (<MetaField label="Event type" values={eventTypeValues} />)
-      : (<div />);
+    eventTypeValues.length > 0 ? (
+      <MetaField label="Event type" values={eventTypeValues} />
+    ) : (
+      <div />
+    );
 
   const audienceValues = event['field_event_audience'].map(termMap);
   const audiences =
-    audienceValues.length > 0
-      ? (<MetaField label="Audience" values={audienceValues} />)
-      : (<div />);
+    audienceValues.length > 0 ? <MetaField label="Audience" values={audienceValues} /> : <div />;
 
   return (
     <article>
       <div className="teaser__aside">
         <div className="teaser__image">Image</div>
-        <div className="teaser__date">{event['field_date_time'].value}</div>
+        <div className="teaser__date">{date.format('MMM DD h:mma')}</div>
       </div>
       <div className="teaser__main">
         <header className="teaser__header">

@@ -8,5 +8,6 @@ eventList:
     - core/drupalSettings
     - intercept_core/babelHelpers
     - intercept_core/react
+    - intercept_core/moment
     - intercept_core/interceptClient
     - intercept_core/interceptCommon

@@ -105,6 +105,7 @@ module.exports = function config(env) {
           react: 'React',
           'react-dom': 'ReactDOM',
           interceptClient: 'interceptClient',
+          moment: 'moment',
           redis: 'redis',
         };
         const dev = {
