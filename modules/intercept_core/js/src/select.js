@@ -48,8 +48,23 @@ export const bundle = (resource, id) => (state) => {
 };
 
 export const bundles = resource => state =>
-  mapValues(records(resource)(state),
-    (value, id) => bundle(resource, id)(state));
+  mapValues(records(resource)(state), (value, id) => bundle(resource, id)(state));
+
+//
+// Events
+//
+export const event = id => state => state['node--event'].items[id];
+export const events = state => state['node--event'].items;
+export const eventsOptions = keyValues(events, 'title');
+export const eventsLabels = peek(events, 'title');
+
+//
+// Locations
+//
+export const location = id => state => state['node--location'].items[id];
+export const locations = state => state['node--location'].items;
+export const locationsOptions = keyValues(locations, 'title');
+export const locationsLabels = peek(locations, 'title');
 
 //
 // Audience
@@ -68,17 +83,9 @@ export const eventTypesOptions = keyValues(eventTypes, 'name');
 export const eventTypesLabels = peek(eventTypes, 'name');
 
 //
-// Events
+// Tag
 //
-export const event = id => state => state['node--event'].items[id];
-export const events = state => state['node--event'].items;
-export const eventsOptions = keyValues(events, 'title');
-export const eventsLabels = peek(events, 'title');
-
-//
-// Locations
-//
-export const location = id => state => state['node--location'].items[id];
-export const locations = state => state['node--location'].items;
-export const locationsOptions = keyValues(locations, 'title');
-export const locationsLabels = peek(locations, 'title');
+export const tag = id => record('taxonomy_term--tag', id);
+export const tags = records('taxonomy_term--tag');
+export const tagsOptions = keyValues(tags, 'name');
+export const tagsLabels = peek(tags, 'name');

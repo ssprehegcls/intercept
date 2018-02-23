@@ -5,6 +5,11 @@ react:
     https://unpkg.com/react-dom@16/umd/react-dom.production.min.js:
       external: true
 
+moment:
+  js:
+    https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.20.1/moment.min.js:
+      external: true
+
 babelHelpers:
   js:
     js/dist/babelHelpers.js:
