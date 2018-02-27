@@ -22,6 +22,11 @@ export const record = (resource, id) => state => state[resource].items[id];
 
 export const records = resource => state => state[resource].items;
 
+export const recordIsLoading = (resource, id) =>
+  createSelector(record(resource, id), item => item.state.syncing);
+
+export const recordsAreLoading = resource => state => state[resource].syncing;
+
 export const bundle = (resource, id) => (state) => {
   const base = record(resource, id)(state);
 
@@ -57,6 +62,18 @@ export const event = id => state => state['node--event'].items[id];
 export const events = state => state['node--event'].items;
 export const eventsOptions = keyValues(events, 'title');
 export const eventsLabels = peek(events, 'title');
+export const calendarEvents = createSelector(
+  events,
+  items => map(items, item => item),
+  // map(items, item => ({
+  //   id: item.data.uuid,
+  //   title: item.data.title,
+  //   startDate: new Date(new Date(2018, 3, 12, 12, 0, 0, 0)),
+  //   // start: new Date(item.data['field_date_time'].value),
+  //   // end: new Date(item.data['field_date_time'].end_value),
+  //   endDate: new Date(2018, 3, 12, 13, 0, 0, 0),
+  // })),
+);
 
 //
 // Locations

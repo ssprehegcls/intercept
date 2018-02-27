@@ -5,6 +5,12 @@ react:
     https://unpkg.com/react-dom@16/umd/react-dom.production.min.js:
       external: true
 
+bigCalendar:
+  version: 0.18.0
+  css:
+    base:
+      css/vendor/react-big-calendar.css: {}
+
 moment:
   js:
     https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.20.1/moment.min.js:

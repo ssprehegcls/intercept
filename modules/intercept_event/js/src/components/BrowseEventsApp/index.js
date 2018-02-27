@@ -2,13 +2,14 @@ import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import { withStyles } from 'material-ui/styles';
 import Grid from 'material-ui/Grid';
-import SelectEventType from 'intercept/SelectEventType';
+import ViewSwitcher from 'intercept/ViewSwitcher';
 import { connect } from 'react-redux';
 import map from 'lodash/map';
 import moment from 'moment';
 import interceptClient from 'interceptClient';
 import EventFilters from './../EventFilters';
 import EventList from './../EventList';
+import EventCalendar from './../EventCalendar';
 
 const { select, api } = interceptClient;
 const eventIncludes = [
@@ -78,9 +79,14 @@ function generateFilters(values) {
 }
 
 class BrowseEventsApp extends Component {
-  state = {
-    view: 'list',
-  };
+  constructor(props) {
+    super(props);
+    this.state = {
+      view: 'list',
+    };
+
+    this.handleViewChange = this.handleViewChange.bind(this);
+  }
 
   componentDidMount() {
     this.props.fetchEvents({
@@ -89,25 +95,44 @@ class BrowseEventsApp extends Component {
     });
   }
 
+  handleViewChange = (event, value) => {
+    this.setState({ view: value });
+  };
+
   render() {
-    const { events, fetchEvents, purge } = this.props;
+    const { calendarEvents, events, fetchEvents, purge, eventsLoading } = this.props;
 
     function onFilterChange(values) {
-      purge();
       fetchEvents({
         filters: generateFilters(values),
         include: eventIncludes,
+        replace: true,
       });
     }
 
+    const eventComponent =
+      this.state.view === 'list' ? (
+        <EventList events={events} />
+      ) : (
+        <EventCalendar events={calendarEvents} />
+      );
+
     return (
       <div>
-        <Grid container justify="space-between" direction="row-reverse" spacing={24}>
+        <ViewSwitcher handleChange={this.handleViewChange} />
+        <Grid
+          container
+          justify="space-between"
+          direction="row-reverse"
+          spacing={24}
+          wrap={'nowrap'}
+        >
           <Grid item s={3}>
+            <p>{eventsLoading ? 'Loading' : ''}</p>
             <EventFilters onChange={onFilterChange} />
           </Grid>
           <Grid item s={8}>
-            <EventList events={events} />
+            {eventComponent}
           </Grid>
         </Grid>
       </div>
@@ -117,6 +142,8 @@ class BrowseEventsApp extends Component {
 
 const mapStateToProps = (state, ownProps) => ({
   events: select.bundles('node--event')(state),
+  eventsLoading: select.recordsAreLoading('node--event')(state),
+  calendarEvents: select.calendarEvents(state),
 });
 
 const mapDispatchToProps = dispatch => ({
@@ -129,6 +156,7 @@ const mapDispatchToProps = dispatch => ({
 });
 
 BrowseEventsApp.propTypes = {
+  calendarEvents: PropTypes.arrayOf(Object).isRequired,
   events: PropTypes.object.isRequired,
   fetchEvents: PropTypes.func.isRequired,
   purge: PropTypes.func.isRequired,

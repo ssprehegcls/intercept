@@ -50,7 +50,7 @@ class EventFilters extends Component {
   render() {
     return (
       <div>
-        <div>Filters</div>
+        <h3 className="visually-hidden">Filters</h3>
         <SelectEventType handleChange={this.onEventTypeChange} />
         <DateFilter handleChange={this.onDateChange} />
         <SelectLocation handleChange={this.onLocationChange} />
