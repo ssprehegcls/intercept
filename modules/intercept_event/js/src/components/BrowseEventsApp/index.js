@@ -131,7 +131,7 @@ class BrowseEventsApp extends Component {
             <p>{eventsLoading ? 'Loading' : ''}</p>
             <EventFilters onChange={onFilterChange} />
           </Grid>
-          <Grid item s={8}>
+          <Grid item s={7} className="grid-main">
             {eventComponent}
           </Grid>
         </Grid>

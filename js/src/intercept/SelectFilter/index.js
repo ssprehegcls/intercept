@@ -19,6 +19,7 @@ const styles = theme => ({
     margin: theme.spacing.unit,
     minWidth: 120,
     maxWidth: 300,
+    width: '100%',
   },
   chips: {
     display: 'flex',

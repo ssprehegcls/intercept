@@ -16,7 +16,7 @@ class EventList extends Component {
     const { events } = this.props;
 
     const list = Object.keys(events).length > 0 ? (
-      map(events, (event, id) => <EventTeaser key={id} event={event} />)
+      map(events, (event, id) => <EventTeaser key={id} event={event} className="event-teaser" />)
     ) : (
       <p>No events have been loaded.</p>
     );

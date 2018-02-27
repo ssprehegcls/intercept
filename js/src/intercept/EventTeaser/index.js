@@ -26,7 +26,7 @@ const EventTeaser = (props) => {
     audienceValues.length > 0 ? <MetaField label="Audience" values={audienceValues} /> : <div />;
 
   return (
-    <article>
+    <article className="teaser">
       <div className="teaser__aside">
         <div className="teaser__image">Image</div>
         <div className="teaser__date">{date.format('MMM DD h:mma')}</div>
@@ -34,11 +34,11 @@ const EventTeaser = (props) => {
       <div className="teaser__main">
         <header className="teaser__header">
           <p className="teaser__location">{event['field_location'].title}</p>
-          <h3 className="teaser__title">
+          <h2 className="teaser__title">
             <a href={event.path.alias} className="teaser__title-link">
               {event.title}
             </a>
-          </h3>
+          </h2>
         </header>
         <p>{event['field_text_teaser']}</p>
         <footer className="teaser__footer">
