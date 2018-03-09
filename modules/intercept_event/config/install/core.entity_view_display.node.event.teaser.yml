@@ -21,9 +21,11 @@ dependencies:
     - field.field.node.event.field_text_content
     - field.field.node.event.field_text_intro
     - field.field.node.event.field_text_teaser
+    - image.style.4to3_740x556
     - node.type.event
   module:
     - datetime_range
+    - media
     - user
 id: node.event.teaser
 targetEntityType: node
@@ -57,12 +59,13 @@ content:
       link: true
     third_party_settings: {  }
   field_image_primary:
-    type: entity_reference_label
+    type: media_thumbnail
     weight: 2
     region: content
     label: hidden
     settings:
-      link: true
+      image_style: 4to3_740x556
+      image_link: ''
     third_party_settings: {  }
   field_location:
     type: entity_reference_label
@@ -70,7 +73,7 @@ content:
     region: content
     label: hidden
     settings:
-      link: true
+      link: false
     third_party_settings: {  }
   field_text_teaser:
     type: basic_string
