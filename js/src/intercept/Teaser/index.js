@@ -24,7 +24,7 @@ const Teaser = (props) => {
         {supertitle && <span className="teaser__supertitle">{supertitle}</span>}
         <h3 className="teaser__title">
           {titleUrl ? (
-            <a href="{{titleUrl}}" className="teaser__title-link">
+            <a href={titleUrl} className="teaser__title-link">
               {title}
             </a>
           ) : (

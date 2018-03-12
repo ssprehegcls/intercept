@@ -21,7 +21,8 @@
     "react-big-calendar": "^0.18.0",
     "react-dom": "^16.0.0",
     "react-redux": "^5.0.7",
-    "redux": "^3.7.2"
+    "redux": "^3.7.2",
+    "whatwg-fetch": "^2.0.3"
   },
   "devDependencies": {
     "babel-cli": "^6.26.0",
