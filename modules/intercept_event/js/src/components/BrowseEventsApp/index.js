@@ -120,21 +120,15 @@ class BrowseEventsApp extends Component {
     return (
       <div>
         <ViewSwitcher handleChange={this.handleViewChange} />
-        <Grid
-          container
-          justify="space-between"
-          direction="row-reverse"
-          spacing={24}
-          wrap={'nowrap'}
-        >
-          <Grid item s={3}>
+        <div className="l--sidebar-after">
+          <div className="l__secondary">
             <p>{eventsLoading ? 'Loading' : ''}</p>
             <EventFilters onChange={onFilterChange} />
-          </Grid>
-          <Grid item s={7} className="grid-main">
+          </div>
+          <div className="l__primary">
             {eventComponent}
-          </Grid>
-        </Grid>
+          </div>
+        </div>
       </div>
     );
   }

@@ -16,9 +16,9 @@ const MetaField = (props) => {
       )),
   );
   return (
-    <div className="meta-field">
-      <strong className="meta-field__label">{label}: </strong>
-      <span className="meta-field__options">
+    <div className="field">
+      <strong className="field__label">{label}: </strong>
+      <span className="field__items">
         {valueList.reduce((prev, curr) => (!prev ? [curr] : [prev, ', ', curr]))}
       </span>
     </div>

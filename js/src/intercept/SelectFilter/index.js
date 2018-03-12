@@ -28,6 +28,9 @@ const styles = theme => ({
   chip: {
     margin: theme.spacing.unit / 4,
   },
+  inputLabel: {
+    margin: 0,
+  },
 });
 
 const ITEM_HEIGHT = 48;
@@ -62,7 +65,9 @@ class SelectFilter extends React.Component {
     return (
       <div className={classes.root}>
         <FormControl className={classes.formControl}>
-          <InputLabel htmlFor="select-multiple-chip">{label}</InputLabel>
+          <InputLabel className={classes.inputLabel} htmlFor="select-multiple-chip">
+            {label}
+          </InputLabel>
           <Select
             multiple
             value={this.state.value}
@@ -71,11 +76,7 @@ class SelectFilter extends React.Component {
             renderValue={selected => (
               <div className={classes.chips}>
                 {selected.map(value => (
-                  <Chip
-                    key={value}
-                    label={getLabel(options, value)}
-                    className={classes.chip}
-                  />
+                  <Chip key={value} label={getLabel(options, value)} className={classes.chip} />
                 ))}
               </div>
             )}

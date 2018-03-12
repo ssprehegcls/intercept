@@ -1,6 +1,7 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import MetaField from './../MetaField';
+import Teaser from './../Teaser';
 import moment from 'moment';
 
 const EventTeaser = (props) => {
@@ -11,46 +12,34 @@ const EventTeaser = (props) => {
     name: item.name,
   });
 
-  const date = moment(event['field_date_time'].value + 'Z', moment.ISO_8601);
+  const date = moment(`${event['field_date_time'].value}Z`, moment.ISO_8601);
 
   const eventTypeValues = event['field_event_type'].map(termMap);
   const eventTypes =
     eventTypeValues.length > 0 ? (
-      <MetaField label="Event type" values={eventTypeValues} />
+      <MetaField label="Event type" key="eventType" values={eventTypeValues} />
     ) : (
       <div />
     );
 
   const audienceValues = event['field_event_audience'].map(termMap);
   const audiences =
-    audienceValues.length > 0 ? <MetaField label="Audience" values={audienceValues} /> : <div />;
+    audienceValues.length > 0 ? <MetaField label="Audience" key="audience" values={audienceValues} /> : <div />;
 
   return (
-    <article className="teaser">
-      <div className="teaser__aside">
-        <div className="teaser__image">Image</div>
-        <div className="teaser__date">{date.format('MMM DD h:mma')}</div>
-      </div>
-      <div className="teaser__main">
-        <header className="teaser__header">
-          <p className="teaser__location">{event['field_location'].title}</p>
-          <h2 className="teaser__title">
-            <a href={event.path.alias} className="teaser__title-link">
-              {event.title}
-            </a>
-          </h2>
-        </header>
-        <p>{event['field_text_teaser']}</p>
-        <footer className="teaser__footer">
-          {eventTypes}
-          {audiences}
-        </footer>
-        <div className="teaser__actions">
-          <span>Register</span>
-          <span>Favorite</span>
-        </div>
-      </div>
-    </article>
+    <Teaser
+      modifiers={['has-image']}
+      supertitle={event['field_location'].title}
+      title={event.title}
+      titleUrl={event.path.alias}
+      date={{
+        month: date.format('MMM'),
+        date: date.format('D'),
+        time: date.format('h:mm a').replace('m', '.m.'),
+      }}
+      description={event['field_text_teaser']}
+      tags={[eventTypes, audiences]}
+    />
   );
 };
 
