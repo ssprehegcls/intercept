@@ -92,6 +92,9 @@ class BrowseEventsApp extends Component {
     this.props.fetchEvents({
       filters: generateFilters(),
       include: eventIncludes,
+      headers: {
+        'X-Consumer-ID': '00234322-f19f-4853-901a-250b3eda03f9',
+      },
     });
   }
 
@@ -107,6 +110,9 @@ class BrowseEventsApp extends Component {
         filters: generateFilters(values),
         include: eventIncludes,
         replace: true,
+        headers: {
+          'X-Consumer-ID': '00234322-f19f-4853-901a-250b3eda03f9',
+        },
       });
     }
 
@@ -118,15 +124,15 @@ class BrowseEventsApp extends Component {
       );
 
     return (
-      <div>
+      <div className="l--offset">
         <ViewSwitcher handleChange={this.handleViewChange} />
-        <div className="l--sidebar-after">
-          <div className="l__secondary">
-            <p>{eventsLoading ? 'Loading' : ''}</p>
-            <EventFilters onChange={onFilterChange} />
-          </div>
-          <div className="l__primary">
-            {eventComponent}
+        <div className="l--sidebar-after clearfix">
+          <div className="l__main">
+            <div className="l__secondary">
+              <p>{eventsLoading ? 'Loading' : ''}</p>
+              <EventFilters onChange={onFilterChange} />
+            </div>
+            <div className="l__primary">{eventComponent}</div>
           </div>
         </div>
       </div>
