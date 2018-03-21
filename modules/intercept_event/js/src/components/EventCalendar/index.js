@@ -8,7 +8,7 @@ import moment from 'moment';
 BigCalendar.momentLocalizer(moment); // or globalizeLocalizer
 
 const dateAccessor = prop => item =>
-  moment(`${item.data.field_date_time[prop]}Z`, moment.ISO_8601).toDate();
+  moment(`${item.data.attributes.field_date_time[prop]}Z`, moment.ISO_8601).toDate();
 const startAccessor = dateAccessor('value');
 const endAccessor = dateAccessor('end_value');
 const titleAccessor = item => item.data.title;

@@ -3,12 +3,18 @@ import PropTypes from 'prop-types';
 import MetaField from './../MetaField';
 
 const Teaser = (props) => {
-  const { date, modifiers, type, supertitle, subtitle, title, titleUrl, description, tags } = props;
+  const { date, modifiers, image, type, supertitle, subtitle, title, titleUrl, description, tags } = props;
   const classes = `clearfix teaser ${modifiers.map(mod => `teaser--${mod}`).join(' ')}`;
+
+  const img = image && (<img src={image} alt={title}/>);
 
   return (
     <article className={classes}>
       <div className="teaser__image">
+        { titleUrl
+          ? (<a href="{{title_url}}" className="teaser__image-link" aria-hidden="true">{img}</a>)
+          : (img)
+        }
         {date && (
           <div className="teaser__date-wrapper">
             <p className="teaser__date">
@@ -42,6 +48,7 @@ const Teaser = (props) => {
 Teaser.propTypes = {
   modifiers: PropTypes.arrayOf(PropTypes.string),
   type: PropTypes.string,
+  image: PropTypes.string,
   supertitle: PropTypes.string,
   subtitle: PropTypes.string,
   description: PropTypes.string,
@@ -54,6 +61,7 @@ Teaser.propTypes = {
 Teaser.defaultProps = {
   modifiers: [],
   type: null,
+  image: null,
   subtitle: null,
   supertitle: null,
   titleUrl: null,

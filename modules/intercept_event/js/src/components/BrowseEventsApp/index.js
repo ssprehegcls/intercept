@@ -1,10 +1,8 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import { withStyles } from 'material-ui/styles';
-import Grid from 'material-ui/Grid';
 import ViewSwitcher from 'intercept/ViewSwitcher';
 import { connect } from 'react-redux';
-import map from 'lodash/map';
 import moment from 'moment';
 import interceptClient from 'interceptClient';
 import EventFilters from './../EventFilters';
@@ -140,8 +138,8 @@ class BrowseEventsApp extends Component {
   }
 }
 
-const mapStateToProps = (state, ownProps) => ({
-  events: select.bundles('node--event')(state),
+const mapStateToProps = state => ({
+  events: select.eventIds(state),
   eventsLoading: select.recordsAreLoading('node--event')(state),
   calendarEvents: select.calendarEvents(state),
 });
@@ -157,7 +155,7 @@ const mapDispatchToProps = dispatch => ({
 
 BrowseEventsApp.propTypes = {
   calendarEvents: PropTypes.arrayOf(Object).isRequired,
-  events: PropTypes.object.isRequired,
+  events: PropTypes.arrayOf(PropTypes.string).isRequired,
   fetchEvents: PropTypes.func.isRequired,
   purge: PropTypes.func.isRequired,
 };
