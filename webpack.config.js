@@ -153,9 +153,11 @@ module.exports = function config(env) {
       externals: (() => {
         const prod = {
           redis: 'redis',
+          drupalSettings: 'drupalSettings',
         };
         const dev = {
           redis: 'redis',
+          drupalSettings: 'drupalSettings',
         };
 
         return isProduction ? prod : dev;

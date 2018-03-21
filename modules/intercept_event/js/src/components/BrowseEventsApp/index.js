@@ -91,7 +91,7 @@ class BrowseEventsApp extends Component {
       filters: generateFilters(),
       include: eventIncludes,
       headers: {
-        'X-Consumer-ID': '00234322-f19f-4853-901a-250b3eda03f9',
+        'X-Consumer-ID': interceptClient.consumer,
       },
     });
   }
@@ -109,7 +109,7 @@ class BrowseEventsApp extends Component {
         include: eventIncludes,
         replace: true,
         headers: {
-          'X-Consumer-ID': '00234322-f19f-4853-901a-250b3eda03f9',
+          'X-Consumer-ID': interceptClient.consumer,
         },
       });
     }

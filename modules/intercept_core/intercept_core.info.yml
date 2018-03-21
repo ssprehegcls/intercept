@@ -6,6 +6,7 @@ dependencies:
   - block
   - block_content
   - consumers
+  - consumer_image_styles
   - contact
   - duration_field
   - editor
