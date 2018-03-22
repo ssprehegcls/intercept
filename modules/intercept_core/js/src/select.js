@@ -1,8 +1,10 @@
 import { createSelector } from 'reselect';
 import forEach from 'lodash/forEach';
 import get from 'lodash/get';
+import groupBy from 'lodash/groupBy';
 import map from 'lodash/map';
 import mapValues from 'lodash/mapValues';
+import moment from 'moment';
 import pickBy from 'lodash/pickBy';
 import intercept from 'intercept-client';
 
@@ -10,6 +12,32 @@ export const getIdentifier = (type, id) => ({
   type,
   id,
 });
+
+//
+// Date Functions
+//
+
+// Make sure the current value is a valid date object.
+export const ensureDate = date => (date instanceof Date ? date : new Date(date));
+// Normalize a date object to a single day. Used to compare days for different dates.
+export const getDayTimeStamp = date => ensureDate(date).setHours(0, 0, 0, 0);
+// Get a formatted date string.
+export const getDayDisplay = (date) => {
+  const d = getDayTimeStamp(date);
+
+  // Today
+  if (d === getDayTimeStamp(new Date())) {
+    return 'Today';
+  }
+  // Tommorrow
+  const tomorrow = new Date();
+  tomorrow.setDate(tomorrow.getDate() + 1);
+  if (d === getDayTimeStamp(tomorrow)) {
+    return 'Tomorrow';
+  }
+  // Friday, October 20, 2017
+  return moment(date).format('dddd, MMMM D, YYYY');
+};
 
 /**
  * Returns an array of published records.
@@ -83,21 +111,12 @@ export const bundles = type => state =>
 //
 export const event = id => state => state['node--event'].items[id];
 export const events = state => state['node--event'].items;
+export const eventsArray = state => map(state['node--event'].items, item => item);
+export const getEventStartDate = item => get(item, 'data.attributes.field_date_time.value');
 export const eventIds = recordIds(events);
 export const eventsOptions = keyValues(events, 'title');
 export const eventsLabels = peek(events, 'data.attributes.title');
-export const calendarEvents = createSelector(
-  events,
-  items => map(items, item => item),
-  // map(items, item => ({
-  //   id: item.data.uuid,
-  //   title: item.data.title,
-  //   startDate: new Date(new Date(2018, 3, 12, 12, 0, 0, 0)),
-  //   // start: new Date(item.data['field_date_time'].value),
-  //   // end: new Date(item.data['field_date_time'].end_value),
-  //   endDate: new Date(2018, 3, 12, 13, 0, 0, 0),
-  // })),
-);
+export const calendarEvents = createSelector(events, items => map(items, item => item));
 export const eventImage = id =>
   createSelector(bundle(getIdentifier('node--event', id)), resourceBundle =>
     get(resourceBundle, 'relationships.field_image_primary.relationships.field_media_image'),
@@ -108,17 +127,28 @@ export const eventImageStyle = (id, style) =>
     get(resourceBundle, `meta.derivatives.${style}`),
   );
 
-export const eventTeasers = createSelector(
-  events,
-  items => map(items, item => item),
-  // map(items, item => ({
-  //   id: item.data.uuid,
-  //   title: item.data.title,
-  //   startDate: new Date(new Date(2018, 3, 12, 12, 0, 0, 0)),
-  //   // start: new Date(item.data['field_date_time'].value),
-  //   // end: new Date(item.data['field_date_time'].end_value),
-  //   endDate: new Date(2018, 3, 12, 13, 0, 0, 0),
-  // })),
+export const eventTeasers = createSelector(events, items => map(items, item => item));
+
+export const eventsAscending = createSelector(eventsArray, items =>
+  items.sort((a, b) => getEventStartDate(a) - getEventStartDate(b)),
+);
+
+export const eventsDecending = createSelector(eventsAscending, items => items.reverse());
+
+export const eventsByDate = createSelector(eventsAscending, items =>
+  groupBy(items, item => getDayTimeStamp(`${get(item, 'data.attributes.field_date_time.value')}Z`)),
+);
+
+export const eventsByDateAscending = createSelector(eventsByDate, items =>
+  map(items, (item, key) => ({
+    key,
+    date: new Date(parseInt(key, 10)),
+    items: item.map(a => a.data.id),
+  })).sort((a, b) => a.key - b.key),
+);
+
+export const eventsByDateDescending = createSelector(eventsByDateAscending, items =>
+  items.reverse(),
 );
 
 //

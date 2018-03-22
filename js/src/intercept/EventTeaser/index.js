@@ -3,7 +3,7 @@ import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import moment from 'moment';
 import interceptClient from 'interceptClient';
-import MetaField from './../MetaField';
+import FieldInline from './../FieldInline';
 import Teaser from './../Teaser';
 
 const { select } = interceptClient;
@@ -21,7 +21,7 @@ const EventTeaser = (props) => {
   const eventTypeValues = event.relationships['field_event_type'].map(termMap);
   const eventTypes =
     eventTypeValues.length > 0 ? (
-      <MetaField label="Event type" key="eventType" values={eventTypeValues} />
+      <FieldInline label="Event type" key="eventType" values={eventTypeValues} />
     ) : (
       <div />
     );
@@ -29,7 +29,7 @@ const EventTeaser = (props) => {
   const audienceValues = event.relationships['field_event_audience'].map(termMap);
   const audiences =
     audienceValues.length > 0 ? (
-      <MetaField label="Audience" key="audience" values={audienceValues} />
+      <FieldInline label="Audience" key="audience" values={audienceValues} />
     ) : (
       <div />
     );

@@ -26,6 +26,12 @@ function generateFilters(values) {
     },
   };
 
+  filter['date'] = {
+    path: 'field_date_time.value',
+    value: moment(new Date().setHours(0, 0, -1, 0)).toISOString(),
+    operator: '>',
+  };
+
   if (!values) {
     return filter;
   }
@@ -101,7 +107,7 @@ class BrowseEventsApp extends Component {
   };
 
   render() {
-    const { calendarEvents, events, fetchEvents, purge, eventsLoading } = this.props;
+    const { calendarEvents, events, fetchEvents, eventsLoading } = this.props;
 
     function onFilterChange(values) {
       fetchEvents({
@@ -139,7 +145,7 @@ class BrowseEventsApp extends Component {
 }
 
 const mapStateToProps = state => ({
-  events: select.eventIds(state),
+  events: select.eventsByDateAscending(state),
   eventsLoading: select.recordsAreLoading('node--event')(state),
   calendarEvents: select.calendarEvents(state),
 });
@@ -148,16 +154,13 @@ const mapDispatchToProps = dispatch => ({
   fetchEvents: (options) => {
     dispatch(api['node--event'].fetchAll(options));
   },
-  purge: () => {
-    dispatch(api['node--event'].purge());
-  },
 });
 
 BrowseEventsApp.propTypes = {
   calendarEvents: PropTypes.arrayOf(Object).isRequired,
-  events: PropTypes.arrayOf(PropTypes.string).isRequired,
+  events: PropTypes.arrayOf(Object).isRequired,
+  eventsLoading: PropTypes.bool.isRequired,
   fetchEvents: PropTypes.func.isRequired,
-  purge: PropTypes.func.isRequired,
 };
 
 export default connect(mapStateToProps, mapDispatchToProps)(

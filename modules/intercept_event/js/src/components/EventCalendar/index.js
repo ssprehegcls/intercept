@@ -3,15 +3,15 @@ import PropTypes from 'prop-types';
 import BigCalendar from 'react-big-calendar';
 import moment from 'moment';
 
-// Setup the localizer by providing the moment (or globalize) Object
-// to the correct localizer.
-BigCalendar.momentLocalizer(moment); // or globalizeLocalizer
+BigCalendar.setLocalizer(BigCalendar.momentLocalizer(moment));
 
 const dateAccessor = prop => item =>
   moment(`${item.data.attributes.field_date_time[prop]}Z`, moment.ISO_8601).toDate();
 const startAccessor = dateAccessor('value');
 const endAccessor = dateAccessor('end_value');
-const titleAccessor = item => item.data.title;
+const titleAccessor = item => (
+  <p className="calendar-event-title--tiny">{item.data.attributes.title}</p>
+);
 
 const EventCalendar = props => (
   <BigCalendar
@@ -19,11 +19,12 @@ const EventCalendar = props => (
     titleAccessor={titleAccessor}
     startAccessor={startAccessor}
     endAccessor={endAccessor}
+    defaultDate={new Date()}
     popup
     views={['month', 'week', 'day']}
     elementProps={{
       style: {
-        height: '100vh',
+        height: 'calc(100vh - 26rem)',
       },
       className: 'what',
     }}
