@@ -48,11 +48,12 @@ class EventFilters extends Component {
   }
 
   render() {
+    const { showDate } = this.props;
     return (
       <div>
         <h3 className="visually-hidden">Filters</h3>
         <SelectEventType handleChange={this.onEventTypeChange} />
-        <DateFilter handleChange={this.onDateChange} />
+        {showDate && <DateFilter handleChange={this.onDateChange} /> }
         <SelectLocation handleChange={this.onLocationChange} />
         <SelectAudience handleChange={this.onAudienceChange} />
         <SelectTag handleChange={this.onTagChange} />
@@ -63,6 +64,11 @@ class EventFilters extends Component {
 
 EventFilters.propTypes = {
   onChange: PropTypes.func.isRequired,
+  showDate: PropTypes.bool,
+};
+
+EventFilters.defaultProps = {
+  showDate: true,
 };
 
 export default withStyles(styles, { withTheme: true })(EventFilters);

@@ -19,20 +19,35 @@ const EventCalendar = props => (
     titleAccessor={titleAccessor}
     startAccessor={startAccessor}
     endAccessor={endAccessor}
-    defaultDate={new Date()}
+    onNavigate={props.onNavigate}
+    onView={props.onView}
+    defaultView={props.defaultView}
+    defaultDate={props.defaultDate}
     popup
     views={['month', 'week', 'day']}
     elementProps={{
       style: {
         height: 'calc(100vh - 26rem)',
       },
-      className: 'what',
     }}
+    min={new Date('Jan 1, 2000 07:00:00')}
+    max={new Date('Jan 1, 2000 22:00:00')}
   />
 );
 
 EventCalendar.propTypes = {
   events: PropTypes.arrayOf(Object).isRequired,
+  onNavigate: PropTypes.func,
+  onView: PropTypes.func,
+  defaultDate: PropTypes.instanceOf(Date),
+  defaultView: PropTypes.string,
+};
+
+EventCalendar.defaultProps = {
+  onNavigate: null,
+  onView: null,
+  defaultDate: new Date(),
+  defaultView: 'month',
 };
 
 export default EventCalendar;

@@ -1,35 +1,83 @@
 import React, { Component } from 'react';
+import { addUrlProps, UrlQueryParamTypes } from 'react-url-query';
 import PropTypes from 'prop-types';
-import { withStyles } from 'material-ui/styles';
-import ViewSwitcher from 'intercept/ViewSwitcher';
 import { connect } from 'react-redux';
 import moment from 'moment';
 import interceptClient from 'interceptClient';
+import ViewSwitcher from 'intercept/ViewSwitcher';
 import EventFilters from './../EventFilters';
 import EventList from './../EventList';
 import EventCalendar from './../EventCalendar';
 
-const { select, api } = interceptClient;
+const { api, select, history } = interceptClient;
 const eventIncludes = [
   'field_image_primary',
   'field_image_primary.field_media_image',
   'field_room',
 ];
 
-const styles = theme => ({});
+const urlPropsQueryConfig = {
+  view: { type: UrlQueryParamTypes.string },
+  calView: { type: UrlQueryParamTypes.string },
+  date: { type: UrlQueryParamTypes.date },
+};
 
-function generateFilters(values) {
-  const filter = {
+function getDateSpan(value, view = 'day') {
+  const start = moment(value).startOf(view);
+  const end = moment(value).endOf(view);
+
+  // The calendar view may include date from the previous or next month
+  // so we make sure to include the beginning of the first week and
+  // end of the last week.
+  if (view === 'month') {
+    start.startOf('week');
+    end.endOf('week');
+  }
+  return [start.toISOString(), end.toISOString()];
+}
+
+function getPublishedFilters(value = true) {
+  return {
     published: {
       path: 'status',
-      value: '1',
+      value: value ? '1' : '0',
     },
   };
+}
 
-  filter['date'] = {
-    path: 'field_date_time.value',
-    value: moment(new Date().setHours(0, 0, -1, 0)).toISOString(),
-    operator: '>',
+function getDateFilters(values, view = 'list', calView = 'day', date = new Date()) {
+  const path = 'field_date_time.value';
+  let operator = '>';
+  let value = moment(new Date())
+    .subtract(1, 'day')
+    .endOf('day')
+    .toISOString();
+
+  // Handler Calendar view.
+  // The date should be determined by the date and calendar view type
+  // rather than the selected date value.
+  if (view === 'calendar') {
+    value = getDateSpan(date, calView);
+    operator = 'BETWEEN';
+  }
+  else if (values.date) {
+    value = getDateSpan(values.date, 'day');
+    operator = 'BETWEEN';
+  }
+
+  return {
+    data: {
+      path,
+      value,
+      operator,
+    },
+  };
+}
+
+function getFilters(values, view = 'list', calView = 'day', date = new Date()) {
+  const filter = {
+    ...getPublishedFilters(true),
+    ...getDateFilters(values, view, calView, date),
   };
 
   if (!values) {
@@ -70,15 +118,6 @@ function generateFilters(values) {
     }
   });
 
-  if (values.date) {
-    const startDate = moment(values.date);
-    filter['date'] = {
-      path: 'field_date_time.value',
-      value: [startDate.toISOString(), startDate.add(1, 'days').toISOString()],
-      operator: 'BETWEEN',
-    };
-  }
-
   return filter;
 }
 
@@ -86,55 +125,115 @@ class BrowseEventsApp extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      view: 'list',
+      calView: props.calView,
+      date: props.date,
+      filters: {},
+      view: props.view,
     };
-
+    this.handleCalendarNavigate = this.handleCalendarNavigate.bind(this);
+    this.handleCalendarView = this.handleCalendarView.bind(this);
+    this.handleFilterChange = this.handleFilterChange.bind(this);
     this.handleViewChange = this.handleViewChange.bind(this);
+    this.doFetchEvents = this.doFetchEvents.bind(this);
   }
 
   componentDidMount() {
-    this.props.fetchEvents({
-      filters: generateFilters(),
+    // force an update if the URL changes
+    history.listen(() => {
+      this.forceUpdate();
+    });
+
+    this.doFetchEvents(this.state.filters, this.state.view, this.state.calView, this.state.date);
+  }
+
+  handleViewChange = (event, value) => {
+    this.setState({ view: value });
+    this.props.onChangeView(value);
+    this.doFetchEvents(this.state.filters, value, this.state.calView, this.state.date);
+  };
+
+  handleCalendarNavigate = (date, calView) => {
+    this.setState({ date, calView });
+    this.props.onChangeDate(date);
+    this.doFetchEvents(this.state.filters, 'calendar', calView, date);
+  };
+
+  handleCalendarView = (calView) => {
+    this.setState({ calView });
+    this.props.onChangeCalView(calView);
+    this.doFetchEvents(this.state.filters, 'calendar', calView, this.state.date);
+  };
+
+  handleFilterChange(values) {
+    this.setState({
+      filters: values,
+    });
+
+    this.doFetchEvents(values);
+  }
+
+  doFetchEvents(
+    values = this.state.filters,
+    view = this.state.view,
+    calView = this.state.calView,
+    date,
+  ) {
+    const { fetchEvents } = this.props;
+
+    fetchEvents({
+      filters: getFilters(values, view, calView, date),
       include: eventIncludes,
+      replace: true,
       headers: {
         'X-Consumer-ID': interceptClient.consumer,
       },
     });
   }
 
-  handleViewChange = (event, value) => {
-    this.setState({ view: value });
-  };
-
   render() {
-    const { calendarEvents, events, fetchEvents, eventsLoading } = this.props;
+    const {
+      state,
+      props,
+      handleCalendarNavigate,
+      handleViewChange,
+      handleCalendarView,
+      handleFilterChange,
+    } = this;
+    const { calendarEvents, events, eventsLoading } = props;
+    const { view, date, calView } = state;
 
-    function onFilterChange(values) {
-      fetchEvents({
-        filters: generateFilters(values),
-        include: eventIncludes,
-        replace: true,
-        headers: {
-          'X-Consumer-ID': interceptClient.consumer,
-        },
-      });
-    }
+    // function onFilterChange(values) {
+    //   fetchEvents({
+    //     filters: getFilters(values, state, props),
+    //     include: eventIncludes,
+    //     replace: true,
+    //     headers: {
+    //       'X-Consumer-ID': interceptClient.consumer,
+    //     },
+    //   });
+    // }
 
     const eventComponent =
-      this.state.view === 'list' ? (
+      view === 'list' ? (
         <EventList events={events} />
       ) : (
-        <EventCalendar events={calendarEvents} />
+        <EventCalendar
+          events={calendarEvents}
+          onNavigate={handleCalendarNavigate}
+          onView={handleCalendarView}
+          defaultView={calView}
+          defaultDate={date}
+        />
       );
 
     return (
       <div className="l--offset">
-        <ViewSwitcher handleChange={this.handleViewChange} />
+        <ViewSwitcher value={view} handleChange={handleViewChange} />
         <div className="l--sidebar-after clearfix">
           <div className="l__main">
             <div className="l__secondary">
               <p>{eventsLoading ? 'Loading' : ''}</p>
-              <EventFilters onChange={onFilterChange} />
+              <EventFilters onChange={handleFilterChange} showDate={view === 'list'} />
             </div>
             <div className="l__primary">{eventComponent}</div>
           </div>
@@ -161,8 +260,20 @@ BrowseEventsApp.propTypes = {
   events: PropTypes.arrayOf(Object).isRequired,
   eventsLoading: PropTypes.bool.isRequired,
   fetchEvents: PropTypes.func.isRequired,
+  calView: PropTypes.string,
+  date: PropTypes.instanceOf(Date),
+  view: PropTypes.string,
+  onChangeCalView: PropTypes.func.isRequired,
+  onChangeView: PropTypes.func.isRequired,
+  onChangeDate: PropTypes.func.isRequired,
 };
 
-export default connect(mapStateToProps, mapDispatchToProps)(
-  withStyles(styles, { withTheme: true })(BrowseEventsApp),
+BrowseEventsApp.defaultProps = {
+  view: 'list',
+  calView: 'month',
+  date: new Date(),
+};
+
+export default addUrlProps({ urlPropsQueryConfig })(
+  connect(mapStateToProps, mapDispatchToProps)(BrowseEventsApp),
 );

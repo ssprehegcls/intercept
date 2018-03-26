@@ -13,7 +13,7 @@ const styles = theme => ({
     margin: theme.spacing.unit * 3,
   },
   group: {
-    margin: `${theme.spacing.unit}px 0`,
+    margin: 0,
     display: 'flex',
     justifyContent: 'flex-end',
     flexDirection: 'row',
@@ -36,17 +36,8 @@ const buttonClasses = (props, checked) => ({
 });
 
 class ViewSwitcher extends React.Component {
-  state = {
-    value: 'list',
-  };
-
-  handleChange = (event, value) => {
-    this.setState({ value });
-    this.props.handleChange(event, value);
-  };
-
   render() {
-    const { classes } = this.props;
+    const { classes, value, handleChange } = this.props;
 
     return (
       <div className={classes.root}>
@@ -56,22 +47,22 @@ class ViewSwitcher extends React.Component {
             aria-label="view-selector"
             name="view-selector-1"
             className={classes.group}
-            value={this.state.value}
-            onChange={this.handleChange}
+            value={value}
+            onChange={handleChange}
           >
             <FormControlLabel
               value="list"
-              classes={buttonClasses(this.props, this.state.value === 'list')}
+              classes={buttonClasses(this.props, value === 'list')}
               control={<Radio icon={null} checkedIcon={null} />}
               label="List"
-              disabled={this.state.value === 'list'}
+              disabled={value === 'list'}
             />
             <FormControlLabel
-              classes={buttonClasses(this.props, this.state.value === 'calendar')}
+              classes={buttonClasses(this.props, value === 'calendar')}
               value="calendar"
               control={<Radio icon={null} checkedIcon={null} />}
               label="Calendar"
-              disabled={this.state.value === 'calendar'}
+              disabled={value === 'calendar'}
             />
           </RadioGroup>
         </FormControl>
@@ -83,6 +74,11 @@ class ViewSwitcher extends React.Component {
 ViewSwitcher.propTypes = {
   classes: PropTypes.object.isRequired,
   handleChange: PropTypes.func.isRequired,
+  value: PropTypes.string,
+};
+
+ViewSwitcher.defaultProps = {
+  value: 'list',
 };
 
 export default withStyles(styles)(ViewSwitcher);
