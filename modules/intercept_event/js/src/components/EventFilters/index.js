@@ -1,62 +1,111 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
-import { connect } from 'react-redux';
 import map from 'lodash/map';
-import { withStyles } from 'material-ui/styles';
 import interceptClient from 'interceptClient';
+
 // Components
+import CurrentFilters from 'intercept/CurrentFilters';
 import DateFilter from 'intercept/DateFilter';
-import SelectEventType from 'intercept/SelectEventType';
-import SelectLocation from 'intercept/SelectLocation';
-import SelectAudience from 'intercept/SelectAudience';
-import SelectTag from 'intercept/SelectTag';
+import SelectResource from 'intercept/SelectResource';
 
-const { select, api } = interceptClient;
+const { constants, select, api } = interceptClient;
+const c = constants;
 
-const styles = theme => ({
+const labels = {
+  [c.TYPE_EVENT_TYPE]: 'Event Type',
+  [c.TYPE_LOCATION]: 'Location',
+  [c.TYPE_AUDIENCE]: 'Audience',
+  [c.TYPE_TAG]: 'Tag',
+  date: 'Date',
+};
 
-});
+const currentFiltersConfig = filters =>
+  map(filters, (value, key) => ({
+    key,
+    value,
+    label: labels[key],
+    type: key,
+  }));
 
 class EventFilters extends Component {
   constructor(props) {
     super(props);
     this.state = {
       filters: {
-        type: [],
-        location: [],
-        startDate: [],
-        endDate: [],
-        audience: [],
-        tag: [],
+        [c.TYPE_EVENT_TYPE]: [],
+        [c.TYPE_LOCATION]: [],
+        [c.TYPE_AUDIENCE]: [],
+        [c.TYPE_TAG]: [],
+        date: null,
       },
     };
 
+    this.onFiltersChange = this.onFiltersChange.bind(this);
     this.onFilterChange = this.onFilterChange.bind(this);
-    this.onDateChange = this.onFilterChange('date').bind(this);
-    this.onEventTypeChange = this.onFilterChange('type').bind(this);
-    this.onLocationChange = this.onFilterChange('location').bind(this);
-    this.onAudienceChange = this.onFilterChange('audience').bind(this);
-    this.onTagChange = this.onFilterChange('tag').bind(this);
+    this.onDateChange = this.onDateChange.bind(this);
+    this.onInputChange = this.onInputChange.bind(this);
   }
 
-  onFilterChange(key) {
+  onFiltersChange(filters) {
+    this.setState({ filters });
+  }
+
+  onFilterChange(key, value) {
+    const newFilters = { ...this.state.filters, [key]: value };
+    this.onFiltersChange(newFilters);
+    this.props.onChange(newFilters);
+  }
+
+  onInputChange(key) {
     return (event) => {
-      const newFilters = { ...this.state.filters, [key]: event.target.value };
-      this.setState({ filters: newFilters });
-      this.props.onChange(newFilters);
+      this.onFilterChange(key, event.target.value);
     };
+  }
+
+  onDateChange(value) {
+    this.onFilterChange('date', value);
   }
 
   render() {
     const { showDate } = this.props;
+    const { filters } = this.state;
+
     return (
-      <div>
-        <h3 className="visually-hidden">Filters</h3>
-        <SelectEventType handleChange={this.onEventTypeChange} />
-        {showDate && <DateFilter handleChange={this.onDateChange} /> }
-        <SelectLocation handleChange={this.onLocationChange} />
-        <SelectAudience handleChange={this.onAudienceChange} />
-        <SelectTag handleChange={this.onTagChange} />
+      <div className="filters">
+        <h3 className="visually-hidden filters__heading">Filters</h3>
+        <div className="filters__inputs">
+          <SelectResource
+            type={c.TYPE_LOCATION}
+            handleChange={this.onInputChange(c.TYPE_LOCATION)}
+            value={filters[c.TYPE_LOCATION]}
+            label={labels[c.TYPE_LOCATION]}
+          />
+          <SelectResource
+            type={c.TYPE_EVENT_TYPE}
+            handleChange={this.onInputChange(c.TYPE_EVENT_TYPE)}
+            value={filters[c.TYPE_EVENT_TYPE]}
+            label={labels[c.TYPE_EVENT_TYPE]}
+          />
+          <SelectResource
+            type={c.TYPE_AUDIENCE}
+            handleChange={this.onInputChange(c.TYPE_AUDIENCE)}
+            value={filters[c.TYPE_AUDIENCE]}
+            label={labels[c.TYPE_AUDIENCE]}
+          />
+          <SelectResource
+            type={c.TYPE_TAG}
+            handleChange={this.onInputChange(c.TYPE_TAG)}
+            value={filters[c.TYPE_TAG]}
+            label={labels[c.TYPE_TAG]}
+          />
+          {showDate && (
+            <DateFilter handleChange={this.onDateChange} defaultValue={null} value={filters.date} />
+          )}
+        </div>
+        <div className="filters__current">
+          <CurrentFilters filters={currentFiltersConfig(filters)} onChange={this.onFilterChange} />
+        </div>
+
       </div>
     );
   }
@@ -71,4 +120,4 @@ EventFilters.defaultProps = {
   showDate: true,
 };
 
-export default withStyles(styles, { withTheme: true })(EventFilters);
+export default EventFilters;

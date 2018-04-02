@@ -3,13 +3,16 @@ import { addUrlProps, UrlQueryParamTypes } from 'react-url-query';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import moment from 'moment';
+import debounce from 'lodash/debounce';
 import interceptClient from 'interceptClient';
 import ViewSwitcher from 'intercept/ViewSwitcher';
+import PageSpinner from 'intercept/PageSpinner';
 import EventFilters from './../EventFilters';
 import EventList from './../EventList';
 import EventCalendar from './../EventCalendar';
 
-const { api, select, history } = interceptClient;
+const { constants, api, select, history } = interceptClient;
+const c = constants;
 const eventIncludes = [
   'field_image_primary',
   'field_image_primary.field_media_image',
@@ -85,10 +88,10 @@ function getFilters(values, view = 'list', calView = 'day', date = new Date()) {
   }
 
   const types = [
-    { id: 'type', path: 'field_event_type.uuid', conjunction: 'OR' },
-    { id: 'location', path: 'field_location.uuid', conjunction: 'OR' },
-    { id: 'audience', path: 'field_event_audience.uuid', conjunction: 'OR' },
-    { id: 'tag', path: 'field_event_tags.uuid', conjunction: 'AND' },
+    { id: c.TYPE_EVENT_TYPE, path: 'field_event_type.uuid', conjunction: 'OR' },
+    { id: c.TYPE_LOCATION, path: 'field_location.uuid', conjunction: 'OR' },
+    { id: c.TYPE_AUDIENCE, path: 'field_event_audience.uuid', conjunction: 'OR' },
+    { id: c.TYPE_TAG, path: 'field_event_tags.uuid', conjunction: 'AND' },
   ];
 
   types.forEach((type) => {
@@ -134,7 +137,7 @@ class BrowseEventsApp extends Component {
     this.handleCalendarView = this.handleCalendarView.bind(this);
     this.handleFilterChange = this.handleFilterChange.bind(this);
     this.handleViewChange = this.handleViewChange.bind(this);
-    this.doFetchEvents = this.doFetchEvents.bind(this);
+    this.doFetchEvents = debounce(this.doFetchEvents, 500).bind(this);
   }
 
   componentDidMount() {
@@ -176,7 +179,7 @@ class BrowseEventsApp extends Component {
     values = this.state.filters,
     view = this.state.view,
     calView = this.state.calView,
-    date,
+    date = this.state.date,
   ) {
     const { fetchEvents } = this.props;
 
@@ -202,17 +205,6 @@ class BrowseEventsApp extends Component {
     const { calendarEvents, events, eventsLoading } = props;
     const { view, date, calView } = state;
 
-    // function onFilterChange(values) {
-    //   fetchEvents({
-    //     filters: getFilters(values, state, props),
-    //     include: eventIncludes,
-    //     replace: true,
-    //     headers: {
-    //       'X-Consumer-ID': interceptClient.consumer,
-    //     },
-    //   });
-    // }
-
     const eventComponent =
       view === 'list' ? (
         <EventList events={events} />
@@ -229,10 +221,10 @@ class BrowseEventsApp extends Component {
     return (
       <div className="l--offset">
         <ViewSwitcher value={view} handleChange={handleViewChange} />
-        <div className="l--sidebar-after clearfix">
+        <div className="clearfix">
           <div className="l__main">
-            <div className="l__secondary">
-              <p>{eventsLoading ? 'Loading' : ''}</p>
+            <div className="l--subsection">
+              <PageSpinner loading={eventsLoading} />
               <EventFilters onChange={handleFilterChange} showDate={view === 'list'} />
             </div>
             <div className="l__primary">{eventComponent}</div>

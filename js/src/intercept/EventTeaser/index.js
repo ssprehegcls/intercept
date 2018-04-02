@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import moment from 'moment';
+import get from 'lodash/get';
 import interceptClient from 'interceptClient';
 import FieldInline from './../FieldInline';
 import Teaser from './../Teaser';
@@ -16,13 +17,13 @@ class EventTeaser extends Component {
     const { id, event, image } = this.props;
 
     const termMap = item => ({
-      id: item.attributes.uuid,
-      name: item.attributes.name,
+      id: item.id,
+      name: get(item, 'attributes.name'),
     });
 
     const date = moment(`${event.attributes['field_date_time'].value}Z`, moment.ISO_8601);
 
-    const eventTypeValues = event.relationships['field_event_type'].map(termMap);
+    const eventTypeValues = event.relationships['field_event_type'].map(termMap).filter(i => i.id);
     const eventTypes =
       eventTypeValues.length > 0 ? (
         <FieldInline label="Event type" key="eventType" values={eventTypeValues} />
@@ -30,22 +31,25 @@ class EventTeaser extends Component {
         <div />
       );
 
-    const audienceValues = event.relationships['field_event_audience'].map(termMap);
+    const audienceValues = event.relationships['field_event_audience']
+      .map(termMap)
+      .filter(i => i.id);
+
     const audiences =
       audienceValues.length > 0 ? (
         <FieldInline label="Audience" key="audience" values={audienceValues} />
-      ) : (
-        <div />
-      );
+      ) : null;
 
     return (
       <Teaser
         key={id}
-        modifiers={['has-image']}
+        modifiers={[image ? 'with-image' : 'without-image']}
         image={image}
         supertitle={event.relationships['field_location'].attributes.title}
         title={event.attributes.title}
-        titleUrl={event.attributes.path ? event.attributes.path.alias : `/node/${event.attributes.nid}`}
+        titleUrl={
+          event.attributes.path ? event.attributes.path.alias : `/node/${event.attributes.nid}`
+        }
         date={{
           month: date.format('MMM'),
           date: date.format('D'),

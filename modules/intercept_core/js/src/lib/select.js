@@ -6,6 +6,7 @@ import map from 'lodash/map';
 import mapValues from 'lodash/mapValues';
 import moment from 'moment';
 import pickBy from 'lodash/pickBy';
+import sortBy from 'lodash/sortBy';
 import intercept from 'intercept-client';
 
 export const getIdentifier = (type, id) => ({
@@ -65,7 +66,7 @@ export const keyValues = (selector, path) =>
 
 export const record = identifier => state => state[identifier.type].items[identifier.id];
 
-export const records = resource => state => state[resource].items;
+export const records = type => state => state[type].items;
 
 export const recordIds = selector =>
   createSelector(selector, items => map(items, item => get(item, 'data.id')));
@@ -74,6 +75,20 @@ export const recordIsLoading = (type, id) =>
   createSelector(record(getIdentifier(type, id)), item => item.state.syncing);
 
 export const recordsAreLoading = resource => state => state[resource].syncing;
+
+export const recordLabel = identifier =>
+  createSelector(
+    record(identifier),
+    item => get(item, 'data.attributes.title') || get(item, 'data.attributes.name'),
+  );
+
+export const recordOptions = type =>
+  createSelector(records(type), items =>
+    sortBy(map(items, item => ({
+      key: item.data.id,
+      value: get(item, 'data.attributes.title') || get(item, 'data.attributes.name'),
+    })), i => i.value),
+  );
 
 export const bundle = identifier => (state) => {
   if (identifier.type in state === false) {
