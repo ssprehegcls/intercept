@@ -13,9 +13,31 @@ const titleAccessor = item => (
   <p className="calendar-event-title--tiny">{item.data.attributes.title}</p>
 );
 
+const CalendarEvent = (props) => {
+  const { event } = props;
+  const { data } = event;
+
+  return (
+    <div className="calendar-event">
+      <p className="calendar-event__title">{data.attributes.title}</p>
+    </div>
+  );
+};
+
+const components = {
+  event: CalendarEvent,
+};
+
+const onSelectEvent = (event) => {
+  const url = event.data.attributes.path ? event.data.attributes.path.alias : `/node/${event.data.attributes.nid}`;
+  window.location.href = url;
+};
+
 const EventCalendar = props => (
   <BigCalendar
+    components={components}
     events={props.events}
+    onSelectEvent={onSelectEvent}
     titleAccessor={titleAccessor}
     startAccessor={startAccessor}
     endAccessor={endAccessor}
