@@ -18,7 +18,6 @@ const labels = {
   [c.TYPE_EVENT_TYPE]: 'Event Type',
   [c.TYPE_LOCATION]: 'Location',
   [c.TYPE_AUDIENCE]: 'Audience',
-  [c.TYPE_TAG]: 'Tag',
   [DATE]: 'Date',
   [KEYWORD]: 'Keyword',
 };
@@ -40,7 +39,6 @@ class EventFilters extends Component {
         [c.TYPE_LOCATION]: [],
         [c.TYPE_EVENT_TYPE]: [],
         [c.TYPE_AUDIENCE]: [],
-        [c.TYPE_TAG]: [],
         [DATE]: null,
       },
     };
@@ -101,12 +99,6 @@ class EventFilters extends Component {
             handleChange={this.onInputChange(c.TYPE_AUDIENCE)}
             value={filters[c.TYPE_AUDIENCE]}
             label={labels[c.TYPE_AUDIENCE]}
-          />
-          <SelectResource
-            type={c.TYPE_TAG}
-            handleChange={this.onInputChange(c.TYPE_TAG)}
-            value={filters[c.TYPE_TAG]}
-            label={labels[c.TYPE_TAG]}
           />
           {showDate && (
             <DateFilter handleChange={this.onDateChange} defaultValue={null} value={filters.date} />

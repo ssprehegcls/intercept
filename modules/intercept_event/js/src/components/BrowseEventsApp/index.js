@@ -92,6 +92,7 @@ function getKeywordFilters(value, group = 'group') {
     { id: 'body', path: 'field_text_content.value' },
     { id: 'intro', path: 'field_text_intro.value' },
     { id: 'teaser', path: 'field_text_teaser.value' },
+    { id: 'tags', path: 'field_event_tags.name' },
   ];
 
   filters[group] = {
@@ -126,7 +127,6 @@ function getFilters(values, view = 'list', calView = 'day', date = new Date()) {
     { id: c.TYPE_EVENT_TYPE, path: 'field_event_type.uuid', conjunction: 'OR' },
     { id: c.TYPE_LOCATION, path: 'field_location.uuid', conjunction: 'OR' },
     { id: c.TYPE_AUDIENCE, path: 'field_event_audience.uuid', conjunction: 'OR' },
-    { id: c.TYPE_TAG, path: 'field_event_tags.uuid', conjunction: 'AND' },
   ];
 
   types.forEach((type) => {
