@@ -28,6 +28,10 @@ class CurrentFilter extends React.Component {
   };
 
   handleDeleteSingle = key => () => {
+    this.props.onChange(key, '');
+  };
+
+  handleDeleteDate = key => () => {
     this.props.onChange(key, null);
   };
 
@@ -52,7 +56,7 @@ class CurrentFilter extends React.Component {
       <OptionChip
         key={filters.id}
         label={moment(filters.value).format('MMMM D, YYYY')}
-        onDelete={this.handleDeleteSingle}
+        onDelete={this.handleDeleteDate}
       />
     );
 

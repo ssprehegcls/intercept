@@ -77,10 +77,45 @@ function getDateFilters(values, view = 'list', calView = 'day', date = new Date(
   };
 }
 
+function getKeywordFilters(value, group = 'group') {
+  const filters = {};
+
+  if (!value.keyword) {
+    return filters;
+  }
+
+  const operator = 'CONTAINS';
+  const conjunction = 'OR';
+
+  const types = [
+    { id: 'tite', path: 'title' },
+    { id: 'body', path: 'field_text_content.value' },
+    { id: 'intro', path: 'field_text_intro.value' },
+    { id: 'teaser', path: 'field_text_teaser.value' },
+  ];
+
+  filters[group] = {
+    type: 'group',
+    conjunction,
+  };
+
+  types.forEach((type) => {
+    filters[type.id] = {
+      memberOf: group,
+      path: type.path,
+      operator,
+      value: value.keyword,
+    };
+  });
+
+  return filters;
+}
+
 function getFilters(values, view = 'list', calView = 'day', date = new Date()) {
   const filter = {
     ...getPublishedFilters(true),
     ...getDateFilters(values, view, calView, date),
+    ...getKeywordFilters(values, 'keyword'),
   };
 
   if (!values) {

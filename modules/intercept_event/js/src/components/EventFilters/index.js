@@ -6,17 +6,21 @@ import interceptClient from 'interceptClient';
 // Components
 import CurrentFilters from 'intercept/CurrentFilters';
 import DateFilter from 'intercept/DateFilter';
+import KeywordFilter from 'intercept/KeywordFilter';
 import SelectResource from 'intercept/SelectResource';
 
 const { constants, select, api } = interceptClient;
 const c = constants;
+const DATE = 'date';
+const KEYWORD = 'keyword';
 
 const labels = {
   [c.TYPE_EVENT_TYPE]: 'Event Type',
   [c.TYPE_LOCATION]: 'Location',
   [c.TYPE_AUDIENCE]: 'Audience',
   [c.TYPE_TAG]: 'Tag',
-  date: 'Date',
+  [DATE]: 'Date',
+  [KEYWORD]: 'Keyword',
 };
 
 const currentFiltersConfig = filters =>
@@ -36,7 +40,8 @@ class EventFilters extends Component {
         [c.TYPE_LOCATION]: [],
         [c.TYPE_AUDIENCE]: [],
         [c.TYPE_TAG]: [],
-        date: null,
+        [DATE]: null,
+        [KEYWORD]: '',
       },
     };
 
@@ -63,7 +68,7 @@ class EventFilters extends Component {
   }
 
   onDateChange(value) {
-    this.onFilterChange('date', value);
+    this.onFilterChange(DATE, value);
   }
 
   render() {
@@ -74,6 +79,11 @@ class EventFilters extends Component {
       <div className="filters">
         <h3 className="visually-hidden filters__heading">Filters</h3>
         <div className="filters__inputs">
+          <KeywordFilter
+            handleChange={this.onInputChange(KEYWORD)}
+            value={filters[KEYWORD]}
+            label={labels[KEYWORD]}
+          />
           <SelectResource
             type={c.TYPE_LOCATION}
             handleChange={this.onInputChange(c.TYPE_LOCATION)}
@@ -105,7 +115,6 @@ class EventFilters extends Component {
         <div className="filters__current">
           <CurrentFilters filters={currentFiltersConfig(filters)} onChange={this.onFilterChange} />
         </div>
-
       </div>
     );
   }
