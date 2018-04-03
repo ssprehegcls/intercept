@@ -184,7 +184,7 @@ class BrowseEventsApp extends Component {
     this.doFetchEvents(this.state.filters, this.state.view, this.state.calView, this.state.date);
   }
 
-  handleViewChange = (event, value) => {
+  handleViewChange = (value) => {
     this.setState({ view: value });
     this.props.onChangeView(value);
     this.doFetchEvents(this.state.filters, value, this.state.calView, this.state.date);
@@ -255,10 +255,10 @@ class BrowseEventsApp extends Component {
 
     return (
       <div className="l--offset">
-        <ViewSwitcher value={view} handleChange={handleViewChange} />
         <div className="clearfix">
           <div className="l__main">
             <div className="l--subsection">
+              <ViewSwitcher value={view} handleChange={handleViewChange} />
               <PageSpinner loading={eventsLoading} />
               <EventFilters onChange={handleFilterChange} showDate={view === 'list'} />
             </div>

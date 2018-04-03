@@ -11,6 +11,8 @@ class CurrentFilter extends React.Component {
     this.handleDeleteMultiple = this.handleDeleteMultiple.bind(this)(props.filter.key);
     this.handleDeleteSingle = this.handleDeleteSingle
       .bind(this)(props.filter.key);
+    this.handleDeleteDate = this.handleDeleteDate
+      .bind(this)(props.filter.key);
   }
 
   shouldComponentUpdate(nextProps) {

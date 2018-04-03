@@ -19,11 +19,15 @@ const Teaser = (props) => {
 
   const img = image && <img src={image} alt={title} />;
 
+  function createMarkup(value) {
+    return { __html: value };
+  }
+
   return (
     <article className={classes}>
       <div className="teaser__image">
         {titleUrl && img ? (
-          <a href="{title_url}" className="teaser__image-link" aria-hidden="true">
+          <a href={titleUrl} className="teaser__image-link" aria-hidden="true">
             {img}
           </a>
         ) : (
@@ -52,7 +56,9 @@ const Teaser = (props) => {
           )}
         </h3>
         {subtitle && <span className="teaser__subtitle">{subtitle}</span>}
-        {description && <div className="teaser__description">{description}</div>}
+        {description && (
+          <div className="teaser__description" dangerouslySetInnerHTML={createMarkup(description)} />
+        )}
         {tags && <div className="teaser__tags">{tags}</div>}
 
         {footer && <div className="teaser__footer">{footer}</div>}

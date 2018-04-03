@@ -36,12 +36,12 @@ class EventFilters extends Component {
     super(props);
     this.state = {
       filters: {
-        [c.TYPE_EVENT_TYPE]: [],
+        [KEYWORD]: '',
         [c.TYPE_LOCATION]: [],
+        [c.TYPE_EVENT_TYPE]: [],
         [c.TYPE_AUDIENCE]: [],
         [c.TYPE_TAG]: [],
         [DATE]: null,
-        [KEYWORD]: '',
       },
     };
 
