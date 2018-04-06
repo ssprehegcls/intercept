@@ -20,12 +20,13 @@ ResourceChip.propTypes = {
     id: PropTypes.string,
     type: PropTypes.string,
   }).isRequired,
-  label: PropTypes.string.isRequired,
+  label: PropTypes.string,
   onDelete: PropTypes.func,
 };
 
 ResourceChip.defaultProps = {
   onDelete: null,
+  label: '',
 };
 
 const mapStateToProps = (state, ownProps) => ({

@@ -27,6 +27,7 @@ function DateFilter(props) {
   const { value, handleChange } = props;
   const onChange = date => handleChange(date.toDate());
   const onClear = () => handleChange(null);
+  const inputValue = value === '' ? null : value;
 
   return (
     <MuiPickersUtilsProvider utils={MomentUtils} moment={moment}>
@@ -35,8 +36,8 @@ function DateFilter(props) {
         onClear={onClear}
         clearable
         label={'Date'}
-        InputLabelProps={InputLabelProps(value)}
-        value={value}
+        InputLabelProps={InputLabelProps(inputValue)}
+        value={inputValue}
         className="date-filter"
       />
     </MuiPickersUtilsProvider>
@@ -45,7 +46,7 @@ function DateFilter(props) {
 
 // Specifies the default values for props:
 DateFilter.defaultProps = {
-  value: '',
+  value: null,
   label: 'Date',
 };
 

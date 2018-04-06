@@ -45,7 +45,7 @@ class EventTeaser extends Component {
         key={id}
         modifiers={[image ? 'with-image' : 'without-image']}
         image={image}
-        supertitle={event.relationships['field_location'].attributes.title}
+        supertitle={get(event, 'relationships.field_location.attributes.title')}
         title={event.attributes.title}
         titleUrl={
           event.attributes.path ? event.attributes.path.alias : `/node/${event.attributes.nid}`

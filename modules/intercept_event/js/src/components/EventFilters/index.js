@@ -1,6 +1,11 @@
-import React, { Component } from 'react';
+// React
+import React, { PureComponent } from 'react';
 import PropTypes from 'prop-types';
+
+// Lodash
 import map from 'lodash/map';
+
+// Intercept
 import interceptClient from 'interceptClient';
 
 // Components
@@ -9,17 +14,15 @@ import DateFilter from 'intercept/DateFilter';
 import KeywordFilter from 'intercept/KeywordFilter';
 import SelectResource from 'intercept/SelectResource';
 
-const { constants, select, api } = interceptClient;
+const { constants } = interceptClient;
 const c = constants;
-const DATE = 'date';
-const KEYWORD = 'keyword';
 
 const labels = {
   [c.TYPE_EVENT_TYPE]: 'Event Type',
   [c.TYPE_LOCATION]: 'Location',
   [c.TYPE_AUDIENCE]: 'Audience',
-  [DATE]: 'Date',
-  [KEYWORD]: 'Keyword',
+  [c.DATE]: 'Date',
+  [c.KEYWORD]: 'Keyword',
 };
 
 const currentFiltersConfig = filters =>
@@ -30,32 +33,17 @@ const currentFiltersConfig = filters =>
     type: key,
   }));
 
-class EventFilters extends Component {
+class EventFilters extends PureComponent {
   constructor(props) {
     super(props);
-    this.state = {
-      filters: {
-        [KEYWORD]: '',
-        [c.TYPE_LOCATION]: [],
-        [c.TYPE_EVENT_TYPE]: [],
-        [c.TYPE_AUDIENCE]: [],
-        [DATE]: null,
-      },
-    };
 
-    this.onFiltersChange = this.onFiltersChange.bind(this);
     this.onFilterChange = this.onFilterChange.bind(this);
     this.onDateChange = this.onDateChange.bind(this);
     this.onInputChange = this.onInputChange.bind(this);
   }
 
-  onFiltersChange(filters) {
-    this.setState({ filters });
-  }
-
   onFilterChange(key, value) {
-    const newFilters = { ...this.state.filters, [key]: value };
-    this.onFiltersChange(newFilters);
+    const newFilters = { ...this.props.filters, [key]: value };
     this.props.onChange(newFilters);
   }
 
@@ -66,21 +54,24 @@ class EventFilters extends Component {
   }
 
   onDateChange(value) {
-    this.onFilterChange(DATE, value);
+    this.onFilterChange(c.DATE, value);
   }
 
   render() {
-    const { showDate } = this.props;
-    const { filters } = this.state;
+    const { showDate, filters } = this.props;
+    let currentFilters = currentFiltersConfig(filters);
+    if (!showDate) {
+      currentFilters = currentFilters.filter(f => f.key !== c.DATE);
+    }
 
     return (
       <div className="filters">
         <h3 className="visually-hidden filters__heading">Filters</h3>
         <div className="filters__inputs">
           <KeywordFilter
-            handleChange={this.onInputChange(KEYWORD)}
-            value={filters[KEYWORD]}
-            label={labels[KEYWORD]}
+            handleChange={this.onInputChange(c.KEYWORD)}
+            value={filters[c.KEYWORD]}
+            label={labels[c.KEYWORD]}
           />
           <SelectResource
             type={c.TYPE_LOCATION}
@@ -105,7 +96,7 @@ class EventFilters extends Component {
           )}
         </div>
         <div className="filters__current">
-          <CurrentFilters filters={currentFiltersConfig(filters)} onChange={this.onFilterChange} />
+          <CurrentFilters filters={currentFilters} onChange={this.onFilterChange} />
         </div>
       </div>
     );
@@ -115,10 +106,12 @@ class EventFilters extends Component {
 EventFilters.propTypes = {
   onChange: PropTypes.func.isRequired,
   showDate: PropTypes.bool,
+  filters: PropTypes.object,
 };
 
 EventFilters.defaultProps = {
   showDate: true,
+  filters: {},
 };
 
 export default EventFilters;

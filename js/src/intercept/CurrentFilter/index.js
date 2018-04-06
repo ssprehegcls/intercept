@@ -5,7 +5,7 @@ import moment from 'moment';
 import ResourceChip from '../ResourceChip';
 import OptionChip from '../OptionChip';
 
-class CurrentFilter extends React.Component {
+class CurrentFilter extends React.PureComponent {
   constructor(props) {
     super(props);
     this.handleDeleteMultiple = this.handleDeleteMultiple.bind(this)(props.filter.key);
@@ -13,14 +13,6 @@ class CurrentFilter extends React.Component {
       .bind(this)(props.filter.key);
     this.handleDeleteDate = this.handleDeleteDate
       .bind(this)(props.filter.key);
-  }
-
-  shouldComponentUpdate(nextProps) {
-    if (!nextProps.filter.value || !this.props.filter.value) {
-      return nextProps.filter.value !== !this.props.filter.value;
-    }
-
-    return nextProps.filter.value.length !== this.props.filter.value.length;
   }
 
   handleDeleteMultiple = key => (data) => {
