@@ -84,10 +84,13 @@ export const recordLabel = identifier =>
 
 export const recordOptions = type =>
   createSelector(records(type), items =>
-    sortBy(map(items, item => ({
-      key: item.data.id,
-      value: get(item, 'data.attributes.title') || get(item, 'data.attributes.name'),
-    })), i => i.value),
+    sortBy(
+      map(items, item => ({
+        key: item.data.id,
+        value: get(item, 'data.attributes.title') || get(item, 'data.attributes.name'),
+      })),
+      i => i.value,
+    ),
   );
 
 export const bundle = identifier => (state) => {
@@ -104,18 +107,30 @@ export const bundle = identifier => (state) => {
     return identifier;
   }
 
-  const entity = Object.assign({}, base).data;
-  forEach(base.data.relationships, (resourceIdentifier, rel) => {
+  // Create temporary entity.
+  const entity = { ...base.data };
+  const relationships = base.data.relationships;
+  const selectors = [];
+
+  forEach(relationships, (resourceIdentifier, rel) => {
     if (!resourceIdentifier.data) {
       return;
     }
     const relData = entity.relationships[rel].data;
     // Replace the uuid with the entity object.
-    entity.relationships[rel] = Array.isArray(relData)
-      ? relData.map(item => bundle(item)(state))
-      : bundle(relData)(state);
+    if (Array.isArray(relData)) {
+      selectors.concat(relData.map(item => bundle(item)));
+      entity.relationships[rel] = relData.map(item => bundle(item)(state));
+    }
+    else {
+      selectors.push(bundle(relData));
+      entity.relationships[rel] = bundle(relData)(state);
+    }
   });
-  return entity;
+
+  return createSelector([record(identifier), ...selectors], () => entity)(state);
+
+  // return entity;
 };
 
 export const bundles = type => state =>

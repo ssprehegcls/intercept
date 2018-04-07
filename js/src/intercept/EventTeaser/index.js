@@ -7,12 +7,9 @@ import interceptClient from 'interceptClient';
 import FieldInline from './../FieldInline';
 import Teaser from './../Teaser';
 
-const { select } = interceptClient;
+const { select, constants } = interceptClient;
+const c = constants;
 class EventTeaser extends Component {
-  shouldComponentUpdate(nextProps, nextState) {
-    return nextProps.event;
-  }
-
   render() {
     const { id, event, image } = this.props;
 
@@ -27,9 +24,7 @@ class EventTeaser extends Component {
     const eventTypes =
       eventTypeValues.length > 0 ? (
         <FieldInline label="Event type" key="eventType" values={eventTypeValues} />
-      ) : (
-        <div />
-      );
+      ) : null;
 
     const audienceValues = event.relationships['field_event_audience']
       .map(termMap)
@@ -73,8 +68,9 @@ EventTeaser.defaultProps = {
 };
 
 const mapStateToProps = (state, ownProps) => ({
-  event: select.bundle(select.getIdentifier('node--event', ownProps.id))(state),
+  event: select.bundle(select.getIdentifier(c.TYPE_EVENT, ownProps.id))(state),
   image: select.eventImageStyle(ownProps.id, '4to3_740x556')(state),
+  location: select.record(select.getIdentifier(c.TYPE_LOCATION)),
 });
 
 export default connect(mapStateToProps)(EventTeaser);
