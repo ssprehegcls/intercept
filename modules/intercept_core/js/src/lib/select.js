@@ -9,6 +9,9 @@ import pickBy from 'lodash/pickBy';
 import sortBy from 'lodash/sortBy';
 import intercept from 'intercept-client';
 
+const { constants } = intercept;
+const c = constants;
+
 export const getIdentifier = (type, id) => ({
   type,
   id,
@@ -137,25 +140,29 @@ export const bundles = type => state =>
   mapValues(records(type)(state), (value, id) => bundle(getIdentifier(type, id))(state));
 
 //
+// Images
+//
+export const resourceImage = identifier =>
+  createSelector(bundle(identifier), resourceBundle =>
+    get(resourceBundle, 'relationships.field_image_primary.relationships.field_media_image'),
+  );
+
+export const resourceImageStyle = (identifier, style) =>
+  createSelector(resourceImage(identifier), resourceBundle =>
+    get(resourceBundle, `meta.derivatives.${style}`),
+  );
+
+//
 // Events
 //
-export const event = id => state => state['node--event'].items[id];
-export const events = state => state['node--event'].items;
-export const eventsArray = state => map(state['node--event'].items, item => item);
+export const event = id => state => state[c.TYPE_EVENT].items[id];
+export const events = state => state[c.TYPE_EVENT].items;
+export const eventsArray = state => map(state[c.TYPE_EVENT].items, item => item);
 export const getEventStartDate = item => get(item, 'data.attributes.field_date_time.value');
 export const eventIds = recordIds(events);
 export const eventsOptions = keyValues(events, 'title');
 export const eventsLabels = peek(events, 'data.attributes.title');
 export const calendarEvents = createSelector(events, items => map(items, item => item));
-export const eventImage = id =>
-  createSelector(bundle(getIdentifier('node--event', id)), resourceBundle =>
-    get(resourceBundle, 'relationships.field_image_primary.relationships.field_media_image'),
-  );
-
-export const eventImageStyle = (id, style) =>
-  createSelector(eventImage(id), resourceBundle =>
-    get(resourceBundle, `meta.derivatives.${style}`),
-  );
 
 export const eventTeasers = createSelector(events, items => map(items, item => item));
 
@@ -204,6 +211,18 @@ export const eventType = id => record('taxonomy_term--event_type', id);
 export const eventTypes = records('taxonomy_term--event_type');
 export const eventTypesOptions = keyValues(eventTypes, 'data.attributes.name');
 export const eventTypesLabels = peek(eventTypes, 'data.attributes.name');
+
+//
+// Rooms
+//
+export const room = id => record(c.TYPE_ROOM, id);
+export const rooms = records(c.TYPE_ROOM);
+export const roomsArray = state => map(state[c.TYPE_ROOM].items, item => item);
+export const roomsOptions = keyValues(rooms, 'data.attributes.name');
+export const roomsLabels = peek(rooms, 'data.attributes.name');
+export const roomsAscending = createSelector(roomsArray, items =>
+  items.sort((a, b) => recordLabel(a) - recordLabel(b)),
+);
 
 //
 // Tag

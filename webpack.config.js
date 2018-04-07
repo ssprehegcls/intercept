@@ -6,6 +6,7 @@ const webpack = require('webpack');
 const entries = {
   intercept_event: ['eventList'],
   intercept_location: ['locationsList'],
+  intercept_room_reservation: ['reserveRoom'],
 };
 
 const babelLoader = {

@@ -12,3 +12,9 @@ room_reservation.admin.structure.settings:
   description: 'Configure Room reservation entities'
   route_name: room_reservation.settings
   parent: system.admin_structure
+
+room_reservation.reserve_room:
+  title: Reserve a Room
+  description: 'Make a room reservation'
+  route_name: intercept_room_reservation.reserve_room
+  menu_name: main

@@ -1,4 +1,4 @@
-import React, { Component } from 'react';
+import React, { PureComponent } from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import moment from 'moment';
@@ -9,7 +9,7 @@ import Teaser from './../Teaser';
 
 const { select, constants } = interceptClient;
 const c = constants;
-class EventTeaser extends Component {
+class EventTeaser extends PureComponent {
   render() {
     const { id, event, image } = this.props;
 
@@ -67,10 +67,13 @@ EventTeaser.defaultProps = {
   image: null,
 };
 
-const mapStateToProps = (state, ownProps) => ({
-  event: select.bundle(select.getIdentifier(c.TYPE_EVENT, ownProps.id))(state),
-  image: select.eventImageStyle(ownProps.id, '4to3_740x556')(state),
-  location: select.record(select.getIdentifier(c.TYPE_LOCATION)),
-});
+const mapStateToProps = (state, ownProps) => {
+  const identifier = select.getIdentifier(c.TYPE_EVENT, ownProps.id);
+
+  return {
+    event: select.bundle(identifier)(state),
+    image: select.resourceImageStyle(identifier, '4to3_740x556')(state),
+  };
+};
 
 export default connect(mapStateToProps)(EventTeaser);
