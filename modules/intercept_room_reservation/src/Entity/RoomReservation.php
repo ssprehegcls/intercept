@@ -46,23 +46,22 @@ use Drupal\user\UserInterface;
  *   entity_keys = {
  *     "id" = "id",
  *     "revision" = "vid",
- *     "label" = "name",
  *     "uuid" = "uuid",
  *     "uid" = "user_id",
  *     "langcode" = "langcode",
  *     "status" = "status",
  *   },
  *   links = {
- *     "canonical" = "/admin/structure/room_reservation/{room_reservation}",
- *     "add-form" = "/admin/structure/room_reservation/add",
- *     "edit-form" = "/admin/structure/room_reservation/{room_reservation}/edit",
- *     "delete-form" = "/admin/structure/room_reservation/{room_reservation}/delete",
+ *     "canonical" = "/room-reservation/{room_reservation}",
+ *     "add-form" = "/room-reservation/add",
+ *     "edit-form" = "/room-reservation/{room_reservation}/edit",
+ *     "delete-form" = "/room-reservation/{room_reservation}/delete",
  *     "version-history" = "/admin/structure/room_reservation/{room_reservation}/revisions",
  *     "revision" = "/admin/structure/room_reservation/{room_reservation}/revisions/{room_reservation_revision}/view",
  *     "revision_revert" = "/admin/structure/room_reservation/{room_reservation}/revisions/{room_reservation_revision}/revert",
  *     "revision_delete" = "/admin/structure/room_reservation/{room_reservation}/revisions/{room_reservation_revision}/delete",
  *     "translation_revert" = "/admin/structure/room_reservation/{room_reservation}/revisions/{room_reservation_revision}/revert/{langcode}",
- *     "collection" = "/admin/structure/room_reservation",
+ *     "collection" = "/admin/content/room_reservations",
  *   },
  *   field_ui_base_route = "room_reservation.settings"
  * )
