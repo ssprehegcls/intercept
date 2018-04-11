@@ -18,3 +18,9 @@ room_reservation.reserve_room:
   description: 'Make a room reservation'
   route_name: intercept_room_reservation.reserve_room
   menu_name: main
+
+intercept_room_reservation.account.room_reservations:
+  title: 'Room Reservations'
+  weight: 10
+  route_name: intercept_room_reservation.account.room_reservations
+  menu_name: account
