@@ -7,6 +7,8 @@
 
 use Drupal\Core\Routing\RouteMatchInterface;
 use Drupal\Core\Render\Element;
+use Drupal\intercept_room_reservation\Entity\RoomReservationInterface;
+use Drupal\Core\Entity\Display\EntityViewDisplayInterface;
 
 /**
  * Implements hook_help().
@@ -69,4 +71,52 @@ function intercept_room_reservation_theme_suggestions_room_reservation(array $va
   $suggestions[] = 'room_reservation__' . $room_reservation->bundle() . '__' . $sanitized_view_mode;
 
   return $suggestions;
+}
+
+/**
+ * Implements hook_entity_extra_field_info().
+ */
+function intercept_room_reservation_entity_extra_field_info() {
+  $extra = [];
+
+  $extra['room_reservation']['room_reservation']['display']['location_full'] = [
+    'label' => t('Full location'),
+    'description' => t('Location title and room name'),
+    'weight' => 10,
+    'visible' => FALSE,
+  ];
+
+  $extra['room_reservation']['room_reservation']['display']['attendees_full'] = [
+    'label' => t('Attendee count'),
+    'description' => t('Atendee count and label'),
+    'weight' => 15,
+    'visible' => FALSE,
+  ];
+  return $extra;
+}
+
+/**
+ * Implements hook_ENTITY_TYPE_view()().
+ */
+function intercept_room_reservation_room_reservation_view(array &$build, RoomReservationInterface $room_reservation, EntityViewDisplayInterface $display, $view_mode) {
+  $build['location_full'] = [
+    '#type' => 'html_tag',
+    '#tag' => 'div',
+    '#attributes' => ['class' => 'field-location-full'],
+    '#value' => t('At @location @room', [
+      '@location' => $room_reservation->get('location') ? $room_reservation->get('location')->entity->label() : '',
+      '@room' => $room_reservation->get('field_room') ? $room_reservation->get('field_room')->entity->label() : '',
+    ]),
+   ];
+
+  $count = $room_reservation->field_attendee_count->getString();
+  $build['attendees_full'] = [
+    '#type' => 'html_tag',
+    '#tag' => 'div',
+    '#attributes' => ['class' => 'field-attendees-full'],
+    '#value' => !empty($count) ? t('@count Attendees', [
+      '@count' => $count,
+    ]) : '',
+   ];
+
 }
