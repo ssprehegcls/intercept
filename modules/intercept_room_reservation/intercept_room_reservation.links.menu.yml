@@ -1,14 +1,14 @@
 
 # Room reservation menu items definition
 entity.room_reservation.collection:
-  title: 'Room reservation list'
+  title: 'Room reservations'
   route_name: entity.room_reservation.collection
   description: 'List Room reservation entities'
-  parent: system.admin_structure
-  weight: 100
+  parent: system.admin_content
+  weight: 50
 
 room_reservation.admin.structure.settings:
-  title: 'Room reservation settings'
+  title: 'Room reservations'
   description: 'Configure Room reservation entities'
   route_name: room_reservation.settings
   parent: system.admin_structure
