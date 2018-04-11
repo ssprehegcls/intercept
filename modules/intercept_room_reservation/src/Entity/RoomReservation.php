@@ -73,6 +73,24 @@ class RoomReservation extends RevisionableContentEntityBase implements RoomReser
 
   use EntityChangedTrait;
 
+  use StringTranslationTrait;
+
+  public function label() {
+    $dates = $this->get('field_dates')->first();
+    if (!$dates || !$dates->get('value') || !$dates->get('end_value')) {
+      return '';
+    }
+    $values = [];
+    if ($from_date = $dates->get('value')->getDateTime()) {
+      $values['@date'] = $from_date->format('F n, Y');
+      $values['@time_start'] = $from_date->format('H:i A');
+    }
+    if ($to_date = $dates->get('end_value')->getDateTime()) {
+      $values['@time_end'] = $to_date->format('H:i A');
+    }
+    return !empty($values) ? $this->t('@date from @time_start to @time_end', $values) : '';
+  }
+
   /**
    * {@inheritdoc}
    */
