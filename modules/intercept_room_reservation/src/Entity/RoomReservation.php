@@ -8,6 +8,9 @@ use Drupal\Core\Entity\RevisionableContentEntityBase;
 use Drupal\Core\Entity\RevisionableInterface;
 use Drupal\Core\Entity\EntityChangedTrait;
 use Drupal\Core\Entity\EntityTypeInterface;
+use Drupal\Core\StringTranslation\StringTranslationTrait;
+use Drupal\intercept_room_reservation\Field\ComputedEntityReferenceFieldItemList;
+use Drupal\intercept_room_reservation\Field\ComputedFileFieldItemList;
 use Drupal\user\UserInterface;
 
 /**
@@ -209,26 +212,26 @@ class RoomReservation extends RevisionableContentEntityBase implements RoomReser
       ->setDisplayConfigurable('form', TRUE)
       ->setDisplayConfigurable('view', TRUE);
 
-    $fields['name'] = BaseFieldDefinition::create('string')
-      ->setLabel(t('Name'))
-      ->setDescription(t('The name of the Room reservation entity.'))
-      ->setRevisionable(TRUE)
-      ->setSettings([
-        'max_length' => 50,
-        'text_processing' => 0,
-      ])
-      ->setDefaultValue('')
-      ->setDisplayOptions('view', [
-        'label' => 'above',
-        'type' => 'string',
-        'weight' => -4,
-      ])
-      ->setDisplayOptions('form', [
-        'type' => 'string_textfield',
-        'weight' => -4,
-      ])
+    $fields['image'] = BaseFieldDefinition::create('image')
+      ->setLabel(t('Image'))
+      ->setDescription(t('The related room entity\'s image.'))
+      ->setComputed(TRUE)
+      ->setClass(ComputedFileFieldItemList::class)
       ->setDisplayConfigurable('form', TRUE)
-      ->setDisplayConfigurable('view', TRUE);
+      ->setDisplayConfigurable('view', TRUE)
+      ->setSetting('target_fields', ['field_room', 'field_image_primary', 'field_media_image'])
+      ->setReadOnly(TRUE);
+
+    $fields['location'] = BaseFieldDefinition::create('entity_reference')
+      ->setLabel(t('Location'))
+      ->setDescription(t('The related room\'s location entity.'))
+      ->setComputed(TRUE)
+      ->setClass(ComputedEntityReferenceFieldItemList::class)
+      ->setDisplayConfigurable('form', TRUE)
+      ->setDisplayConfigurable('view', TRUE)
+      ->setTargetEntityTypeId('node')->setTargetBundle('location')
+      ->setSetting('target_fields', ['field_room', 'field_location'])
+      ->setReadOnly(TRUE);
 
     $fields['status'] = BaseFieldDefinition::create('boolean')
       ->setLabel(t('Publishing status'))
