@@ -3,13 +3,13 @@ status: true
 dependencies:
   module:
     - intercept_room_reservation
-id: room_reservation.field_attendee_count
-field_name: field_attendee_count
+    - node
+id: room_reservation.field_event
+field_name: field_event
 entity_type: room_reservation
-type: integer
+type: entity_reference
 settings:
-  unsigned: false
-  size: normal
+  target_type: node
 module: core
 locked: false
 cardinality: 1

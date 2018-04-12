@@ -1,16 +1,17 @@
-uuid: d04748a9-f000-4872-9c77-3c136742ab72
 langcode: en
 status: true
 dependencies:
   module:
     - node
-id: node.field_room
-field_name: field_room
+    - text
+_core:
+  default_config_hash: RBjGGMAXAPYV6Z5fzv56fmKx5nzjaYO6qdMTN126Sv4
+id: node.field_text_content
+field_name: field_text_content
 entity_type: node
-type: entity_reference
-settings:
-  target_type: node
-module: core
+type: text_long
+settings: {  }
+module: text
 locked: false
 cardinality: 1
 translatable: true

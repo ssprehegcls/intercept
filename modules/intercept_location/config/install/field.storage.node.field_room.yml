@@ -1,13 +1,11 @@
-uuid: e1b6fd90-3427-467c-a52f-4291a7fbc3ba
 langcode: en
 status: true
 dependencies:
   module:
-    - intercept_room_reservation
     - node
-id: room_reservation.field_event
-field_name: field_event
-entity_type: room_reservation
+id: node.field_room
+field_name: field_room
+entity_type: node
 type: entity_reference
 settings:
   target_type: node

@@ -3,13 +3,12 @@ status: true
 dependencies:
   module:
     - node
-    - text
-id: node.field_text_teaser
-field_name: field_text_teaser
+id: node.field_online_registration
+field_name: field_online_registration
 entity_type: node
-type: text_long
+type: boolean
 settings: {  }
-module: text
+module: core
 locked: false
 cardinality: 1
 translatable: true

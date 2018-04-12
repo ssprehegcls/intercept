@@ -2,24 +2,24 @@ langcode: en
 status: true
 dependencies:
   config:
-    - field.storage.node.field_image_primary
-    - media.type.image
+    - field.storage.node.field_room
     - node.type.event
-id: node.event.field_image_primary
-field_name: field_image_primary
+    - node.type.room
+id: node.event.field_room
+field_name: field_room
 entity_type: node
 bundle: event
-label: 'Primary Image'
+label: Room
 description: ''
 required: false
-translatable: true
+translatable: false
 default_value: {  }
 default_value_callback: ''
 settings:
-  handler: 'default:media'
+  handler: 'default:node'
   handler_settings:
     target_bundles:
-      image: image
+      room: room
     sort:
       field: _none
     auto_create: false
