@@ -4,25 +4,13 @@ import { connect } from 'react-redux';
 import moment from 'moment';
 import debounce from 'lodash/debounce';
 import interceptClient from 'interceptClient';
-import drupalSettings from 'drupalSettings';
-
-// Material UI
-import Slide from '@material-ui/core/Slide';
-
-// Intercept Components
 import ViewSwitcher from 'intercept/ViewSwitcher';
 import PageSpinner from 'intercept/PageSpinner';
-import RoomTeaser from 'intercept/RoomTeaser';
-import SelectResource from 'intercept/SelectResource';
-
-// Local Components
 import RoomFilters from './../RoomFilters';
 import ReserveRoomForm from './../ReserveRoomForm';
 import RoomList from './../RoomList';
 import RoomCalendar from './../RoomCalendar';
-import FindARoom from './../FindARoom';
-import ReserveRoomStepper from './ReserveRoomStepper';
-import ReserveRoomTabs from './ReserveRoomTabs';
+import SelectResource from 'intercept/SelectResource';
 
 const { constants, api, select } = interceptClient;
 const c = constants;
@@ -145,40 +133,21 @@ class ReserveRoom extends Component {
           .toDate(),
         attendees: 1,
         groupName: '',
-        meeting: false,
-        meetingStart: moment()
-          .startOf('hour')
-          .add(1, 'h')
-          .toDate(),
-        meetingEnd: moment()
-          .startOf('hour')
-          .add(2, 'h')
-          .toDate(),
-        [c.TYPE_MEETING_PURPOSE]: null,
-        meetingDetails: '',
         refreshments: false,
         refreshmentsDesc: '',
-        user: drupalSettings.intercept.user.uuid,
       },
       view: props.view,
-      room: {
-        current: null,
-        previous: null,
-        exiting: false,
-      },
     };
     this.handleCalendarNavigate = this.handleCalendarNavigate.bind(this);
     this.handleCalendarView = this.handleCalendarView.bind(this);
     this.handleFilterChange = this.handleFilterChange.bind(this);
     this.handleViewChange = this.handleViewChange.bind(this);
     this.handleFormChange = this.handleFormChange.bind(this);
-    this.onExited = this.onExited.bind(this);
     this.doFetchRooms = debounce(this.doFetchRooms, 500).bind(this);
   }
 
   componentDidMount() {
     this.doFetchRooms(this.props.filters, this.props.view, this.props.calView, this.props.date);
-    this.props.fetchLocations();
   }
 
   handleViewChange = (value) => {
@@ -202,27 +171,8 @@ class ReserveRoom extends Component {
   }
 
   handleFormChange(formValues) {
-    let room = this.state.room;
-    if (formValues[c.TYPE_ROOM] !== this.state.formValues[c.TYPE_ROOM]) {
-      room = {
-        current: formValues[c.TYPE_ROOM],
-        previous: this.state.room.current,
-        exiting: this.state.room.current !== this.state.room.previous,
-      };
-    }
     this.setState({
-      room,
       formValues,
-    });
-  }
-
-  onExited() {
-    console.log('exited');
-    this.setState({
-      room: {
-        ...this.state.room,
-        exiting: false,
-      },
     });
   }
 
@@ -255,8 +205,6 @@ class ReserveRoom extends Component {
     } = this;
     const { calendarRooms, rooms, roomsLoading, filters, view, date, calView } = props;
 
-    const roomToShow = this.state.room[this.state.room.exiting ? 'previous' : 'current'];
-
     const selectionComponent = null;
     // view === 'list' ? (
     //   <RoomList rooms={rooms} />
@@ -277,6 +225,7 @@ class ReserveRoom extends Component {
         </header>
         <div className="l__main">
           <div className="l__secondary">
+            <h4 className="">Reservation Details</h4>
             <ReserveRoomForm values={this.state.formValues} onChange={handleFormChange} />
           </div>
           {/* <div className="l__primary">
@@ -289,21 +238,6 @@ class ReserveRoom extends Component {
             <PageSpinner loading={roomsLoading} />
             {selectionComponent}
           </div> */}
-          <div className="l__primary">
-
-            {/* <FindARoom onSelect={this.onRoomSelect} /> */}
-
-            {(this.state.room.previous || this.state.room.current) && (
-              <Slide
-                direction="up"
-                in={!this.state.room.exiting}
-                onExited={this.onExited}
-                mountOnEnter
-              >
-                <RoomTeaser uuid={roomToShow} id={roomToShow} className="room-teaser" />
-              </Slide>
-            )}
-          </div>
         </div>
       </div>
     );
@@ -320,21 +254,13 @@ const mapDispatchToProps = dispatch => ({
   fetchRooms: (options) => {
     dispatch(api[c.TYPE_ROOM].fetchAll(options));
   },
-  fetchLocations: (options) => {
-    dispatch(api[c.TYPE_LOCATION].fetchAll(options));
-  },
-  fetchUser: (options) => {
-    dispatch(api[c.TYPE_USER].fetchAll(options));
-  },
 });
 
 ReserveRoom.propTypes = {
   // calendarRooms: PropTypes.arrayOf(Object).isRequired,
   rooms: PropTypes.arrayOf(Object).isRequired,
   roomsLoading: PropTypes.bool.isRequired,
-  fetchLocations: PropTypes.func.isRequired,
   fetchRooms: PropTypes.func.isRequired,
-  fetchUser: PropTypes.func.isRequired,
   // calView: PropTypes.string,
   // date: PropTypes.instanceOf(Date),
   // view: PropTypes.string,
