@@ -535,7 +535,8 @@ function intercept_event_views_query_alter(ViewExecutable $view, QueryPluginBase
     }
   }
   else if ($view->id() == 'intercept_events' && $view->current_display == 'embed') {
-    $debug = TRUE;
+    $query->addField('node', 'nid', 'node_nid', array('function' => 'groupby'));
+    $query->addGroupBy('node.nid');
   }
 }
 
