@@ -301,8 +301,20 @@ class EventRecurrenceEventsForm extends ContentEntityForm {
       // No base reservation exists, do not clone.
       return FALSE;
     }
+    // This field originates from the value entered in on the event form. We
+    // need to preserve the time that was entered, but change the date to the
+    // recuring date that was calculated.
+    $year = $new_event->field_date_time->start_date->format('Y');
+    $month = $new_event->field_date_time->start_date->format('n');
+    $day = $new_event->field_date_time->start_date->format('j');
+    $dates = clone $base_reservation->field_dates;
+    $dates->start_date->setDate($year, $month, $day);
+    $dates->end_date->setDate($year, $month, $day);
     $manager->createEventReservation($new_event, [
-      'field_dates' => $base_reservation->field_dates,
+      'field_dates' => [
+        'value' => $dates->start_date->format('Y-m-d\TH:i:s'),
+        'end_value' => $dates->end_date->format('Y-m-d\TH:i:s'),
+      ],
     ]);
   }
 

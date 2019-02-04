@@ -300,7 +300,7 @@ class RecurringEventManager {
 
   public static function nodeFormValidate(&$form, FormStateInterface $form_state) {
     $recurring = $form_state->getValue('recurring_event');
-    if ($recurring['enabled'] && empty($recurring['end']['count']) && empty($recurring['end']['until'])) {
+    if (!empty($recurring['enabled']) && empty($recurring['end']['count']) && empty($recurring['end']['until'])) {
       $message = t('Enabling recurring events requires either an end date, or a total repeat count.');
       $form_state->setError($form['recurring_event']['end_type'], $message);
     }

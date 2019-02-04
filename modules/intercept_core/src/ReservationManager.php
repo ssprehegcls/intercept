@@ -274,6 +274,9 @@ class ReservationManager implements ReservationManagerInterface {
     if (empty($dates) || empty($dates[0]['value']) || empty($dates[0]['end_value'])) {
       return;
     }
+    if (empty($room[0]['target_id'])) {
+      return;
+    }
     $start_date = $dates[0]['value'];
     $end_date = $dates[0]['end_value'];
     $params = [
