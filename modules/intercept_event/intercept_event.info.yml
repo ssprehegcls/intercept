@@ -3,22 +3,14 @@ description: 'Provides Event content type and related configuration. '
 type: module
 core: 8.x
 dependencies:
-  - date_recur
-  - datetime_range
-  - entity_browser_entity_form
-  - field
-  - field_group
-  - flag
-  - inline_entity_form
-  - intercept_core
-  - intercept_location
-  - media
-  - menu_ui
-  - node
-  - path
-  - pathauto
-  - stories_media
-  - taxonomy
-  - text
-  - user
+  - addtocalendar:addtocalendar
+  - better_exposed_filters:better_exposed_filters
+  - csv_serialization:csv_serialization
+  - date_recur:date_recur
+  - drupal:datetime_range
+  - drupal:rest
+  - flag:flag
+  - intercept:intercept_location
+  - tally:tally
+  - votingapi:votingapi
 package: 'InterCEPT'

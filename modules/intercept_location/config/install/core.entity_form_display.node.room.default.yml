@@ -2,9 +2,12 @@ langcode: en
 status: true
 dependencies:
   config:
+    - core.entity_form_mode.media.simple
+    - field.field.node.room.field_approval_required
     - field.field.node.room.field_capacity_max
     - field.field.node.room.field_capacity_min
     - field.field.node.room.field_location
+    - field.field.node.room.field_reservation_phone_number
     - field.field.node.room.field_room_fees
     - field.field.node.room.field_room_standard_equipment
     - field.field.node.room.field_room_type
@@ -12,11 +15,13 @@ dependencies:
     - field.field.node.room.field_text_content
     - field.field.node.room.field_text_intro
     - field.field.node.room.field_text_teaser
+    - field.field.node.room.image_primary
     - node.type.room
   module:
     - entity_browser_entity_form
     - inline_entity_form
     - path
+    - telephone
     - text
 id: node.room.default
 targetEntityType: node
@@ -29,6 +34,13 @@ content:
     region: content
     settings: {  }
     third_party_settings: {  }
+  field_approval_required:
+    weight: 26
+    settings:
+      display_label: true
+    third_party_settings: {  }
+    type: boolean_checkbox
+    region: content
   field_capacity_max:
     weight: 9
     settings:
@@ -43,27 +55,19 @@ content:
     third_party_settings: {  }
     type: number
     region: content
-  image_primary:
-    weight: 3
-    settings:
-      form_mode: default
-      label_singular: ''
-      label_plural: ''
-      allow_new: true
-      allow_existing: true
-      match_operator: CONTAINS
-      override_labels: false
-    third_party_settings:
-      entity_browser_entity_form:
-        entity_browser_id: stories_image_uploader
-    type: inline_entity_form_complex
-    region: content
   field_location:
     weight: 1
     settings: {  }
     third_party_settings: {  }
     type: options_select
     region: content
+  field_reservation_phone_number:
+    type: telephone_default
+    weight: 20
+    region: content
+    settings:
+      placeholder: ''
+    third_party_settings: {  }
   field_room_fees:
     weight: 11
     settings:
@@ -82,12 +86,9 @@ content:
     region: content
   field_room_type:
     weight: 7
-    settings:
-      match_operator: CONTAINS
-      size: 60
-      placeholder: ''
+    settings: {  }
     third_party_settings: {  }
-    type: entity_reference_autocomplete
+    type: options_select
     region: content
   field_staff_use_only:
     weight: 2
@@ -118,29 +119,36 @@ content:
       rows: 5
       placeholder: ''
     third_party_settings: {  }
-    type: string_textarea
+    type: text_textarea
+    region: content
+  image_primary:
+    weight: 3
+    settings:
+      form_mode: simple
+      label_singular: ''
+      label_plural: ''
+      allow_new: true
+      allow_existing: true
+      match_operator: CONTAINS
+      override_labels: false
+    third_party_settings:
+      entity_browser_entity_form:
+        entity_browser_id: stories_image_uploader
+    type: inline_entity_form_complex
     region: content
   path:
     type: path
+    weight: 14
+    region: content
+    settings: {  }
+    third_party_settings: {  }
+  publish_on:
+    type: datetime_timestamp_no_default
     weight: 16
     region: content
     settings: {  }
     third_party_settings: {  }
-  promote:
-    type: boolean_checkbox
-    settings:
-      display_label: true
-    weight: 14
-    region: content
-    third_party_settings: {  }
   status:
-    type: boolean_checkbox
-    settings:
-      display_label: true
-    weight: 17
-    region: content
-    third_party_settings: {  }
-  sticky:
     type: boolean_checkbox
     settings:
       display_label: true
@@ -164,4 +172,17 @@ content:
       placeholder: ''
     region: content
     third_party_settings: {  }
-hidden: {  }
+  unpublish_on:
+    type: datetime_timestamp_no_default
+    weight: 17
+    region: content
+    settings: {  }
+    third_party_settings: {  }
+  url_redirects:
+    weight: 18
+    region: content
+    settings: {  }
+    third_party_settings: {  }
+hidden:
+  promote: true
+  sticky: true

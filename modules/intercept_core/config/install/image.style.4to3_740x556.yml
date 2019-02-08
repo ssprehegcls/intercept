@@ -1,8 +1,11 @@
+uuid: 7f31ac42-d9c9-4193-babc-22ef1d27e5a6
 langcode: en
 status: true
 dependencies:
   module:
     - focal_point
+_core:
+  default_config_hash: Pk27n11vGOgcP82onnvCEoHS6ptWgvH60R6ilP40Fgc
 name: 4to3_740x556
 label: '4:3 740x556'
 effects:

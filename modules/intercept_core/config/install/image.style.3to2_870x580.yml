@@ -1,8 +1,11 @@
+uuid: d595dc43-d441-4c51-adda-4e629da1fde2
 langcode: en
 status: true
 dependencies:
   module:
     - focal_point
+_core:
+  default_config_hash: qK7NAcjMgg3ywBl6LsPKX4nic9r7rHMCtJ_dPyqbGNw
 name: 3to2_870x580
 label: '3:2 870x580'
 effects:

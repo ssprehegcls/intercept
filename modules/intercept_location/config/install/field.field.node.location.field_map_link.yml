@@ -11,8 +11,8 @@ field_name: field_map_link
 entity_type: node
 bundle: location
 label: 'Map Link'
-description: ''
-required: false
+description: 'Provide the Google Maps link for the branch.'
+required: true
 translatable: false
 default_value: {  }
 default_value_callback: ''

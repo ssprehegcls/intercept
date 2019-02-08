@@ -2,6 +2,7 @@
 
 namespace Drupal\intercept_event\Entity;
 
+use Drupal\Core\Cache\Cache;
 use Drupal\Core\Entity\EntityStorageInterface;
 use Drupal\Core\Field\BaseFieldDefinition;
 use Drupal\Core\Entity\ContentEntityBase;
@@ -224,7 +225,7 @@ class EventRegistration extends ContentEntityBase implements EventRegistrationIn
   public static function invalidateEventCacheTag(EventRegistrationInterface $registration) {
     if ($registration->hasField('field_event') && !$registration->field_event->isEmpty()) {
       $event = $registration->field_event->entity;
-      \Drupal\Core\Cache\Cache::invalidateTags(['node:' . $event->id()]);
+      Cache::invalidateTags(['node:' . $event->id()]);
     }
   }
 
@@ -236,4 +237,15 @@ class EventRegistration extends ContentEntityBase implements EventRegistrationIn
     self::invalidateEventCacheTag($this);
     parent::preSave($storage);
   }
+
+  /**
+   * {@inheritdoc}
+   */
+  public function postSave(EntityStorageInterface $storage, $update = TRUE) {
+    if ($this->get('status')->value == 'canceled') {
+      \Drupal::service('intercept_event.manager')->fillEventOpenCapacity($this->get('field_event')->entity);
+    }
+    parent::postSave($storage);
+  }
+
 }

@@ -1,5 +1,7 @@
 <?php
 
+use Drupal\consumers\Entity\Consumer;
+
 /**
  * Implements hook_install().
  */
@@ -7,7 +9,7 @@ function intercept_core_install() {
   if (\Drupal::service('entity.definition_update_manager')->needsUpdates()) {
     \Drupal::service('entity.definition_update_manager')->applyUpdates();
   }
-  $consumer = \Drupal\consumers\Entity\Consumer::create([
+  $consumer = Consumer::create([
     'label' => 'Intercept Client',
     'confidential' => TRUE,
     'image_styles' => ['3to2_540x360', '4to3_740x556'],
@@ -24,7 +26,7 @@ function intercept_core_uninstall() {
   $state = \Drupal::state();
   $id = $state->get('intercept_client.id');
 
-  if ($consumer =  \Drupal::service('entity_type.manager')->getStorage('consumer')->load($id)) {
+  if ($consumer = \Drupal::service('entity_type.manager')->getStorage('consumer')->load($id)) {
     $consumer->delete();
   }
   $state->delete('intercept_client.id');

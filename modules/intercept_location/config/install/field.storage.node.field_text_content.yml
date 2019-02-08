@@ -4,8 +4,6 @@ dependencies:
   module:
     - node
     - text
-_core:
-  default_config_hash: RBjGGMAXAPYV6Z5fzv56fmKx5nzjaYO6qdMTN126Sv4
 id: node.field_text_content
 field_name: field_text_content
 entity_type: node

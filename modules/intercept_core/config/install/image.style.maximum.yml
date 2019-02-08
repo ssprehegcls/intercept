@@ -1,0 +1,15 @@
+uuid: c2e8796e-1c82-4b03-b978-08c8afd4ef71
+langcode: en
+status: true
+dependencies: {  }
+name: maximum
+label: Maximum
+effects:
+  8313a6d1-f34b-420d-9166-31a52688109b:
+    uuid: 8313a6d1-f34b-420d-9166-31a52688109b
+    id: image_scale
+    weight: 1
+    data:
+      width: 1600
+      height: 1600
+      upscale: false

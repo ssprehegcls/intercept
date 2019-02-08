@@ -3,35 +3,21 @@ description: 'Provides core components required by other features.'
 type: module
 core: 8.x
 dependencies:
-  - block
-  - block_content
-  - consumers
-  - consumer_image_styles
-  - contact
-  - duration_field
-  - editor
-  - entity_browser
-    #  - evaluate
-  - features
-  - field
-  - file
-  - filter
-  - focal_point
-  - media
-  - menu_link_content
-  - node
-  - options
-  - paragraphs
-  - path
-  - profile
-  - rdf
-  - search
-  - shortcut
-  - simple_oauth
-  - system
-  - taxonomy
-  - telephone
-  - text
-  - user
-  - views
+  - address:address
+  - consumers:consumers
+  - drupal:field
+  - drupal:file
+  - drupal:media
+  - drupal:node
+  - drupal:options
+  - drupal:path
+  - drupal:search
+  - drupal:taxonomy
+  - drupal:text
+  - drupal:user
+  - drupal:views
+  - field_group:field_group
+  - focal_point:focal_point
+  - intercept:intercept
+  - profile:profile
 package: 'InterCEPT'

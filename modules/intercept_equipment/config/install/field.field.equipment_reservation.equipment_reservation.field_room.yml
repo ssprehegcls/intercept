@@ -1,4 +1,3 @@
-uuid: 7326580f-53d1-41fb-ad8c-c92f1ebd24db
 langcode: en
 status: true
 dependencies:
@@ -7,8 +6,6 @@ dependencies:
     - node.type.room
   module:
     - intercept_equipment
-_core:
-  default_config_hash: A7SNgNMAL7JKjIJ_sfw-sh7CAD4hAYe8HpPjOJSzQ4A
 id: equipment_reservation.equipment_reservation.field_room
 field_name: field_room
 entity_type: equipment_reservation

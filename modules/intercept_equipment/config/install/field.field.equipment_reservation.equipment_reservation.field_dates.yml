@@ -1,4 +1,3 @@
-uuid: ecf0966c-f45d-44ae-9e51-1c40500aa419
 langcode: en
 status: true
 dependencies:
@@ -7,8 +6,6 @@ dependencies:
   module:
     - datetime_range
     - intercept_equipment
-_core:
-  default_config_hash: 3oNXEa3jRC_Szo-1_-sp-UGBS952psENWvWxKwUbKrc
 id: equipment_reservation.equipment_reservation.field_dates
 field_name: field_dates
 entity_type: equipment_reservation

@@ -3,8 +3,8 @@ Intercept
 ## Development:
 
 ### JavaScript
-This module and its submodules consist of many React applications that share a dependency on a commmon interceptClient Library.
-The React applications are built using the themable [Material-UI](https://material-ui.com/) suite of components.
+This module and its submodules consist of many React applications that share a dependency on a common interceptClient Library.
+The React applications are built using the themeable [Material-UI](https://material-ui.com/) suite of components.
 
 It is highly recommended that you install the [React Dev Tools](https://chrome.google.com/webstore/detail/react-developer-tools/fmkadmapgofadopljbjfkapdkoienihi?hl=en) and [Redux Dev Tools](https://chrome.google.com/webstore/detail/redux-devtools/lmhkpmbekcpmknklioeibfkpmmfibljd?hl=en) extensions for Chrome.
 
@@ -19,8 +19,10 @@ To run the development build which will bundle the apps with the development ver
 `npm run watch:js`
 
 ### Production Build
-The production build will use an extenal production build of React hosted on a CDN, and minify the code.
+The production build will use an external production build of React hosted on a CDN, and minify the code.
 `npm run build:js`
+
+When the build is complete, a visual representation of the Webpack bundle will load in your browser. Until this is made optional, you may just type `Ctrl+c` to complete the build task.
 
 *The production build should be committed to the repository. Currently this is a manual process.*
 

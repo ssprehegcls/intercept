@@ -1,0 +1,31 @@
+langcode: en
+status: true
+dependencies:
+  module:
+    - options
+    - taxonomy
+_core:
+  default_config_hash: aMuswDGv6CAvJuJGJJ_i4sq0Lfz20PzaxHmS1EOBEYQ
+id: taxonomy_term.field_evaluation
+field_name: field_evaluation
+entity_type: taxonomy_term
+type: list_integer
+settings:
+  allowed_values:
+    -
+      value: 0
+      label: Neutral
+    -
+      value: 1
+      label: Like
+    -
+      value: -1
+      label: Dislike
+  allowed_values_function: ''
+module: options
+locked: false
+cardinality: 1
+translatable: true
+indexes: {  }
+persist_with_no_fields: false
+custom_storage: false

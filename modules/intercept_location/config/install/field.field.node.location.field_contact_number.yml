@@ -11,8 +11,8 @@ field_name: field_contact_number
 entity_type: node
 bundle: location
 label: 'Contact Number'
-description: ''
-required: false
+description: 'Enter the phone number of the branch.'
+required: true
 translatable: false
 default_value: {  }
 default_value_callback: ''

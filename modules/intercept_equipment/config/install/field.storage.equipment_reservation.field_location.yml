@@ -1,12 +1,9 @@
-uuid: e3032da0-3523-441a-9c80-a2774ba2d925
 langcode: en
 status: true
 dependencies:
   module:
     - intercept_equipment
     - node
-_core:
-  default_config_hash: kMXf4PRIYStJ6US4kVhKh-38JmZyj-rYLM9VSr5Rgxc
 id: equipment_reservation.field_location
 field_name: field_location
 entity_type: equipment_reservation

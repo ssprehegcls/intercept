@@ -248,9 +248,7 @@ EventRegisterConfirmation.defaultProps = {
 const mapStateToProps = () => ({});
 
 const mapDispatchToProps = dispatch => ({
-  save: (data) => {
-    dispatch(actions.add(data, c.TYPE_EVENT_REGISTRATION, data.id));
-
+  save: (uuid) => {
     session
       .getToken()
       .then((token) => {

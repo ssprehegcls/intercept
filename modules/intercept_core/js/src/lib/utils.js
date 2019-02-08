@@ -187,7 +187,7 @@ export const userHasRole = roles =>
 
 /**
  * Check if the current user is considered a staff member.
- * This is a shortcut for differenciating staff from customers.
+ * This is a shortcut for differentiating staff from customers.
  *
  * @return {Boolean}
  *   True if the user has at least one of:

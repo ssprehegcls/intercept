@@ -1,18 +1,16 @@
 langcode: en
 status: true
+dependencies: {  }
 id: customer
 label: Customer
-registration: false
+registration: true
 multiple: false
 roles:
+  authenticated: authenticated
   intercept_registered_customer: intercept_registered_customer
-  intercept_event_manager: intercept_event_manager
-  intercept_event_organizer: intercept_event_organizer
   intercept_staff: intercept_staff
   intercept_system_admin: intercept_system_admin
   administrator: administrator
-  authenticated: '0'
-  schema_viewer: '0'
   intercept_kiosk: '0'
 weight: 0
 use_revisions: false

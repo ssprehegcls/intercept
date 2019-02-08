@@ -270,7 +270,7 @@ class EventRegisterForm extends React.Component {
     });
     save(entity);
     return entity.id;
-  }
+  };
 
   disableButton() {
     this.setState({ canSubmit: false });
@@ -427,7 +427,7 @@ const mapStateToProps = (state, ownProps) => {
   return { status };
 };
 
-const mapDispatchToProps = (dispatch) => ({
+const mapDispatchToProps = dispatch => ({
   save: (data) => {
     dispatch(actions.add(data, c.TYPE_EVENT_REGISTRATION, data.id));
   },

@@ -16,7 +16,7 @@ required: true
 translatable: false
 default_value:
   -
-    value: ""
+    value: ''
     format: simple_formatting
 default_value_callback: ''
 settings: {  }
