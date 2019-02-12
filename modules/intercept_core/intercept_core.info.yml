@@ -16,6 +16,7 @@ dependencies:
   - drupal:text
   - drupal:user
   - drupal:views
+  - entity:entity
   - field_group:field_group
   - focal_point:focal_point
   - intercept:intercept
