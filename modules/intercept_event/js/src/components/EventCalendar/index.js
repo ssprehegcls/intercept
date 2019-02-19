@@ -175,6 +175,23 @@ class EventCalendar extends React.Component {
           defaultView={this.props.defaultView}
           defaultDate={this.props.defaultDate}
           popup
+          formats={{
+            dayRangeHeaderFormat: ({ start, end }, culture, localizer) => {
+              const s = localizer.format(start, 'MMM D', culture);
+              let e = '';
+              if (localizer.format(start, 'MMM', culture) === localizer.format(end, 'MMM', culture)) {
+                // week spans one month, don't display ending month (eg Feb 9 - 15 )
+                e = localizer.format(end, 'D', culture);
+              }
+              else {
+                // week spans two months, display ending month (eg Feb 24 - Mar 2)
+                e = localizer.format(end, 'MMM D', culture);
+              }
+              return `${s} - ${e}`;
+            },
+            dayFormat: 'ddd M/D',
+            dayHeaderFormat: 'dddd MMM D',
+          }}
           views={{
             month: this.state.isPrint ? PrintableMonth : true,
             week: true,
@@ -221,7 +238,7 @@ const mapStateToProps = state => ({
 });
 
 const mapDispatchToProps = dispatch => ({
-  fetchEvent: id => {
+  fetchEvent: (id) => {
     dispatch(
       api[c.TYPE_EVENT].fetchAll({
         filters: {
