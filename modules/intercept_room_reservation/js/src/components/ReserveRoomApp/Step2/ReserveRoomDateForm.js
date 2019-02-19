@@ -308,7 +308,7 @@ class ReserveRoomDateForm extends PureComponent {
               disabledSpans={disabledTimespans}
               disabledExclude={'trailing'}
             />
-            <div className="input-group--subgroup">
+            {/* <div className="input-group--subgroup">
               <SelectTime
                 clearable
                 label="Meeting Start Time"
@@ -350,7 +350,7 @@ class ReserveRoomDateForm extends PureComponent {
                 step={step}
                 disabled={isClosed}
               />
-            </div>
+            </div> */}
             <SelectTime
               clearable
               label="End Time"
