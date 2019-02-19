@@ -591,6 +591,8 @@ class ReservationManager implements ReservationManagerInterface {
       // Appears to be closed.
       return TRUE;
     }
+    // \Drupal::logger('intercept_core')->error('Returning false on hasOpeningHoursConflict');
+    // return FALSE;
     return $this->hasReservationConflict($reservations, $params);
   }
 
@@ -702,14 +704,20 @@ class ReservationManager implements ReservationManagerInterface {
       $selected_date = $this->dateUtility->getDrupalDate($params[$type]);
       // Hardcode get start date here because the end date might span into another day.
       // TODO: Make this less error prone by defining a way to specify the current searched "day".
+      // \Drupal::logger('intercept_core')->error('Selected date @type: @date', ['@date' => $selected_date, '@type' => $type]);
+      // \Drupal::logger('intercept_core')->error('Hours @type: @hours', ['@hours' => json_encode($hours), '@type' => $type]);
+      // \Drupal::logger('intercept_core')->error('Params start @type: @params_start', ['@params_start' => $params['start'], '@type' => $type]);
       $date = $this->timeToDate($hours[$type . 'hours'], $this->dateUtility->getDate($params['start']));
+      // \Drupal::logger('intercept_core')->error('Date @type: @date', ['@date' => $date, '@type' => $type]);
       $converted_date = $this->dateUtility->convertTimezone($date);
+      // \Drupal::logger('intercept_core')->error('Converted Date @type: @date', ['@date' => $converted_date, '@type' => $type]);
       if ($type == 'start' && ($converted_date > $selected_date)) {
         $params['start'] = $converted_date->format(self::FORMAT);
       }
       if ($type == 'end' && ($converted_date > $selected_date)) {
         $params['end'] = $converted_date->format(self::FORMAT);
       }
+      // \Drupal::logger('intercept_core')->error('Params: @params', ['@params' => json_encode($params)]);
     }
     return $params;
   }
