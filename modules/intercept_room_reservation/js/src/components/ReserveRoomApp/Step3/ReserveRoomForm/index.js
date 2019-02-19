@@ -366,7 +366,7 @@ class ReserveRoomForm extends PureComponent {
                 <div className="l--subsection">
                   <h4 className="section-title section-title--secondary">Refreshments</h4>
                   <InputCheckbox
-                    label = "I would like to serve refreshments and agree to the $25 charge that will be added to my library card. (Note: Some spaces may not allow refreshments. We will contact you if we are unable to fulfill this request.)"
+                    label="I would like to serve refreshments and agree to the $25 charge that will be added to my library card. (Note: Some spaces may not allow refreshments. We will contact you if we are unable to fulfill this request.)"
                     checked={values.refreshments}
                     onChange={this.toggleValue}
                     value="refreshments"
@@ -381,19 +381,15 @@ class ReserveRoomForm extends PureComponent {
                     disabled={!values.refreshments}
                   />
                 </div>
+                <Button
+                  variant="raised"
+                  size="large"
+                  color="primary"
+                  type="submit"
+                  className="button button--primary"
+                  disabled={!this.state.canSubmit || hasConflict || !room}
+                >Reserve</Button>
               </div>
-            </div>
-            <div className="form__actions l__footer">
-              <Button
-                variant="raised"
-                size="large"
-                color="primary"
-                type="submit"
-                className="button button--primary"
-                disabled={!this.state.canSubmit || hasConflict || !room}
-              >
-                Reserve
-              </Button>
             </div>
           </div>
         </Formsy>
