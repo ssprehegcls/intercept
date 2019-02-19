@@ -54,7 +54,7 @@ class EventTeaser extends PureComponent {
         date={{
           month: date.utcOffset(utils.getUserUtcOffset()).format('MMM'),
           date: date.utcOffset(utils.getUserUtcOffset()).format('D'),
-          time: utils.getTimeDisplay(date),
+          time: utils.getTimeDisplay(date).replace(':00', ''),
         }}
         description={get(event, 'attributes.field_text_teaser.value')}
         tags={[audiences]}
