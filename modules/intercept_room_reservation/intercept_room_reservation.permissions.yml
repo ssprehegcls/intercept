@@ -11,6 +11,9 @@ create room reservation for user:
   title: "Create room reservations for another user"
   description: "Allow access to be able to create Room Reservations and select the user in the form."
 
+view all room_reservation revisions:
+  title: 'View all Room Reservation revisions'
+
 revert all room reservation revisions:
   title: 'Revert all Room reservation revisions'
   description: 'Role requires permission <em>view Room reservation revisions</em> and <em>edit rights</em> for room reservation entities in question or <em>administer room reservation entities</em>.'
