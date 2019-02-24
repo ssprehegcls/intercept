@@ -33,6 +33,7 @@
     "drupal/focal_point": "1.0-beta6",
     "drupal/flag": "^4.0@alpha",
     "drupal/inline_entity_form": "^1.0@RC",
+    "drupal/jsonapi": "^1.0",
     "drupal/office_hours": "^1.1",
     "drupal/paragraphs": "^1.5",
     "drupal/pathauto": "^1.3",

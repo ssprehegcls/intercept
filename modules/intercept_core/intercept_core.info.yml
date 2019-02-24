@@ -7,6 +7,7 @@ dependencies:
   - consumers:consumers
   - drupal:field
   - drupal:file
+  - drupal:jsonapi
   - drupal:media
   - drupal:node
   - drupal:options
