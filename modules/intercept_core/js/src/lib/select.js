@@ -621,8 +621,8 @@ function getReservationStatusText(resource) {
   const status = get(resource, 'data.attributes.field_status');
 
   switch (status) {
-    case 'declined':
-      return 'Declined';
+    case 'denied':
+      return 'Denied';
     case 'approved':
       return 'Approved';
     case 'cancelled':
@@ -638,7 +638,7 @@ function getReservationButtonText(resource) {
   const status = get(resource, 'data.attributes.field_status');
 
   switch (status) {
-    case 'declined':
+    case 'denied':
       return 'Rerequest';
     case 'approved':
       return 'Cancel';
