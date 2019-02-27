@@ -37,7 +37,7 @@ use Drupal\user\UserInterface;
  *       "delete" = "Drupal\intercept_room_reservation\Form\RoomReservationDeleteForm",
  *       "cancel" = "Drupal\intercept_room_reservation\Form\RoomReservationUpdateStatusForm",
  *       "approve" = "Drupal\intercept_room_reservation\Form\RoomReservationUpdateStatusForm",
- *       "decline" = "Drupal\intercept_room_reservation\Form\RoomReservationUpdateStatusForm",
+ *       "deny" = "Drupal\intercept_room_reservation\Form\RoomReservationUpdateStatusForm",
  *     },
  *     "access" = "Drupal\intercept_room_reservation\RoomReservationAccessControlHandler",
  *     "permission_provider" = "Drupal\intercept_core\ReservationPermissionsProvider",
@@ -68,7 +68,7 @@ use Drupal\user\UserInterface;
  *     "cancel-form" = "/room-reservation/{room_reservation}/cancel",
  *     "canonical" = "/room-reservation/{room_reservation}",
  *     "edit-form" = "/room-reservation/{room_reservation}/edit",
- *     "decline-form" = "/room-reservation/{room_reservation}/decline",
+ *     "deny-form" = "/room-reservation/{room_reservation}/deny",
  *     "delete-form" = "/room-reservation/{room_reservation}/delete",
  *     "delete-multiple-form" = "/room-reservation/delete",
  *     "version-history" = "/room-reservation/{room_reservation}/revisions",
@@ -104,11 +104,11 @@ class RoomReservation extends ReservationBase implements RoomReservationInterfac
     return $this;
   }
 
-  public function deny() {
-    return $this->decline();
+  public function decline() {
+    return $this->deny();
   }
 
-  public function decline() {
+  public function deny() {
     $this->set('field_status', 'denied');
     return $this;
   }

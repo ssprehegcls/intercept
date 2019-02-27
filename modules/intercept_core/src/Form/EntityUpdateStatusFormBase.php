@@ -29,9 +29,9 @@ abstract class EntityUpdateStatusFormBase extends ContentEntityConfirmFormBase{
         'action' => 'approve',
         'value' => 'approved',
       ],
-      $prefix . 'decline_form' => [
-        'action' => 'decline',
-        'value' => 'declined',
+      $prefix . 'deny_form' => [
+        'action' => 'deny',
+        'value' => 'denied',
       ],
     ];
     $route_name = $this->getRouteMatch()->getRouteName();

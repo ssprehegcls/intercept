@@ -104,7 +104,7 @@ function intercept_room_reservation_entity_operation(\Drupal\Core\Entity\EntityI
       ];
     };
 
-    $operation_types = ['cancel', 'approve', 'decline'];
+    $operation_types = ['cancel', 'approve', 'deny'];
 
     $operations = [];
 

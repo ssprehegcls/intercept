@@ -15,8 +15,8 @@ const ActionProperties = {
   },
   deny: {
     status: 'denied',
-    text: 'Confirm decline',
-    heading: 'Confirm decline',
+    text: 'Confirm deny',
+    heading: 'Confirm deny',
   },
   approve: {
     status: 'approved',
