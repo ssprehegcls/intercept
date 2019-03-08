@@ -228,14 +228,7 @@ class ReserveRoomStep3 extends React.Component {
   };
 
   render() {
-    const {
-      props,
-      handleCalendarNavigate,
-      handleViewChange,
-      handleCalendarView,
-      handleFilterChange,
-      handleFormChange,
-    } = this;
+    const { props } = this;
     const { event, room, formValues, onChange, onChangeStep, userStatus } = props;
     // const { date, start, end } = formValues;
     const dateValues = pick(formValues, ['date', 'start', 'end']);

@@ -16,7 +16,10 @@ class DialogConfirm extends React.PureComponent {
       children,
       confirmText,
       cancelText,
+      disableBackdropClick,
+      disableEscapeKeyDown,
       heading,
+      onBackdropClick,
       onConfirm,
       onCancel,
       text,
@@ -29,7 +32,9 @@ class DialogConfirm extends React.PureComponent {
           open={open}
           onClose={this.handleClose}
           aria-labelledby="responsive-dialog-title"
-          onBackdropClick={onCancel}
+          onBackdropClick={onBackdropClick}
+          disableBackdropClick={disableBackdropClick}
+          disableEscapeKeyDown={disableEscapeKeyDown}
         >
           <DialogTitle id="responsive-dialog-title">{heading}</DialogTitle>
           { text || children
@@ -63,6 +68,8 @@ DialogConfirm.propTypes = {
   fullScreen: PropTypes.bool.isRequired,
   confirmText: PropTypes.string,
   cancelText: PropTypes.string,
+  disableBackdropClick: PropTypes.bool,
+  disableEscapeKeyDown: PropTypes.bool,
   heading: PropTypes.string,
   text: PropTypes.string,
   onConfirm: PropTypes.func,
@@ -74,6 +81,8 @@ DialogConfirm.propTypes = {
 DialogConfirm.defaultProps = {
   confirmText: 'Yes',
   cancelText: 'No',
+  disableBackdropClick: false,
+  disableEscapeKeyDown: false,
   heading: 'Are you sure?',
   text: null,
   onConfirm: null,

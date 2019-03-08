@@ -308,49 +308,6 @@ class ReserveRoomDateForm extends PureComponent {
               disabledSpans={disabledTimespans}
               disabledExclude={'trailing'}
             />
-            {/* <div className="input-group--subgroup">
-              <SelectTime
-                clearable
-                label="Meeting Start Time"
-                value={values.meetingStart}
-                onChange={this.onValueChange('meetingStart')}
-                name="meetingStart"
-                validations={{
-                  isFutureTime: false,
-                  isOnOrAfterStart: true,
-                  isOnOrBeforeEnd: true,
-                }}
-                validationErrors={{
-                  isFutureTime: 'Must be in the future',
-                  isOnOrAfterStart: 'Must be on or after reservation start time',
-                  isOnOrBeforeEnd: 'Must be on or before reservation end time',
-                }}
-                min={values.start}
-                max={values.end}
-                step={step}
-                disabled={isClosed}
-              />
-              <SelectTime
-                label="Meeting End Time"
-                value={values.meetingEnd}
-                onChange={this.onValueChange('meetingEnd')}
-                name="meetingEnd"
-                validations={{
-                  isFutureTime: true,
-                  isOnOrBeforeEnd: true,
-                  isAfterMeetingStart: true,
-                }}
-                validationErrors={{
-                  isFutureTime: 'Must be in the future',
-                  isOnOrBeforeEnd: 'Must be on or before reservation end time',
-                  isAfterMeetingStart: 'Must be after meeting start time',
-                }}
-                min={values.start}
-                max={values.end}
-                step={step}
-                disabled={isClosed}
-              />
-            </div> */}
             <SelectTime
               clearable
               label="End Time"

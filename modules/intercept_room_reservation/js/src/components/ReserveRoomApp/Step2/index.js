@@ -162,6 +162,20 @@ class ReserveRoomStep2 extends React.Component {
     });
   };
 
+  getHours = () => {
+    const hours = this.props.hours;
+
+    return hours
+    ? {
+      min: hours.min,
+      max: (hours.max.endsWith('00') ? String(hours.max - 55) : String(hours.max - 15))
+    }
+    : {
+      min: '0000',
+      max: '0000',
+    }
+  }
+
   render() {
     const {
       availability,
@@ -179,10 +193,7 @@ class ReserveRoomStep2 extends React.Component {
         min: '0000',
         max: '2400',
       }
-      : hours || {
-        min: '0000',
-        max: '0000',
-      };
+      : this.getHours();
 
       // Hide this step if the reservation status has not been checked or
     // the user has exceeded their limit.

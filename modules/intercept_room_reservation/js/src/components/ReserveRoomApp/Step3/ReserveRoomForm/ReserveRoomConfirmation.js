@@ -27,6 +27,8 @@ class ReserveRoomConfirmation extends React.Component {
       uuid: null,
       state: 'idle',
       saved: false,
+      disableBackdropClick: true,
+      disableEscapeKeyDown: true,
     };
 
     this.checkAvailability = this.checkAvailability.bind(this);
@@ -67,7 +69,8 @@ class ReserveRoomConfirmation extends React.Component {
 
   handleConfirm() {
     const { onConfirm, save } = this.props;
-    // Make one last avaialbilty check
+
+    // Make one last availability check
     // then -> save
     // reject -> display error with link back to step 2
     this.checkAvailability()
@@ -86,7 +89,7 @@ class ReserveRoomConfirmation extends React.Component {
 
   render() {
     const { open, onCancel, values, eventNid } = this.props;
-    const { uuid, state } = this.state;
+    const { uuid, state, disableBackdropClick, disableEscapeKeyDown} = this.state;
 
     let content = null;
     let dialogProps = {
@@ -108,7 +111,6 @@ class ReserveRoomConfirmation extends React.Component {
         content = <RoomReservationSummary {...values} />;
         dialogProps = {
           ...dialogProps,
-          // confirmText: 'Submit',
           cancelText: 'Cancel',
           heading: 'Sending reservation request',
           onConfirm: null,
@@ -156,7 +158,7 @@ class ReserveRoomConfirmation extends React.Component {
     }
 
     return (
-      <DialogConfirm {...dialogProps} open={open}>
+      <DialogConfirm {...dialogProps} open={open} onBackdropClick={null} disableEscapeKeyDown={disableEscapeKeyDown} disableBackdropClick={disableBackdropClick}>
         {content}
       </DialogConfirm>
     );
@@ -179,6 +181,8 @@ ReserveRoomConfirmation.defaultProps = {
   onCancel: null,
   open: false,
   eventNid: null,
+  disableEscapeKeyDown: true,
+  disableBackdropClick: true,
 };
 
 const mapStateToProps = (state, ownProps) => {
