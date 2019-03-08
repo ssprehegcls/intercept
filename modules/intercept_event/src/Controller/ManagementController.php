@@ -13,13 +13,21 @@ class ManagementController extends ManagementControllerBase {
 
   public function alter(array &$build, $page_name) {
     if ($page_name == 'system_configuration') {
-      $build['links']['events'] = $this->getManagementButton('Events', 'event_configuration');
+      $build['sections']['main']['#actions']['events'] = [
+        '#link' => $this->getManagementButton('Events', 'event_configuration'),
+        '#weight' => 8
+      ];
     }
     if ($page_name == 'default') {
       $route = "intercept_event.management.event_templates";
-      $build['links']['event'] = $this->getCreateEventButton();
+      $build['sections']['main']['#actions']['event'] = [
+        '#link' => $this->getCreateEventButton(),
+        '#weight' => -15,
+      ];
       if ($this->currentUser()->hasPermission('create event content')) {
-        $build['links']['events_all'] = $this->getManagementButton('View All Events', 'events');
+        $build['sections']['main']['#actions']['events_all'] = [
+          '#link' => $this->getManagementButton('View all Events', 'events')
+        ];
       }
     }
   }
@@ -29,7 +37,7 @@ class ManagementController extends ManagementControllerBase {
    */
   private function getCreateEventButton() {
     $route = "intercept_event.management.event_templates";
-    return $this->getButton('Create an event', $route, [
+    return $this->getButton('Create an Event', $route, [
       'user' => $this->currentUser()->id(),
     ]);
   }
@@ -85,18 +93,33 @@ class ManagementController extends ManagementControllerBase {
 
     return [
       'title' => $this->title('Events'),
-      'taxonomies' => $this->getTaxonomyVocabularyTable(['audience', 'evaluation_criteria', 'event_type', 'tag']),
-      'content_types' => [
-        'title' => $this->h2('Content Types'),
-        'event_template' => $this->getButton('Add Event Template', 'node.add', [
-          'node_type' => 'event',
-          'template' => 1,
-        ]),
-        'event_series' => $this->getButton('Add Event Series', 'node.add', [
-          'node_type' => 'event_series'
-        ]),
-        'lists' => $lists->toArray(),
-      ],
+      'sections' => [
+        'content_types' => [
+          '#actions' => [
+            'event_template' => [
+              '#link' => $this->getButton(
+                'Add Event Template',
+                'node.add',
+                [
+                  'node_type' => 'event',
+                  'template' => 1,
+                ]
+              ),
+            ],
+            'event_series' => [
+              '#link' => $this->getButton(
+                'Add Event Series',
+                'node.add',
+                [
+                  'node_type' => 'event_series'
+                ]
+              ),
+            ],
+          ],
+          '#content' => $lists->toArray(),
+        ],
+        'taxonomies' => $this->getTaxonomyVocabularyTable(['audience', 'evaluation_criteria', 'event_type', 'tag']),
+      ]
     ];
   }
 

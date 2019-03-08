@@ -10,12 +10,21 @@ class ManagementController extends ManagementControllerBase {
 
   public function alter(array &$build, $page_name) {
     if ($page_name == 'system_configuration') {
-      $build['links']['equipment'] = $this->getManagementButton('Equipment', 'equipment_configuration');
+      $build['sections']['main']['#actions']['equipment'] = [
+        '#link' => $this->getManagementButton('Equipment', 'equipment_configuration'),
+        '#weight' => '5',
+      ];
     }
+
     if ($page_name == 'default') {
-      //$build['links']['equipment'] = $this->getButton('Reserve equipment', 'entity.equipment_reservation.add_form');
-      $build['links']['equipment'] = $this->getButton('Reserve equipment', 'view.intercept_equipment.page');
-      $build['links']['equipment']['#access'] = $this->currentUser->hasPermission('add equipment reservation entities');
+      // $build['sections']['main']['#actions']['equipment'] = [
+      //   '#link' => $this->getButton('Reserve equipment', 'entity.equipment_reservation.add_form'),
+      // ]
+      $build['sections']['main']['#actions']['equipment'] = [
+        '#link' => $this->getButton('Reserve Equipment', 'view.intercept_equipment.page'),
+        '#access' => $this->currentUser->hasPermission('add equipment reservation entities'),
+        '#weight' => '-10',
+      ];
     }
   }
 
@@ -33,20 +42,27 @@ class ManagementController extends ManagementControllerBase {
 
 
   public function viewEquipmentConfiguration(AccountInterface $user, Request $request) {
+    $lists = $this->table();
+    $link = $this->getButton('Equipment List', 'system.admin_content', [
+      'type' => 'equipment',
+    ]);
+    $lists->row($link, $this->t('List of all equipment.'));
+
     return [
       'title' => $this->title('Equipment'),
-      'taxonomies' => $this->getTaxonomyVocabularyTable(['equipment_type']),
-      'content_types' => [
-        'title' => $this->h2('Content Types'),
-        'equipment_add' => $this->getButton('Add Equipment', 'node.add', [
-          'node_type' => 'equipment',
-          'destination' => \Drupal\Core\Url::fromRoute('<current>')->toString(),
-        ]),
-        'equipment_list' => $this->getButton('Equipment list', 'system.admin_content', [
-          'status' => 'All',
-          'type' => 'equipment',
-          'langcode' => 'All',
-        ]),
+      'sections' => [
+        'main' => [
+          '#actions' => [
+            'equipment_add' => [
+              '#link' => $this->getButton('Add Equipment', 'node.add', [
+                'node_type' => 'equipment',
+                'destination' => \Drupal\Core\Url::fromRoute('<current>')->toString(),
+                ]),
+              ],
+            ],
+            '#content' => $lists->toArray(),
+        ],
+        'taxonomies' => $this->getTaxonomyVocabularyTable(['equipment_type']),
       ],
     ];
   }

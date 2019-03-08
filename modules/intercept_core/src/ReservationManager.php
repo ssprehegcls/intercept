@@ -726,7 +726,7 @@ class ReservationManager implements ReservationManagerInterface {
     return !empty($node->field_location->entity) ? $node->field_location->entity : FALSE;
   }
 
-  protected function getHours($params, $node) {
+  protected function getHours(array $params, NodeInterface $node) {
     if (!$location = $this->getLocation($node)) {
       return FALSE;
     }
@@ -736,9 +736,23 @@ class ReservationManager implements ReservationManagerInterface {
     // Eventually there is going to be a TIMEZONE setting on this field.
     $hours = $location->field_location_hours;
     $values = $hours->getValue();
-    // e.g. 'starthours' => '0900', 'endhours' => '1700'
+    // e.g. 'starthours' => '0900', 'endhours' => '1700'.
     return array_reduce($values, function ($car, $val) use ($d) {
-      if ($val['day'] == $d) { $car = $val; }
+      if ($val['day'] == $d) {
+        $car = $val;
+        switch ($car['endhours']) {
+          case '0000':
+            $car['endhours'] = 2345;
+            break;
+
+          case substr($car['endhours'], 2) == '00':
+            $car['endhours'] -= 55;
+            break;
+
+          default:
+            $car['endhours'] -= 15;
+        }
+      }
       return $car;
     });
   }

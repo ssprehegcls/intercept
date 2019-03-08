@@ -10,18 +10,26 @@ use Drupal\user\EntityOwnerInterface;
 class ReservationPermissionsProvider extends EntityPermissionProvider {
 
   /**
-  * {@inheritdoc}
-  */
+   * {@inheritdoc}
+   */
   public function buildPermissions(EntityTypeInterface $entity_type) {
     $entity_type_id = $entity_type->id();
     $plural_label = $entity_type->getPluralLabel();
 
     $permissions = parent::buildPermissions($entity_type);
 
-    foreach (['cancel', 'approve', 'deny'] as $action) {
+    foreach (['cancel', 'approve', 'decline', 'view'] as $action) {
       // View permissions are the same for both granularities.
       $permissions["{$action} {$entity_type_id}"] = [
         'title' => $this->t('@action @type', [
+          '@action' => Unicode::ucwords($action),
+          '@type' => $plural_label,
+        ]),
+      ];
+    }
+    foreach (['cancel', 'update', 'view'] as $action) {
+      $permissions["{$action} referenced user {$entity_type_id}"] = [
+        'title' => $this->t("@action referenced user's @type", [
           '@action' => Unicode::ucwords($action),
           '@type' => $plural_label,
         ]),

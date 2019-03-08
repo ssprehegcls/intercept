@@ -2,7 +2,6 @@
 
 namespace Drupal\intercept_event;
 
-use Drupal\Core\Entity\EntityPublishedInterface;
 use Drupal\entity\EntityAccessControlHandler;
 use Drupal\Core\Entity\EntityInterface;
 use Drupal\Core\Session\AccountInterface;
@@ -71,4 +70,5 @@ class EventAccessControlHandler extends EntityAccessControlHandler {
   protected function hasReferencedUser(EntityInterface $entity) {
     return $entity->hasField('field_user');
   }
+
 }

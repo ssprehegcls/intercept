@@ -41,6 +41,24 @@ function intercept_core_theme() {
     'intercept_management' => [
       'variables' => ['content' => NULL],
       'template' => 'intercept-management',
+      'base hook' => 'intercept_management',
+    ],
+    'intercept_management_section' => [
+      'variables' => [
+        'title' => NULL,
+        'actions' => NULL,
+        'content' => NULL,
+      ],
+      'template' => 'intercept-management-section',
+      'base hook' => 'intercept_management_section',
+    ],
+    'intercept_management_action' => [
+      'variables' => [
+        'link' => NULL,
+        'description' => NULL,
+      ],
+      'template' => 'intercept-management-action',
+      'base hook' => 'intercept_management_action',
     ]
   ];
 }

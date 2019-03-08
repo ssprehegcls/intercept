@@ -117,7 +117,7 @@ class RoomReservationController extends ControllerBase implements ContainerInjec
     $build['agreement']['title'] = [
       '#type' => 'html_tag',
       '#tag' => 'h1',
-      '#value' => t('Reserve a room'),
+      '#value' => t('Reserve a Room'),
     ];
 
     $build['agreement']['text'] = [

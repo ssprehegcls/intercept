@@ -12,11 +12,19 @@ class ManagementController extends ManagementControllerBase {
 
   public function alter(array &$build, $page_name) {
     if ($page_name == 'default') {
-      $build['links']['configuration'] = $this->getManagementButton('System Configuration', 'system_configuration');
-      $build['links']['account'] = $this->getButton('Edit My Account', 'entity.user.edit_form', [
-        'user' => \Drupal::currentUser()->id(),
-      ]);
-      $build['links']['account']['#weight'] = '11';
+      $build['sections']['main']['#actions']['configuration'] = [
+        '#link' => $this->getManagementButton('System Configuration', 'system_configuration'),
+        '#weight' => 12,
+      ];
+      $build['sections']['main']['#actions']['account'] = [
+        '#link' => $this->getButton(
+          'Edit My Account',
+          'entity.user.edit_form',
+          [
+            'user' => \Drupal::currentUser()->id(),
+          ]),
+        '#weight' => 11,
+      ];
     }
   }
 
@@ -53,7 +61,7 @@ class ManagementController extends ManagementControllerBase {
    */
   public function viewSettingsLogo(AccountInterface $user, Request $request) {
     $build = [
-      'title' => $this->title('Settings'),
+      'title' => $this->title('Logo Settings'),
     ];
     $default_theme = \Drupal::config('system.theme')->get('default');
     $build['form'] = \Drupal::service('form_builder')->getForm('Drupal\system\Form\ThemeSettingsForm', $default_theme);
@@ -63,7 +71,7 @@ class ManagementController extends ManagementControllerBase {
 
   public function viewSettings(AccountInterface $user, Request $request) {
     $build = [
-      'title' => $this->title('Settings'),
+      'title' => $this->title('Site Settings'),
     ];
 
     $table = $this->table();
@@ -75,12 +83,18 @@ class ManagementController extends ManagementControllerBase {
 
   public function viewSystemConfiguration(AccountInterface $user, Request $request) {
     $build = [
-      'title' => $this->title('System Configuration'),
-      'links' => [
-        'settings' => $this->getManagementButton('Settings', 'settings'),
+      'title' => $this->title('System configuration'),
+      'sections' => [
+        'main' => [
+          '#actions' => [
+            'settings' => [
+              '#link' => $this->getManagementButton('Site Settings', 'settings'),
+              '#weight' => 50,
+            ]
+          ]
+        ]
       ],
     ];
-    $build['links']['settings']['#weight'] = 25;
     return $build;
   }
 }

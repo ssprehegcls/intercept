@@ -23,8 +23,21 @@ class RoomReservationAccessControlHandler extends EntityAccessControlHandler {
     $result = parent::checkAccess($entity, $operation, $account);
 
     switch ($operation) {
+      case 'view':
+      case 'update':
+        if ($result->isNeutral() && $this->hasReferencedUser($entity)) {
+          $result = $this->checkEntityUserReferencedPermissions($entity, $operation, $account);
+        }
+        break;
+
       case 'cancel':
-        return AccessResult::allowedIfHasPermission($account, 'cancel room_reservation');
+        if ($result->isNeutral() && $this->hasReferencedUser($entity)) {
+          $result = $this->checkEntityUserReferencedPermissions($entity, $operation, $account);
+        }
+        else {
+          return AccessResult::allowedIfHasPermission($account, 'cancel room_reservation');
+        }
+        break;
 
       case 'approve':
         return AccessResult::allowedIfHasPermission($account, 'approve room_reservation');
@@ -56,4 +69,57 @@ class RoomReservationAccessControlHandler extends EntityAccessControlHandler {
     }
     return $result;
   }
+
+  /**
+   * Checks the entity operation and bundle permissions, with owners.
+   *
+   * @param \Drupal\Core\Entity\EntityInterface $entity
+   *   The entity for which to check access.
+   * @param string $operation
+   *   The entity operation. Usually one of 'view', 'view label', 'update' or
+   *   'delete'.
+   * @param \Drupal\Core\Session\AccountInterface $account
+   *   The user for which to check access.
+   *
+   * @return \Drupal\Core\Access\AccessResultInterface
+   *   The access result.
+   */
+  protected function checkEntityUserReferencedPermissions(EntityInterface $entity, $operation, AccountInterface $account) {
+    $return = AccessResult::neutral()->cachePerUser();
+    if (empty($entity->get('field_user')->entity)) {
+      return $return;
+    }
+    if (($account->id() == $entity->get('field_user')->entity->id())) {
+      return AccessResult::allowedIfHasPermissions($account, [
+        "$operation referenced user {$entity->getEntityTypeId()}",
+        "$operation referenced user {$entity->bundle()} {$entity->getEntityTypeId()}",
+      ], 'OR');
+    }
+    else {
+      switch ($operation) {
+        case 'cancel':
+        case 'update':
+        case 'approve':
+        case 'deny':
+          return AccessResult::allowedIfHasPermissions($account, [
+            "update any {$entity->getEntityTypeId()}",
+          ], 'OR');
+      }
+    }
+    return $return;
+  }
+
+  /**
+   * Check if entity has referenced user field.
+   *
+   * @param \Drupal\Core\Entity\EntityInterface $entity
+   *   The entity to check.
+   *
+   * @return bool
+   *   Whether the entity has the field_user field.
+   */
+  protected function hasReferencedUser(EntityInterface $entity) {
+    return $entity->hasField('field_user');
+  }
+
 }

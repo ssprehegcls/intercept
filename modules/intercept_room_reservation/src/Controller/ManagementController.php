@@ -12,10 +12,16 @@ class ManagementController extends ManagementControllerBase {
 
   public function alter(array &$build, $page_name) {
     if ($page_name == 'system_configuration') {
-      $build['links']['room_reservations'] = $this->getManagementButton('Room Reservations', 'room_reservation_configuration');
+      $build['sections']['main']['#actions']['room_reservations'] = [
+        '#link' => $this->getManagementButton('Room Reservations', 'room_reservation_configuration'),
+        '#weight' => 15,
+      ];
     }
     if ($page_name == 'default') {
-      $build['links']['room'] = $this->getButton('Reserve a room', 'intercept_room_reservation.reserve_room');
+      $build['sections']['main']['#actions']['room'] = [
+        '#link' => $this->getButton('Reserve a Room', 'intercept_room_reservation.reserve_room'),
+        '#weight' => -20,
+      ];
     }
   }
 
@@ -23,7 +29,7 @@ class ManagementController extends ManagementControllerBase {
     return [
       '#type' => 'view',
       '#name' => 'intercept_room_reservations',
-      '#display_id' => 'embed', 
+      '#display_id' => 'embed',
     ];
   }
 
@@ -40,14 +46,16 @@ class ManagementController extends ManagementControllerBase {
       return $form;
     }
 
-    $build = [
-      'title' => $this->title('Room Reservations'),
-      'taxonomies' => $this->getTaxonomyVocabularyTable(['meeting_purpose']),
+    $build['title'] = $this->title('Room Reservations');
+
+    $table = $this->table();
+    $table->row($this->getButtonSubpage('reservation_limit', 'Customer Reservation Limit'), 'Set the number of active room reservations a customer may have at any given time.');
+
+    $build['sections']['general'] = [
+      '#content' => $table->toRenderable(),
     ];
 
-    $build['settings'] = [
-      'title' => $this->h2('Settings'),
-    ];
+    $build['sections']['taxonomies'] = $this->getTaxonomyVocabularyTable(['meeting_purpose']);
 
     $table = $this->table();
     $emails = \Drupal\intercept_core\ReservationManager::emails();
@@ -55,22 +63,11 @@ class ManagementController extends ManagementControllerBase {
       $table->row($this->getButtonSubpage($key, $name), '');
     }
 
-    $build['settings']['emails'] = [
-      '#type' => 'fieldset',
+    $build['sections']['emails'] = [
       '#title' => $this->t('Reservation emails'),
+      '#content' => $table->toRenderable(),
     ];
 
-    $build['settings']['emails']['table'] = $table->toRenderable();
-
-    $table = $this->table();
-    $table->row($this->getButtonSubpage('reservation_limit', 'Number of Customer Reservations'), '');
-
-    $build['settings']['general'] = [
-      '#type' => 'fieldset',
-      '#title' => $this->t('General settings'),
-    ];
-
-    $build['settings']['general']['table'] = $table->toRenderable();
     return $build;
   }
 

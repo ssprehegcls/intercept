@@ -7,6 +7,7 @@ use Drupal\Core\DependencyInjection\ClassResolverInterface;
 use Drupal\Core\Routing\CurrentRouteMatch;
 use Drupal\Core\Session\AccountInterface;
 use Drupal\Core\Session\AccountProxyInterface;
+use Drupal\Component\Utility\SortArray;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Serializer\NameConverter\CamelCaseToSnakeCaseNameConverter;
@@ -85,6 +86,19 @@ class ManagementControllerBase extends ControllerBase {
       list($callable, $method) = \Drupal::service('controller_resolver')->getControllerFromDefinition($definition['controller']);
       $callable->alter($build, $machine_name);
     }
+
+    if (isset($build['sections'])) {
+      foreach ($build['sections'] as $section => $definition) {
+        $build['sections'][$section]['#theme'] = 'intercept_management_section';
+
+        if (isset($definition['#actions'])) {
+          foreach ($definition['#actions'] as $action => $action_definition) {
+            $build['sections'][$section]['#actions'][$action]['#theme'] = 'intercept_management_action';
+          }
+          uasort($build['sections'][$section]['#actions'], [SortArray::class, 'sortByWeightProperty']);
+        }
+      }
+    }
     return $build;
   }
 
@@ -118,19 +132,22 @@ class ManagementControllerBase extends ControllerBase {
 
   protected function getTaxonomyVocabularyTable($ids = [], $title = 'Taxonomies') {
     $taxonomy_storage = $this->entityTypeManager()->getStorage('taxonomy_vocabulary');
+
     $output = [
-      'title' => [
-        '#type' => 'html_tag',
-        '#tag' => 'h2',
-        '#value' => $this->t($title),
-      ],
-      'table' => [
-        '#type' => 'table',
+      '#title' => $this->t($title),
+      '#content' => [
+        'table' => [
+          '#type' => 'table',
+          '#header' => [
+            'Link',
+            'Description',
+          ]
+        ],
       ],
     ];
     foreach ($ids as $id) {
       $vocabulary = $taxonomy_storage->load($id);
-      $output['table'][] = [
+      $output['#content']['table'][] = [
         'name' => [
           '#markup' => $vocabulary->link(NULL, 'overview-form')->__toString()
         ],
@@ -151,10 +168,7 @@ class ManagementControllerBase extends ControllerBase {
 
   protected function getButton($title, $route, $params = []) {
     $button = \Drupal\Core\Link::createFromRoute($title, $route, $params)->toRenderable();
-    $button['#attributes']['class'][] = 'btn-link';
-    // $button['#attributes']['class'][] = 'more-link';
     $button['#access'] = $button['#url']->access($this->currentUser());
-    $button['#suffix'] = '<br>';
     return $button;
   }
 
@@ -179,6 +193,10 @@ class ManagementControllerBase extends ControllerBase {
       private $table = [
         '#type' => 'table',
         '#rows' => [],
+        '#header' => [
+          'Link',
+          'Description',
+        ],
       ];
       public function row($link, $description) {
         $row = [];
@@ -239,10 +257,7 @@ class ManagementControllerBase extends ControllerBase {
 
   protected function title($text, $replacements = []) {
     return [
-      '#type' => 'html_tag',
-      '#tag' => 'h1',
-      '#value' => $this->t($text, $replacements),
-      '#attributes' => ['class' => ['title']],
+      '#markup' => $this->t($text, $replacements),
     ];
   }
 
