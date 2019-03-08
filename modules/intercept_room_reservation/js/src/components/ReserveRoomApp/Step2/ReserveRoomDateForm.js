@@ -340,7 +340,10 @@ class ReserveRoomDateForm extends PureComponent {
               type="submit"
               className="button button--primary"
               disabled={!this.state.canSubmit}
-              onClick={onSubmit}
+              onClick={ (e) => {
+                e.preventDefault();
+                onSubmit();
+              }}
             >
               Next
             </Button>
