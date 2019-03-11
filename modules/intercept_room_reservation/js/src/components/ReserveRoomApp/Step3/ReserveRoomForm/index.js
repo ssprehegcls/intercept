@@ -388,7 +388,7 @@ class ReserveRoomForm extends PureComponent {
                   type="submit"
                   className="button button--primary"
                   disabled={!this.state.canSubmit || hasConflict || !room}
-                >Reserve</Button>
+                >Next</Button>
               </div>
             </div>
           </div>
