@@ -1,15 +1,18 @@
+uuid: af3c9e11-7a0c-49cb-b1f6-bdc5616f6341
 langcode: en
 status: true
 dependencies:
   config:
     - field.storage.profile.field_last_name
     - profile.type.customer
+_core:
+  default_config_hash: WuHwphKQ0KO2p-PaKs662FYwzFGJNWuvOB_PfPcoIzU
 id: profile.customer.field_last_name
 field_name: field_last_name
 entity_type: profile
 bundle: customer
 label: 'Last name'
-description: 'Your last name.'
+description: ''
 required: false
 translatable: false
 default_value: {  }

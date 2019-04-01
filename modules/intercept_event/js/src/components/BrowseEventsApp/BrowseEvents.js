@@ -29,6 +29,10 @@ import EventCalendar from './../EventCalendar';
 
 const { constants, api, select, utils } = interceptClient;
 const c = constants;
+
+const DESIGNATION = 'designation';
+const DESIGNATION_FIELD = 'field_event_designation';
+
 const eventIncludes = (view = 'list') =>
   (view === 'list' ? ['image_primary', 'image_primary.field_media_image', 'field_room'] : null);
 
@@ -53,6 +57,7 @@ const sparseFieldsets = (view = 'list') =>
         'field_event_type',
         'field_event_tags',
         'field_location',
+        DESIGNATION_FIELD,
         'field_room',
         'image_primary',
       ],
@@ -75,6 +80,7 @@ const sparseFieldsets = (view = 'list') =>
         'field_date_time',
         'field_must_register',
         'field_location',
+        DESIGNATION_FIELD,
       ],
     });
 
@@ -101,6 +107,15 @@ function getPublishedFilters(value = true) {
     published: {
       path: 'status',
       value: value ? '1' : '0',
+    },
+  };
+}
+
+function getDesignationFilters(value = 'events') {
+  return {
+    [DESIGNATION]: {
+      path: DESIGNATION_FIELD,
+      value,
     },
   };
 }
@@ -184,6 +199,7 @@ function getKeywordFilters(value, group = 'group') {
 function getFilters(values, view = 'list', calView = 'day', date = new Date()) {
   const filter = {
     ...getPublishedFilters(true),
+    ...getDesignationFilters(values[DESIGNATION]),
     ...getDateFilters(values, view, calView, date),
     ...getKeywordFilters(values, 'keyword'),
   };
@@ -502,6 +518,7 @@ BrowseEvents.defaultProps = {
     [c.DATE]: null,
     [c.DATE_START]: null,
     [c.DATE_END]: null,
+    [DESIGNATION]: 'events', // TODO: Get this from drupalSettings
   },
 };
 

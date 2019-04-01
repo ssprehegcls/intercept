@@ -237,6 +237,7 @@ class ReserveRoomStep3 extends React.Component {
       'meetingDetails',
       'refreshments',
       'refreshmentsDesc',
+      'publicize',
       'groupName',
       c.TYPE_MEETING_PURPOSE,
     ]);

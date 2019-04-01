@@ -26,7 +26,7 @@ class EventsController extends ControllerBase {
     $build = [];
     $build['#attached']['library'][] = 'intercept_event/eventList';
     $build['intercept_event_list']['#markup'] = '<div id="eventListRoot" ></div>';
-
+    $this->attachFieldSettings($build);
     return $build;
   }
 
@@ -56,6 +56,18 @@ class EventsController extends ControllerBase {
       $list_builder->setEvent($node);
     }
     return $list_builder;
+  }
+
+  /**
+   * Exposes certain field config to drupalSettings.
+   */
+  protected function attachFieldSettings(array &$build) {
+    // Load field_event_designation options.
+    $event_fields = \Drupal::service('entity_field.manager')->getFieldStorageDefinitions('node', 'event');
+    if (array_key_exists('field_event_designation', $event_fields)) {
+      $options = options_allowed_values($event_fields['field_event_designation']);
+      $build['#attached']['drupalSettings']['intercept']['events']['field_event_designation']['options'] = $options;
+    }
   }
 
   public function registrations(NodeInterface $node) {

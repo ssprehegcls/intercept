@@ -38,7 +38,7 @@ class UserProfileForm extends \Drupal\user\ProfileForm {
       $entity_form['pin'] = [
         '#type' => 'password',
         '#weight' => $pin['weight'],
-        '#title' => $this->t('Pin'),
+        '#title' => $this->t('PIN'),
       ];
     }
     // Set the default value for barcode and add a save handler for the pin.
@@ -46,6 +46,8 @@ class UserProfileForm extends \Drupal\user\ProfileForm {
       $this->populateName($entity_form, $patron, $profile);
       $form_state->set('patron', $patron);
       $entity_form['field_barcode']['widget'][0]['value']['#default_value'] = $patron->barcode;
+      $entity_form['field_phone']['widget'][0]['value']['#default_value'] = $patron->basicData()->PhoneNumber;
+      $entity_form['field_email_address']['widget'][0]['value']['#default_value'] = $patron->basicData()->EmailAddress;
       $entity_form['#ief_element_submit'][] = [$this, 'saveInlineEntityForm'];
       foreach (['field_first_name', 'field_last_name'] as $field) {
         $entity_form[$field]['widget'][0]['#disabled'] = TRUE;
@@ -93,11 +95,35 @@ class UserProfileForm extends \Drupal\user\ProfileForm {
    */
   public function saveInlineEntityForm(&$form, $form_state) {
     $pin = $form_state->cleanValues()->getValue('pin');
-    if (!empty($pin)) {
+    $email_address = $form_state->cleanValues()->getValue(['customer_profile', 'field_email_address']);
+    $email_address = $email_address[0]['value'];
+    $phone = $form_state->cleanValues()->getValue(['customer_profile', 'field_phone']);
+    $phone = $phone[0]['value'];
+    if (!empty($pin) || !empty($phone) || !empty($email_address)) {
       // If $patron is empty, this submit handler is never set.
       $patron = $form_state->get('patron');
-      $patron->Password = $pin;
+      if (!empty($pin)) {
+        $patron->Password = $pin;
+      }
+      if (!empty($phone)) {
+        $patron->PhoneVoice1 = $phone;
+      }
+      if (!empty($email_address)) {
+        $patron->EmailAddress = $email_address;
+      }
       $patron->update();
+
+      // Also update externalauth authdata
+      $user = $form_state->getFormObject()->getEntity();
+      $externalauth = \Drupal::service('externalauth.externalauth');
+      $authmap = \Drupal::service('externalauth.authmap');
+      $authdata = $authmap->getAuthdata($user->id(), 'polaris');
+      $authdata_data = unserialize($authdata['data']);
+
+      // Update the authdata & user account based on the latest Polaris info.
+      if ($patron = \Drupal::service('polaris.client')->patron->getByUser($user)) {
+        $authmap->save($user, 'polaris', $patron->barcode(), $patron->basicData());
+      }
     }
   }
 

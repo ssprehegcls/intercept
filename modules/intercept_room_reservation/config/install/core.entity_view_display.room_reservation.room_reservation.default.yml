@@ -9,6 +9,7 @@ dependencies:
     - field.field.room_reservation.room_reservation.field_meeting_dates
     - field.field.room_reservation.room_reservation.field_meeting_purpose
     - field.field.room_reservation.room_reservation.field_meeting_purpose_details
+    - field.field.room_reservation.room_reservation.field_publicize
     - field.field.room_reservation.room_reservation.field_refreshments
     - field.field.room_reservation.room_reservation.field_refreshments_description
     - field.field.room_reservation.room_reservation.field_room
@@ -65,6 +66,16 @@ content:
     settings:
       link_to_entity: false
     third_party_settings: {  }
+  field_publicize:
+    weight: 10
+    label: above
+    settings:
+      format: default
+      format_custom_false: ''
+      format_custom_true: ''
+    third_party_settings: {  }
+    type: boolean
+    region: content
   field_room:
     type: entity_reference_label
     weight: 0

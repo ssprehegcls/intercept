@@ -244,15 +244,13 @@ class ReserveRoomStep1 extends React.Component {
     const { rooms } = availability;
     const isStaff = utils.userIsStaff();
     const isManager = utils.userIsManager();
-    const conflictProp = isStaff ? 'has_reservation_conflict' : 'has_open_hours_conflict';
 
     return (room) => {
       const id = get(room, 'data.id');
-
       // If the room is not reservable online,
       // we'll show it to non-managers so they can call for availability.
       if (!isManager && !get(room, 'data.attributes.field_reservable_online')) {
-        return true;
+        return false;
       }
 
       // If the room is not returned from the availabilty request, lets assume it's available;
@@ -260,8 +258,12 @@ class ReserveRoomStep1 extends React.Component {
         return true;
       }
 
+      if (isStaff) {
+        return !rooms[id]['has_reservation_conflict'];
+      }
+
       // Return true if there is no conflict.
-      return !rooms[id][conflictProp];
+      return !rooms[id]['has_reservation_conflict'] && !rooms[id]['has_open_hours_conflict'];
     };
   };
 
@@ -279,7 +281,7 @@ class ReserveRoomStep1 extends React.Component {
     const tz = utils.getUserTimezone();
 
     if (this.props.filters[NOW]) {
-      const date = utils.roundTo(new Date(), 15, 'minutes', 'floor').tz(tz);
+      const date = utils.roundTo(new Date(), 15, 'minutes', 'ceil').tz(tz);
       options.start = date.clone();
       options.end = date.clone().add(options.duration, 'minute');
       // options.start = utils.dateToDrupal(date.clone());

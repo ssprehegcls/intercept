@@ -2,11 +2,7 @@
 
 namespace Drupal\intercept_room_reservation\Entity;
 
-use Drupal\Core\Entity\ContentEntityInterface;
-use Drupal\Core\Entity\RevisionLogInterface;
-use Drupal\Core\Entity\EntityChangedInterface;
 use Drupal\intercept_core\Entity\ReservationInterface;
-use Drupal\user\EntityOwnerInterface;
 
 /**
  * Provides an interface for defining Room reservation entities.
@@ -14,5 +10,45 @@ use Drupal\user\EntityOwnerInterface;
  * @ingroup intercept_room_reservation
  */
 interface RoomReservationInterface extends ReservationInterface {
+
+  /**
+   * Sets the Room reservation status to canceled.
+   *
+   * @return \Drupal\intercept_room_reservation\Entity\RoomReservationInterface
+   *   The RoomReservation entity.
+   */
+  public function cancel();
+
+  /**
+   * Sets the Room reservation status to approved.
+   *
+   * @return \Drupal\intercept_room_reservation\Entity\RoomReservationInterface
+   *   The RoomReservation entity.
+   */
+  public function approve();
+
+  /**
+   * Sets the Room reservation status to requested.
+   *
+   * @return \Drupal\intercept_room_reservation\Entity\RoomReservationInterface
+   *   The RoomReservation entity.
+   */
+  public function request();
+
+  /**
+   * Sets the Room reservation status to denied.
+   *
+   * @return \Drupal\intercept_room_reservation\Entity\RoomReservationInterface
+   *   The RoomReservation entity.
+   */
+  public function decline();
+
+  /**
+   * Sets the Room reservation status to denied.
+   *
+   * @return \Drupal\intercept_room_reservation\Entity\RoomReservationInterface
+   *   The RoomReservation entity.
+   */
+  public function deny();
 
 }

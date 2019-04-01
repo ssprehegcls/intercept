@@ -6,6 +6,7 @@ import PropTypes from 'prop-types';
 import Formsy from 'formsy-react';
 
 // Lodash
+import get from 'lodash/get';
 import map from 'lodash/map';
 
 /* eslint-disable */
@@ -14,13 +15,19 @@ import interceptClient from 'interceptClient';
 
 // Components
 import CurrentFilters from 'intercept/CurrentFilters';
+import InputCheckbox from 'intercept/Input/InputCheckbox';
 import InputDate from 'intercept/Input/InputDate';
 import KeywordFilter from 'intercept/KeywordFilter';
 import SelectResource from 'intercept/SelectResource';
+import RadioGroup from 'intercept/RadioGroup/RadioGroup';
 /* eslint-enable */
 
 const { constants } = interceptClient;
 const c = constants;
+
+const DESIGNATION = 'designation';
+const DESIGNATION_OPTIONS = map(get(drupalSettings, 'intercept.events.field_event_designation.options', {}), (value, key) => ({key, value}));
+
 
 const labels = {
   [c.TYPE_EVENT_TYPE]: 'Event Type',
@@ -29,6 +36,7 @@ const labels = {
   [c.DATE_START]: 'After Date',
   [c.DATE_END]: 'Before Date',
   [c.KEYWORD]: 'Keyword',
+  [DESIGNATION]: 'Event Designation',
 };
 
 const currentFiltersConfig = filters =>
@@ -70,7 +78,9 @@ class EventFilters extends PureComponent {
 
   render() {
     const { showDate, filters, view } = this.props;
+
     let currentFilters = currentFiltersConfig(filters);
+
     if (!showDate) {
       currentFilters = currentFilters.filter(f => [c.DATE_START, c.DATE_END].indexOf(f.key) < 0);
     }
@@ -128,9 +138,20 @@ class EventFilters extends PureComponent {
               label={labels[c.DATE_END]}
             />
           )}
+          <RadioGroup
+            ariaLabel="Event Designation"
+            checked={filters[DESIGNATION]}
+            onChange={(value) => {this.onFilterChange(DESIGNATION, value);}}
+            value={filters[DESIGNATION]}
+            name={DESIGNATION}
+            options={DESIGNATION_OPTIONS}
+          />
         </Formsy>
         <div className="filters__current">
-          <CurrentFilters filters={currentFilters} onChange={this.onFilterChange} />
+          <CurrentFilters
+            filters={currentFilters.filter(f => [DESIGNATION].indexOf(f.key) < 0)}
+            onChange={this.onFilterChange}
+          />
         </div>
       </div>
     );

@@ -71,21 +71,22 @@ class EventFilters extends PureComponent {
     this.props.onChange(newFilters);
   };
 
-  onFilterNow = () => {
+  onFilterNow = (value) => {
     const { filters } = this.props;
+    const now = value;
     const duration = filters.duration || 30;
     const date = utils.getUserStartOfDay();
-    const now = parseInt(
+    const current = parseInt(
       moment()
         .tz(utils.getUserTimezone())
         .format('HHmm'),
       10,
     );
     let time = 'afternoon';
-    if (now < 1200) {
+    if (current < 1200) {
       time = 'morning';
     }
-    else if (now > 1700) {
+    else if (current > 1700) {
       time = 'evening';
     }
 
@@ -94,8 +95,8 @@ class EventFilters extends PureComponent {
       duration,
       date,
       time,
+      now,
     };
-    console.log(filters, newFilters);
     this.props.onChange(newFilters);
   };
 
@@ -112,7 +113,7 @@ class EventFilters extends PureComponent {
   };
 
   onNowChange = () => {
-    this.onFilterChange(NOW, !this.props.filters[NOW]);
+    this.onFilterNow(!this.props.filters[NOW]);
   };
 
   render() {
@@ -121,6 +122,7 @@ class EventFilters extends PureComponent {
     if (!showDate) {
       currentFilters = currentFilters.filter(f => f.key !== c.DATE);
     }
+
     return (
       <div className="">
         <Formsy className="">

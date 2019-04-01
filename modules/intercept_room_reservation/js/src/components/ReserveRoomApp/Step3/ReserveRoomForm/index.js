@@ -44,6 +44,8 @@ import ReservationTeaser from './../../../ReservationTeaser';
 const { actions, constants, select, utils } = interceptClient;
 const c = constants;
 
+const FIELD_PUBLICIZE_DESC = get(drupalSettings, 'intercept.room_reservations.field_publicize.description', 'I would like to publicize this meeting');
+
 const matchTime = (original, ref) => {
   if (ref instanceof Date === false || original instanceof Date === false) {
     return ref;
@@ -96,6 +98,7 @@ const buildRoomReservation = (values) => {
       field_refreshments_description: {
         value: values.refreshmentsDesc,
       },
+      field_publicize: values.publicize,
       field_status: 'requested',
     },
     relationships: {
@@ -279,6 +282,7 @@ class ReserveRoomForm extends PureComponent {
     const showMeetingPurposeExplanation = !!purposeRequiresExplanation(meetingPurpose);
 
     let content = null;
+    let contact = null;
 
     this.form = React.createRef();
 
@@ -286,6 +290,19 @@ class ReserveRoomForm extends PureComponent {
       content = <ReservationTeaser id={this.state.uuid} />;
     }
     else {
+      // Contact Information display for customers
+      if (drupalSettings.intercept.user.telephone && drupalSettings.intercept.user.email) {
+        contact = (
+          <div className="l--subsection">
+            <h4 className="section-title section-title--secondary">Your Current Contact Information</h4>
+            <small>
+              Telephone: {drupalSettings.intercept.user.telephone}<br />
+              Email: {drupalSettings.intercept.user.email}<br />
+              <i>Need to update your info? After finishing your reservation visit My Account > Settings</i>
+            </small>
+          </div>
+        );
+      }
       content = (
         <Formsy
           className="form__main"
@@ -351,6 +368,7 @@ class ReserveRoomForm extends PureComponent {
                     name="meetingDetails"
                     required={showMeetingPurposeExplanation}
                   />
+                  {contact}
                 </div>
               </div>
               <div className="l__secondary">
@@ -379,6 +397,16 @@ class ReserveRoomForm extends PureComponent {
                     name="refreshmentDesc"
                     required={values.refreshments}
                     disabled={!values.refreshments}
+                  />
+                </div>
+                <div className="l--subsection">
+                  <h4 className="section-title section-title--secondary">Publicize</h4>
+                  <InputCheckbox
+                    label={FIELD_PUBLICIZE_DESC}
+                    checked={values.publicize}
+                    onChange={this.toggleValue}
+                    value="publicize"
+                    name="publicize"
                   />
                 </div>
                 <Button
@@ -449,6 +477,7 @@ ReserveRoomForm.propTypes = {
     [c.TYPE_MEETING_PURPOSE]: PropTypes.string,
     refreshments: PropTypes.bool,
     refreshmentsDesc: PropTypes.string,
+    publicize: PropTypes.bool,
     user: PropTypes.string,
   }),
   onChange: PropTypes.func.isRequired,
@@ -473,6 +502,7 @@ ReserveRoomForm.defaultProps = {
     meetingDetails: '',
     refreshments: false,
     refreshmentsDesc: '',
+    publicize: false,
     user: drupalSettings.intercept.user.uuid,
   },
   meetingPurpose: null,

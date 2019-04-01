@@ -20,10 +20,18 @@ import interceptClient from 'interceptClient';
 import updateWithHistory from 'intercept/updateWithHistory';
 /* eslint-enable */
 
-const { decodeArray, encodeArray, decodeObject, encodeObject } = Serialize;
+const {
+  decodeArray,
+  encodeArray,
+  decodeBoolean,
+  encodeBoolean,
+  decodeObject,
+  encodeObject,
+} = Serialize;
 
 const { constants, utils } = interceptClient;
 const c = constants;
+const DESIGNATION = 'designation';
 
 const removeFalseyProps = obj => pickBy(obj, prop => prop);
 
@@ -37,6 +45,7 @@ const encodeFilters = (value) => {
     [c.DATE]: !value[c.DATE] ? null : utils.getDayTimeStamp(value[c.DATE]),
     [c.DATE_START]: !value[c.DATE_START] ? null : utils.getDayTimeStamp(value[c.DATE_START]),
     [c.DATE_END]: !value[c.DATE_END] ? null : utils.getDayTimeStamp(value[c.DATE_END]),
+    [DESIGNATION]: encode(UrlQueryParamTypes.string, value[DESIGNATION]),
   });
   return encodeObject(filters, ':', '_');
 };
@@ -51,6 +60,7 @@ const decodeFilters = (values) => {
       [c.DATE]: null,
       [c.DATE_START]: null,
       [c.DATE_END]: null,
+      [DESIGNATION]: 'events',
     };
   }
   const value = decodeObject(values, ':', '_');
@@ -62,6 +72,7 @@ const decodeFilters = (values) => {
     [c.DATE]: value[c.DATE] ? utils.getDateFromDayTimeStamp(value[c.DATE]) : null,
     [c.DATE_START]: value[c.DATE_START] ? utils.getDateFromDayTimeStamp(value[c.DATE_START]) : null,
     [c.DATE_END]: value[c.DATE_END] ? utils.getDateFromDayTimeStamp(value[c.DATE_END]) : null,
+    [DESIGNATION]: decode(UrlQueryParamTypes.string, value[DESIGNATION], 'events'),
   };
   return filters;
 };

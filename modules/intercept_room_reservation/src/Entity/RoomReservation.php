@@ -4,15 +4,10 @@ namespace Drupal\intercept_room_reservation\Entity;
 
 use Drupal\Core\Entity\EntityStorageInterface;
 use Drupal\Core\Field\BaseFieldDefinition;
-use Drupal\Core\Entity\RevisionableInterface;
-use Drupal\Core\Entity\EntityChangedTrait;
 use Drupal\Core\Entity\EntityTypeInterface;
-use Drupal\Core\StringTranslation\StringTranslationTrait;
 use Drupal\intercept_core\Entity\ReservationBase;
 use Drupal\intercept_core\Field\Computed\EntityReferenceFieldItemList;
-use Drupal\intercept_core\Field\Computed\FileFieldItemList;
 use Drupal\intercept_core\Field\Computed\MethodItemList;
-use Drupal\user\UserInterface;
 
 /**
  * Defines the Room reservation entity.
@@ -89,25 +84,40 @@ class RoomReservation extends ReservationBase implements RoomReservationInterfac
     return 'room';
   }
 
+  /**
+   * {@inheritdoc}
+   */
   public function cancel() {
     $this->set('field_status', 'canceled');
     return $this;
   }
 
+  /**
+   * {@inheritdoc}
+   */
   public function approve() {
     $this->set('field_status', 'approved');
     return $this;
   }
 
+  /**
+   * {@inheritdoc}
+   */
   public function request() {
     $this->set('field_status', 'requested');
     return $this;
   }
 
+  /**
+   * {@inheritdoc}
+   */
   public function decline() {
     return $this->deny();
   }
 
+  /**
+   * {@inheritdoc}
+   */
   public function deny() {
     $this->set('field_status', 'denied');
     return $this;
@@ -128,7 +138,7 @@ class RoomReservation extends ReservationBase implements RoomReservationInterfac
 
     $fields['room_location'] = BaseFieldDefinition::create('entity_reference')
       ->setLabel(t('Location'))
-      ->setDescription(t('The related room\'s location entity.'))
+      ->setDescription(t("The related room's location entity."))
       ->setComputed(TRUE)
       ->setClass(EntityReferenceFieldItemList::class)
       ->setDisplayConfigurable('form', TRUE)
@@ -173,4 +183,5 @@ class RoomReservation extends ReservationBase implements RoomReservationInterfac
       }
     }
   }
+
 }

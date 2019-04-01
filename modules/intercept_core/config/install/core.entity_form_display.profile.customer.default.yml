@@ -1,3 +1,4 @@
+uuid: fc2cc959-773e-4381-ac08-025ebc22588d
 langcode: en
 status: true
 dependencies:
@@ -5,25 +6,32 @@ dependencies:
     - field.field.profile.customer.field_address
     - field.field.profile.customer.field_audiences
     - field.field.profile.customer.field_barcode
+    - field.field.profile.customer.field_email_address
+    - field.field.profile.customer.field_event_types
     - field.field.profile.customer.field_first_name
     - field.field.profile.customer.field_last_name
+    - field.field.profile.customer.field_phone
+    - field.field.profile.customer.field_preferred_location
     - profile.type.customer
   module:
     - address
+    - telephone
+_core:
+  default_config_hash: AihpJ157T8LWNvOE8bmWW4UHUO1w1UaG0mKHr-cMwDU
 id: profile.customer.default
 targetEntityType: profile
 bundle: customer
 mode: default
 content:
   field_address:
-    weight: 7
+    weight: 8
     settings:
       default_country: null
     third_party_settings: {  }
     type: address_default
     region: content
   field_audiences:
-    weight: 5
+    weight: 6
     settings:
       match_operator: CONTAINS
       size: 60
@@ -32,12 +40,29 @@ content:
     type: entity_reference_autocomplete
     region: content
   field_barcode:
-    weight: 6
+    weight: 7
     settings:
       size: 60
       placeholder: ''
     third_party_settings: {  }
     type: string_textfield
+    region: content
+  field_email_address:
+    weight: 3
+    settings:
+      size: 60
+      placeholder: ''
+    third_party_settings: {  }
+    type: email_default
+    region: content
+  field_event_types:
+    weight: 5
+    settings:
+      match_operator: CONTAINS
+      size: 60
+      placeholder: ''
+    third_party_settings: {  }
+    type: entity_reference_autocomplete
     region: content
   field_first_name:
     weight: 0
@@ -54,6 +79,22 @@ content:
       placeholder: ''
     third_party_settings: {  }
     type: string_textfield
+    region: content
+  field_phone:
+    weight: 2
+    settings:
+      placeholder: ''
+    third_party_settings: {  }
+    type: telephone_default
+    region: content
+  field_preferred_location:
+    weight: 4
+    settings:
+      match_operator: CONTAINS
+      size: 60
+      placeholder: ''
+    third_party_settings: {  }
+    type: entity_reference_autocomplete
     region: content
 hidden:
   card_number: true

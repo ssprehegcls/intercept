@@ -1,3 +1,4 @@
+uuid: 88e32f37-dcb4-4d0c-940e-f3564a63eda2
 langcode: en
 status: true
 dependencies:
@@ -6,12 +7,17 @@ dependencies:
     - field.field.profile.customer.field_address
     - field.field.profile.customer.field_audiences
     - field.field.profile.customer.field_barcode
+    - field.field.profile.customer.field_email_address
+    - field.field.profile.customer.field_event_types
     - field.field.profile.customer.field_first_name
     - field.field.profile.customer.field_last_name
+    - field.field.profile.customer.field_phone
+    - field.field.profile.customer.field_preferred_location
     - profile.type.customer
   module:
     - address
     - field_group
+    - telephone
 third_party_settings:
   field_group:
     group_account_info:
@@ -19,6 +25,8 @@ third_party_settings:
         - field_first_name
         - field_last_name
         - pin
+        - field_phone
+        - field_email_address
         - field_barcode
         - field_address
       parent_name: ''
@@ -32,6 +40,8 @@ third_party_settings:
       label: 'Account Info'
     group_preferences:
       children:
+        - field_preferred_location
+        - field_event_types
         - field_audiences
       parent_name: ''
       weight: 2
@@ -42,6 +52,8 @@ third_party_settings:
         description: ''
         required_fields: false
       label: Preferences
+_core:
+  default_config_hash: AihpJ157T8LWNvOE8bmWW4UHUO1w1UaG0mKHr-cMwDU
 id: profile.customer.customer
 targetEntityType: profile
 bundle: customer
@@ -49,7 +61,7 @@ mode: customer
 content:
   field_address:
     type: address_default
-    weight: 6
+    weight: 7
     region: content
     settings:
       default_country: US
@@ -62,12 +74,26 @@ content:
     region: content
   field_barcode:
     type: string_textfield
+    weight: 6
+    region: content
+    settings:
+      size: 60
+      placeholder: ''
+    third_party_settings: {  }
+  field_email_address:
+    type: email_default
     weight: 5
     region: content
     settings:
       size: 60
       placeholder: ''
     third_party_settings: {  }
+  field_event_types:
+    weight: 3
+    settings: {  }
+    third_party_settings: {  }
+    type: options_buttons
+    region: content
   field_first_name:
     weight: 1
     settings:
@@ -83,6 +109,19 @@ content:
       placeholder: ''
     third_party_settings: {  }
     type: string_textfield
+    region: content
+  field_phone:
+    weight: 4
+    settings:
+      placeholder: 'Phone number'
+    third_party_settings: {  }
+    type: telephone_default
+    region: content
+  field_preferred_location:
+    weight: 2
+    settings: {  }
+    third_party_settings: {  }
+    type: options_buttons
     region: content
   pin:
     weight: 3
