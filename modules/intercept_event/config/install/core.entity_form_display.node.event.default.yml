@@ -9,6 +9,7 @@ dependencies:
     - field.field.node.event.field_capacity_max
     - field.field.node.event.field_date_time
     - field.field.node.event.field_event_audience
+    - field.field.node.event.field_event_designation
     - field.field.node.event.field_event_is_template
     - field.field.node.event.field_event_register_period
     - field.field.node.event.field_event_series
@@ -127,6 +128,12 @@ content:
     settings: {  }
     third_party_settings: {  }
     type: options_select
+    region: content
+  field_event_designation:
+    weight: 20
+    settings: {  }
+    third_party_settings: {  }
+    type: options_buttons
     region: content
   field_event_register_period:
     weight: 20

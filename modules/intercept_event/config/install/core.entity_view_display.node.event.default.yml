@@ -2,11 +2,13 @@ langcode: en
 status: true
 dependencies:
   config:
+    - field.field.node.event.field_add_to_cal
     - field.field.node.event.field_attendees
     - field.field.node.event.field_audience_primary
     - field.field.node.event.field_capacity_max
     - field.field.node.event.field_date_time
     - field.field.node.event.field_event_audience
+    - field.field.node.event.field_event_designation
     - field.field.node.event.field_event_is_template
     - field.field.node.event.field_event_register_period
     - field.field.node.event.field_event_series
@@ -26,6 +28,7 @@ dependencies:
     - node.type.event
   module:
     - datetime_range
+    - options
     - tally
     - text
     - user
@@ -75,6 +78,13 @@ content:
       link: true
     third_party_settings: {  }
     type: entity_reference_label
+    region: content
+  field_event_designation:
+    weight: 23
+    label: above
+    settings: {  }
+    third_party_settings: {  }
+    type: list_default
     region: content
   field_event_register_period:
     weight: 7
