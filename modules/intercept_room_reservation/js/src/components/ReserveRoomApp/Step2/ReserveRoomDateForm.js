@@ -8,19 +8,14 @@ import get from 'lodash/get';
 // Redux
 import { connect } from 'react-redux';
 
-// Moment
-import moment from 'moment';
-
 // Intercept
 import interceptClient from 'interceptClient';
-import drupalSettings from 'drupalSettings';
 
 // Material UI
 import Button from '@material-ui/core/Button';
 
 // Intercept Components
 import InputDate from 'intercept/Input/InputDate';
-import InputTime from 'intercept/Input/InputTime';
 import SelectTime from 'intercept/Select/SelectTime';
 
 // Formsy
@@ -254,18 +249,19 @@ class ReserveRoomDateForm extends PureComponent {
 
   render() {
     const { availability, disabledTimespans, values, min, max, step, onSubmit, room } = this.props;
-    const isClosed = min === max;
+    const isClosed = (min === max) || get(availability, `rooms.${room}.is_closed`);
     const validationErrors = {};
     const conflictProp = utils.userIsStaff()
       ? 'has_reservation_conflict'
       : 'has_open_hours_conflict';
-    const conflictMessage = 'Room is not available at this time';
+    let conflictMessage = 'Room is not available at this time';
 
-    if (isClosed) {
+    if (!utils.userIsStaff() && isClosed) {
       validationErrors[c.DATE] = 'Location is closed';
+      conflictMessage = 'Location is closed';
     }
 
-    if (get(availability, `rooms.${room}.${conflictProp}`)) {
+    if (get(availability, `rooms.${room}.${conflictProp}`) || (!utils.userIsStaff() && isClosed)) {
       validationErrors.start = conflictMessage;
       validationErrors.end = conflictMessage;
     }
@@ -304,7 +300,7 @@ class ReserveRoomDateForm extends PureComponent {
               min={min}
               max={max}
               step={step}
-              disabled={isClosed}
+              disabled={utils.userIsStaff() ? false : isClosed}
               disabledSpans={disabledTimespans}
               disabledExclude={'trailing'}
             />
@@ -326,7 +322,7 @@ class ReserveRoomDateForm extends PureComponent {
               min={min}
               max={max}
               step={step}
-              disabled={isClosed}
+              disabled={utils.userIsStaff() ? false : isClosed}
               disabledSpans={disabledTimespans}
               disabledExclude={'leading'}
             />
@@ -340,7 +336,7 @@ class ReserveRoomDateForm extends PureComponent {
               type="submit"
               className="button button--primary"
               disabled={!this.state.canSubmit}
-              onClick={ (e) => {
+              onClick={(e) => {
                 e.preventDefault();
                 onSubmit();
               }}

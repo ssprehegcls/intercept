@@ -20,7 +20,7 @@ use Drupal\intercept_room_reservation\Entity\RoomReservationInterface;
 /**
  * Class ReservationManager.
  *
- * TODO: Move partially over to an EntityReservationManager/RoomReservationManager.
+ * @TODO: Move partially over to an EntityReservationManager/RoomReservationManager.
  */
 class ReservationManager implements ReservationManagerInterface {
 
@@ -87,7 +87,7 @@ class ReservationManager implements ReservationManagerInterface {
     if ($event->isNew()) {
       return FALSE;
     }
-    $reservations = $this->reservations('room', function($query) use ($event) {
+    $reservations = $this->reservations('room', function ($query) use ($event) {
       $query->condition('field_event', $event->id(), '=');
       $query->condition('field_status', ['canceled', 'denied'], 'NOT IN');
     });
@@ -103,14 +103,14 @@ class ReservationManager implements ReservationManagerInterface {
    *
    * @param \Drupal\node\NodeInterface $event
    *   The event node.
-   * @param $params
+   * @param array $params
    *   Additional field info to pass to the create method.
    *
    * @throws \Drupal\Component\Plugin\Exception\InvalidPluginDefinitionException
    * @throws \Drupal\Component\Plugin\Exception\PluginNotFoundException
    * @throws \Drupal\Core\Entity\EntityStorageException
    */
-  public function createEventReservation($event, $params) {
+  public function createEventReservation(NodeInterface $event, array $params) {
     $values = [
       'field_event' => $event->id(),
       'field_room' => $event->field_room->entity->id(),
@@ -131,7 +131,7 @@ class ReservationManager implements ReservationManagerInterface {
    * @param array $params
    *   Additional info to pass to the reservation entity. (not used)
    */
-  public function updateEventReservation($reservation, $event, array $params = []) {
+  public function updateEventReservation(RoomReservationInterface $reservation, NodeInterface $event, array $params = []) {
     if (!$event->field_room->equals($reservation->field_room)) {
       $reservation->field_room = $event->field_room;
     }
@@ -447,7 +447,13 @@ class ReservationManager implements ReservationManagerInterface {
     return count($reservations);
   }
 
-  public function availability($params = []) {
+  /**
+   * Determines the availability of a specified time in a specified room.
+   *
+   * @param array $params
+   *   The parameters to check availability for.
+   */
+  public function availability(array $params = []) {
     // Show debug information in return.
     $debug = !empty($params['debug']);
     // Reservations keyed by room uuid.
@@ -513,7 +519,9 @@ class ReservationManager implements ReservationManagerInterface {
       $reservations = !empty($data[$node->uuid()]) ? $data[$node->uuid()] : [];
       $return[$uuid]['has_reservation_conflict'] = $this->hasReservationConflict($reservations, $params);
       $return[$uuid]['has_open_hours_conflict'] = $this->hasOpeningHoursConflict($reservations, $params, $node);
-      $return[$uuid]['is_closed'] = $this->isClosed($params, $node);
+      $is_closed = $this->isClosed($params, $node);
+      $return[$uuid]['is_closed'] = $is_closed;
+      $return[$uuid]['closed_message'] = $this->closedMessage($params, $node);
       $return[$uuid]['has_location'] = !empty($this->getLocation($node));
       if ($debug) {
         $debug_data['schedule'] = $this->getSchedule($reservations, $params);
@@ -591,8 +599,7 @@ class ReservationManager implements ReservationManagerInterface {
       // Appears to be closed.
       return TRUE;
     }
-    // \Drupal::logger('intercept_core')->error('Returning false on hasOpeningHoursConflict');
-    // return FALSE;
+    // Return FALSE.
     return $this->hasReservationConflict($reservations, $params);
   }
 
@@ -697,32 +704,26 @@ class ReservationManager implements ReservationManagerInterface {
       return FALSE;
     }
     foreach (['start', 'end'] as $type) {
-      // get location start/end hours for location
-      // convert to date objects using the start date param as a base, but default timezone
-      // convert timezone to UTC
-      // return dates
+      // Get location start/end hours for location.
+      // Convert to date objects using the start date param as a base, but default timezone.
+      // Convert timezone to UTC.
+      // Return dates.
       $selected_date = $this->dateUtility->getDrupalDate($params[$type]);
       // Hardcode get start date here because the end date might span into another day.
-      // TODO: Make this less error prone by defining a way to specify the current searched "day".
-      // \Drupal::logger('intercept_core')->error('Selected date @type: @date', ['@date' => $selected_date, '@type' => $type]);
-      // \Drupal::logger('intercept_core')->error('Hours @type: @hours', ['@hours' => json_encode($hours), '@type' => $type]);
-      // \Drupal::logger('intercept_core')->error('Params start @type: @params_start', ['@params_start' => $params['start'], '@type' => $type]);
+      // @TODO: Make this less error prone by defining a way to specify the current searched "day".
       $date = $this->timeToDate($hours[$type . 'hours'], $this->dateUtility->getDate($params['start']));
-      // \Drupal::logger('intercept_core')->error('Date @type: @date', ['@date' => $date, '@type' => $type]);
       $converted_date = $this->dateUtility->convertTimezone($date);
-      // \Drupal::logger('intercept_core')->error('Converted Date @type: @date', ['@date' => $converted_date, '@type' => $type]);
       if ($type == 'start' && ($converted_date > $selected_date)) {
         $params['start'] = $converted_date->format(self::FORMAT);
       }
       if ($type == 'end' && ($converted_date > $selected_date)) {
         $params['end'] = $converted_date->format(self::FORMAT);
       }
-      // \Drupal::logger('intercept_core')->error('Params: @params', ['@params' => json_encode($params)]);
     }
     return $params;
   }
 
-  protected function getLocation($node) {
+  protected function getLocation(NodeInterface $node) {
     return !empty($node->field_location->entity) ? $node->field_location->entity : FALSE;
   }
 
@@ -757,8 +758,36 @@ class ReservationManager implements ReservationManagerInterface {
     });
   }
 
-  protected function isClosed($params, $node) {
-    return empty($this->getHours($params, $node));
+  /**
+   * Whether a location is closed.
+   *
+   * @param array $params
+   *   The requested reservation parameters.
+   * @param \Drupal\node\NodeInterface $node
+   *   The room node.
+   */
+  protected function isClosed(array $params, NodeInterface $node) {
+    $closed = empty($this->getHours($params, $node));
+
+    \Drupal::moduleHandler()->alter('intercept_location_closed', $closed, $params, $node);
+
+    return $closed;
+  }
+
+  /**
+   * Get the message to display to users if a location is closed.
+   *
+   * @param array $params
+   *   The requested reservation parameters.
+   * @param \Drupal\node\NodeInterface $node
+   *   The room node.
+   */
+  protected function closedMessage(array $params, NodeInterface $node) {
+    $closed_message = t('Location Closed');
+
+    \Drupal::moduleHandler()->alter('intercept_location_closed_message', $closed_message, $params, $node);
+
+    return $closed_message;
   }
 
   protected function timeToDate($time, $base_date) {

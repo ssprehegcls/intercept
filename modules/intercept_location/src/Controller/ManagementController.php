@@ -26,21 +26,22 @@ class ManagementController extends ManagementControllerBase {
           '#actions' => [
             'location_add' => [
               '#link' => $this->getButton('Add Location', 'node.add', [
-                'node_type' => 'location'
-                ]),
-              ],
-              'room_add' => [
-                '#link' => $this->getButton('Add Room', 'node.add', [
-                  'node_type' => 'room'
-                ]),
-              ]
+                'node_type' => 'location',
+              ]),
             ],
+            'room_add' => [
+              '#link' => $this->getButton('Add Room', 'node.add', [
+                'node_type' => 'room',
+              ]),
+            ],
+          ],
         ],
         'list' => [
           '#content' => $this->getList(RoomListBuilder::class),
         ],
         'taxonomies' => $this->getTaxonomyVocabularyTable(['room_type']),
-      ]
+      ],
     ];
   }
+
 }

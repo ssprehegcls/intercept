@@ -67,14 +67,14 @@ class TimeZoneAgnosticBigCalendar extends Component {
           start: convertDateToDateTime(start, timeZoneName),
           end: convertDateToDateTime(end, timeZoneName),
           slots: slots.map(date => convertDateToDateTime(date, timeZoneName)),
-        })
+        });
       }),
       onEventDrop: onEventDrop && (({ event, start, end }) => {
         onEventDrop({
           event,
           start: convertDateToDateTime(start, timeZoneName),
           end: convertDateToDateTime(end, timeZoneName),
-        })
+        });
       }),
     };
     return <BigCalendar {...bigCalendarProps} />

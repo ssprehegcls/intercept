@@ -6,16 +6,19 @@ use Drupal\Component\Utility\Xss;
 use Drupal\Component\Serialization\Json;
 use Drupal\Core\Controller\ControllerBase;
 use Drupal\Core\DependencyInjection\ContainerInjectionInterface;
+use Drupal\Core\Link;
 use Drupal\Core\TempStore\PrivateTempStoreFactory;
 use Drupal\Core\Url;
 use Drupal\intercept_core\ReservationManagerInterface;
 use Drupal\intercept_room_reservation\Entity\RoomReservationInterface;
 use Drupal\intercept_room_reservation\Form\RoomReservationAgreementForm;
 use Drupal\intercept_room_reservation\Form\RoomReservationAvailabilityForm;
+use Drupal\jsonapi\Resource\JsonApiDocumentTopLevel;
+use Drupal\node\NodeInterface;
 use Drupal\user\UserInterface;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 use Symfony\Component\HttpFoundation\JsonResponse;
-use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\HttpFoundation\Request;
 
 /**
  * Class RoomReservationController.
@@ -49,10 +52,13 @@ class RoomReservationController extends ControllerBase implements ContainerInjec
   /**
    * Reserve Room.
    *
+   * @param \Symfony\Component\HttpFoundation\Request $request
+   *   The HTTP request object.
+   *
    * @return array
    *   Return Room reservation page.
    */
-  public function reserve(\Symfony\Component\HttpFoundation\Request $request) {
+  public function reserve(Request $request) {
     $step = $request->query->get('step');
     $build = [];
 
@@ -100,8 +106,11 @@ class RoomReservationController extends ControllerBase implements ContainerInjec
 
   /**
    * Reservation agreement form page.
+   *
+   * @param \Symfony\Component\HttpFoundation\Request $request
+   *   The HTTP request object.
    */
-  public function agreement(\Symfony\Component\HttpFoundation\Request $request) {
+  public function agreement(Request $request) {
     $config = $this->config('intercept_room_reservation.settings');
     $agreement = $config->get('agreement_text');
     $build['agreement'] = [
@@ -264,7 +273,11 @@ class RoomReservationController extends ControllerBase implements ContainerInjec
             $links['revert'] = [
               'title' => $this->t('Revert'),
               'url' => $has_translations ?
-              Url::fromRoute('entity.room_reservation.translation_revert', ['room_reservation' => $room_reservation->id(), 'room_reservation_revision' => $vid, 'langcode' => $langcode]) :
+              Url::fromRoute('entity.room_reservation.translation_revert', [
+                'room_reservation' => $room_reservation->id(),
+                'room_reservation_revision' => $vid,
+                'langcode' => $langcode
+              ]) :
               Url::fromRoute('entity.room_reservation.revision_revert', ['room_reservation' => $room_reservation->id(), 'room_reservation_revision' => $vid]),
             ];
           }
@@ -299,8 +312,11 @@ class RoomReservationController extends ControllerBase implements ContainerInjec
 
   /**
    * API Callback to get a user's status.
+   *
+   * @param \Symfony\Component\HttpFoundation\Request $request
+   *   The HTTP request object.
    */
-  public function userStatus(\Symfony\Component\HttpFoundation\Request $request) {
+  public function userStatus(Request $request) {
     $user = $this->entityTypeManager()->getStorage('user')->load($this->currentUser()->id());
     $result = [
       'uuid' => $user->uuid(),
@@ -314,15 +330,20 @@ class RoomReservationController extends ControllerBase implements ContainerInjec
 
   /**
    * Room node local task for reservations.
+   *
+   * @param \Drupal\node\NodeInterface $node
+   *   The room node.
+   * @param \Symfony\Component\HttpFoundation\Request $request
+   *   The HTTP request object.
    */
-  public function reservations(\Drupal\node\NodeInterface $node, \Symfony\Component\HttpFoundation\Request $request) {
-    $reservations = $this->reservationManager->reservations('room', function($query) use ($node) {
+  public function reservations(NodeInterface $node, Request $request) {
+    $reservations = $this->reservationManager->reservations('room', function ($query) use ($node) {
       $query->condition('field_room', $node->id(), '=');
       $query->sort('field_dates.value', 'ASC');
     });
     $list = $this->entityTypeManager()->getListBuilder('room_reservation');
     $reservation_ids = array_keys($reservations);
-    $link = \Drupal\Core\Link::createFromRoute('Create reservation', 'entity.room_reservation.add_form', [
+    $link = Link::createFromRoute('Create reservation', 'entity.room_reservation.add_form', [
       'room' => $node->id(),
     ], [
       'attributes' => ['class' => ['button button-action']],
@@ -333,10 +354,10 @@ class RoomReservationController extends ControllerBase implements ContainerInjec
     return [
       'create' => $link->toRenderable(),
       'list' => $list
-      ->setEntityIds($reservation_ids)
-      ->setLimit(10)
-      ->hideColumns(['room'])
-      ->render(),
+        ->setEntityIds($reservation_ids)
+        ->setLimit(10)
+        ->hideColumns(['room'])
+        ->render(),
       'availability_form' => [
         '#title' => $this->t('Availability form'),
         '#type' => 'details',
@@ -348,8 +369,11 @@ class RoomReservationController extends ControllerBase implements ContainerInjec
 
   /**
    * Custom callback to check availabiity before reserving a room.
+   *
+   * @param \Symfony\Component\HttpFoundation\Request $request
+   *   The HTTP request object.
    */
-  public function reserveRoom(\Symfony\Component\HttpFoundation\Request $request) {
+  public function reserveRoom(Request $request) {
     $decode = \Drupal::service('serializer.encoder.jsonapi')->decode($request->getContent(), 'api_json');
     $dates = $decode['data']['attributes']['field_dates'];
     $room = $decode['data']['relationships']['field_room']['data']['id'];
@@ -376,14 +400,17 @@ class RoomReservationController extends ControllerBase implements ContainerInjec
     // From Drupal\jsonapi\Routing::getRoutesForResourceType().
     // This is still not ideal and will be discussed in
     // https://www.drupal.org/project/intercept/issues/3002286.
-    $request->attributes->set('serialization_class', \Drupal\jsonapi\Resource\JsonApiDocumentTopLevel::class);
+    $request->attributes->set('serialization_class', JsonApiDocumentTopLevel::class);
     return \Drupal::service('jsonapi.request_handler')->handle($request, $resource_type);
   }
 
   /**
    * API Callback to check room availability.
+   *
+   * @param \Symfony\Component\HttpFoundation\Request $request
+   *   The HTTP request object.
    */
-  public function availability(\Symfony\Component\HttpFoundation\Request $request) {
+  public function availability(Request $request) {
     // Accept query sring params, and then also accept a post request.
     $params = $request->query->get('filter');
 
@@ -406,4 +433,5 @@ class RoomReservationController extends ControllerBase implements ContainerInjec
 
     return JsonResponse::create($result, 200);
   }
+
 }

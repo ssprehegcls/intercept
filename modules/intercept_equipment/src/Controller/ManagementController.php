@@ -40,7 +40,6 @@ class ManagementController extends ManagementControllerBase {
     ];
   }
 
-
   public function viewEquipmentConfiguration(AccountInterface $user, Request $request) {
     $lists = $this->table();
     $link = $this->getButton('Equipment List', 'system.admin_content', [
@@ -57,13 +56,14 @@ class ManagementController extends ManagementControllerBase {
               '#link' => $this->getButton('Add Equipment', 'node.add', [
                 'node_type' => 'equipment',
                 'destination' => \Drupal\Core\Url::fromRoute('<current>')->toString(),
-                ]),
-              ],
+              ]),
             ],
-            '#content' => $lists->toArray(),
+          ],
+          '#content' => $lists->toArray(),
         ],
         'taxonomies' => $this->getTaxonomyVocabularyTable(['equipment_type']),
       ],
     ];
   }
+
 }

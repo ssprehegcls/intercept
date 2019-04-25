@@ -2,7 +2,6 @@
 
 namespace Drupal\intercept_room_reservation;
 
-use Drupal\Core\Datetime\DrupalDateTime;
 use Drupal\Core\Entity\EntityInterface;
 use Drupal\Core\Entity\EntityListBuilder;
 use Drupal\Core\Link;
@@ -37,7 +36,7 @@ class RoomReservationListBuilder extends EntityListBuilder {
     /* @var $entity \Drupal\intercept_room_reservation\Entity\RoomReservation */
     $row['name'] = $entity->link($entity->getDateRange('UTC'));
     $row['room'] = $this->getEntityLabel($entity->field_room->entity, $this->t('No room'));
-    $row['location'] = $entity->getLocation()? $entity->getLocation()->link() : '';
+    $row['location'] = $entity->getLocation() ? $entity->getLocation()->link() : '';
     $row['user'] = $this->getEntityLabel($entity->field_user->entity, $this->t('No user'));
     $row['status'] = $entity->field_status->getString();
     $row = array_merge($row, parent::buildRow($entity));

@@ -17,10 +17,6 @@ import moment from 'moment';
 
 const { utils } = interceptClient;
 
-const dateAccessor = prop => item => utils.dateFromDrupal(item[prop]);
-const startAccessor = dateAccessor('start');
-const endAccessor = dateAccessor('end');
-
 const CalendarEvent = (props) => {
   const { event } = props;
   const { data } = event;
@@ -116,8 +112,27 @@ class RoomAvailabilityCalendar extends React.Component {
     return date;
   };
 
+  startDateAccessor = prop => (item) => {
+    const dateFromDrupal = moment(utils.dateFromDrupal(item[prop]));
+    const midnight = moment(this.props.date).set({ hour: 0, minute: 0, second: 0 });
+    const startDate = moment.max(dateFromDrupal, midnight);
+    return startDate.toISOString();
+  };
+
+  endDateAccessor = prop => (item) => {
+    const dateFromDrupal = moment(utils.dateFromDrupal(item[prop]));
+    const midnight = moment(this.props.date).set({ hour: 23, minute: 59, second: 59 });
+    const endDate = moment.min(dateFromDrupal, midnight);
+    if (endDate.get('hour') === 0) {
+      endDate.subtract(1, 'seconds');
+    }
+    return endDate.toISOString();
+  };
+
   render() {
-    const { availability, date, defaultDate, isClosed, min, max, room } = this.props;
+    const { availability, date, defaultDate, isClosed, closedMessage, min, max, room } = this.props;
+    const startAccessor = this.startDateAccessor('start');
+    const endAccessor = this.endDateAccessor('end');
 
     let events = [];
     const reservations = get(availability, `rooms.${room}.dates`);
@@ -135,16 +150,17 @@ class RoomAvailabilityCalendar extends React.Component {
           moment(date)
             .tz(utils.getUserTimezone())
             .startOf('day')
-            .toDate()
+            .toDate(),
         ),
         end: utils.dateToDrupal(
           moment(date)
             .tz(utils.getUserTimezone())
             .endOf('day')
-            .toDate()
+            .subtract(1, 'seconds')
+            .toDate(),
         ),
-        allDay: true,
-        title: 'Location Closed',
+        allDay: false,
+        title: closedMessage,
       });
     }
 
@@ -167,7 +183,7 @@ class RoomAvailabilityCalendar extends React.Component {
           endAccessor={endAccessor}
           events={events}
           getNow={() => utils.getUserTimeNow()}
-          max={this.getDateFromTime(max && max !== '2400' ? max : '2359')}
+          max={this.getDateFromTime(max && (max !== '2400' && max !== '0000') ? max : '2359')}
           min={this.getDateFromTime(min || '0000')}
           onNavigate={this.props.onNavigate}
           // onSelectEvent={this.onSelectEvent}

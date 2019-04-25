@@ -15,7 +15,7 @@ class ManagementController extends ManagementControllerBase {
     if ($page_name == 'system_configuration') {
       $build['sections']['main']['#actions']['events'] = [
         '#link' => $this->getManagementButton('Events', 'event_configuration'),
-        '#weight' => 8
+        '#weight' => 8,
       ];
     }
     if ($page_name == 'default') {
@@ -26,7 +26,7 @@ class ManagementController extends ManagementControllerBase {
       ];
       if ($this->currentUser()->hasPermission('create event content')) {
         $build['sections']['main']['#actions']['events_all'] = [
-          '#link' => $this->getManagementButton('View all Events', 'events')
+          '#link' => $this->getManagementButton('View all Events', 'events'),
         ];
       }
     }

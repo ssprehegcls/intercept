@@ -166,14 +166,14 @@ class ReserveRoomStep2 extends React.Component {
     const hours = this.props.hours;
 
     return hours
-    ? {
-      min: hours.min,
-      max: (hours.max.endsWith('00') ? String(hours.max - 55) : String(hours.max - 15))
-    }
-    : {
-      min: '0000',
-      max: '0000',
-    }
+      ? {
+        min: hours.min,
+        max: (hours.max.endsWith('00') ? String(hours.max - 55) : String(hours.max - 15))
+      }
+      : {
+        min: '0000',
+        max: '0000',
+      };
   }
 
   render() {
@@ -187,7 +187,8 @@ class ReserveRoomStep2 extends React.Component {
       room,
       userStatus,
     } = this.props;
-    const isClosed = !hours;
+    const isClosed = !hours || get(availability, `rooms.${room}.is_closed`);
+    const closedMessage = isClosed ? get(availability, `rooms.${room}.closed_message`) : 'Location Closed';
     const limits = utils.userIsStaff()
       ? {
         min: '0000',
@@ -228,6 +229,7 @@ class ReserveRoomStep2 extends React.Component {
                 onNavigate={this.handleCalendarNavigate}
                 availability={availability}
                 isClosed={isClosed}
+                closedMessage={closedMessage}
               />
             ) : (
               <div>

@@ -10,12 +10,12 @@ use Drupal\datetime\Plugin\Field\FieldType\DateTimeItemInterface;
 class Dates {
 
   /**
-   * @var ConfigFactoryInterface
+   * @var \Drupal\Core\Config\ConfigFactoryInterface
    */
   protected $configFactory;
 
   /**
-   * Constructs a new ReservationManager object.
+   * Constructs a new Dates object.
    */
   public function __construct(ConfigFactoryInterface $config_factory) {
     $this->configFactory = $config_factory;
@@ -132,7 +132,11 @@ class Dates {
   }
 
   /**
-   * $from_default
+   * Converts a date string to the system timezone.
+   *
+   * @param string $string
+   *   The datetime string.
+   * @param bool $from_default
    *   TRUE if converting from default to UTC, FALSE if opposite.
    */
   public function convertDate($string, $from_default = TRUE) {

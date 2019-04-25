@@ -46,7 +46,7 @@ class ManagementController extends ManagementControllerBase {
     $build['form'] = $this->formBuilder()->getForm('Drupal\system\Form\SiteInformationForm');
 
     if ($this->moduleHandler()->moduleExists('r4032login')) {
-      $build['form']['#validate'] = array_filter($build['form']['#validate'], function($value) {
+      $build['form']['#validate'] = array_filter($build['form']['#validate'], function ($value) {
         return $value != 'r4032login_form_system_site_information_settings_validate';
       });
     }
@@ -97,4 +97,5 @@ class ManagementController extends ManagementControllerBase {
     ];
     return $build;
   }
+
 }

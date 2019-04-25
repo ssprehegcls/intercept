@@ -50,4 +50,5 @@ class InterceptMenuLinks extends DeriverBase implements ContainerDeriverInterfac
 
     return $this->derivatives;
   }
+
 }
