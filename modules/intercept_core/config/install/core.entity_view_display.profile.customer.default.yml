@@ -9,6 +9,7 @@ dependencies:
     - field.field.profile.customer.field_email_address
     - field.field.profile.customer.field_event_types
     - field.field.profile.customer.field_first_name
+    - field.field.profile.customer.field_ils_username
     - field.field.profile.customer.field_last_name
     - field.field.profile.customer.field_phone
     - field.field.profile.customer.field_preferred_location
@@ -24,14 +25,14 @@ bundle: customer
 mode: default
 content:
   field_address:
-    weight: 8
+    weight: 9
     label: above
     settings: {  }
     third_party_settings: {  }
     type: address_default
     region: content
   field_audiences:
-    weight: 6
+    weight: 7
     label: above
     settings:
       link: true
@@ -39,7 +40,7 @@ content:
     type: entity_reference_label
     region: content
   field_barcode:
-    weight: 7
+    weight: 8
     label: above
     settings:
       link_to_entity: false
@@ -54,7 +55,7 @@ content:
     type: basic_string
     region: content
   field_event_types:
-    weight: 5
+    weight: 6
     label: above
     settings:
       link: true
@@ -63,6 +64,14 @@ content:
     region: content
   field_first_name:
     weight: 0
+    label: above
+    settings:
+      link_to_entity: false
+    third_party_settings: {  }
+    type: string
+    region: content
+  field_ils_username:
+    weight: 4
     label: above
     settings:
       link_to_entity: false
@@ -86,7 +95,7 @@ content:
     type: telephone_link
     region: content
   field_preferred_location:
-    weight: 4
+    weight: 5
     label: above
     settings:
       link: true

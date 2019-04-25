@@ -10,6 +10,7 @@ dependencies:
     - field.field.profile.customer.field_email_address
     - field.field.profile.customer.field_event_types
     - field.field.profile.customer.field_first_name
+    - field.field.profile.customer.field_ils_username
     - field.field.profile.customer.field_last_name
     - field.field.profile.customer.field_phone
     - field.field.profile.customer.field_preferred_location
@@ -28,6 +29,7 @@ third_party_settings:
         - field_phone
         - field_email_address
         - field_barcode
+        - field_ils_username
         - field_address
       parent_name: ''
       weight: 1
@@ -61,7 +63,7 @@ mode: customer
 content:
   field_address:
     type: address_default
-    weight: 7
+    weight: 8
     region: content
     settings:
       default_country: US
@@ -102,6 +104,14 @@ content:
     third_party_settings: {  }
     type: string_textfield
     region: content
+  field_ils_username:
+    type: string_textfield
+    weight: 7
+    region: content
+    settings:
+      size: 60
+      placeholder: ''
+    third_party_settings: {  }
   field_last_name:
     weight: 2
     settings:

@@ -9,6 +9,7 @@ dependencies:
     - field.field.profile.customer.field_email_address
     - field.field.profile.customer.field_event_types
     - field.field.profile.customer.field_first_name
+    - field.field.profile.customer.field_ils_username
     - field.field.profile.customer.field_last_name
     - field.field.profile.customer.field_phone
     - field.field.profile.customer.field_preferred_location
@@ -24,14 +25,14 @@ bundle: customer
 mode: default
 content:
   field_address:
-    weight: 8
+    weight: 9
     settings:
       default_country: null
     third_party_settings: {  }
     type: address_default
     region: content
   field_audiences:
-    weight: 6
+    weight: 7
     settings:
       match_operator: CONTAINS
       size: 60
@@ -40,7 +41,7 @@ content:
     type: entity_reference_autocomplete
     region: content
   field_barcode:
-    weight: 7
+    weight: 8
     settings:
       size: 60
       placeholder: ''
@@ -56,7 +57,7 @@ content:
     type: email_default
     region: content
   field_event_types:
-    weight: 5
+    weight: 6
     settings:
       match_operator: CONTAINS
       size: 60
@@ -66,6 +67,14 @@ content:
     region: content
   field_first_name:
     weight: 0
+    settings:
+      size: 60
+      placeholder: ''
+    third_party_settings: {  }
+    type: string_textfield
+    region: content
+  field_ils_username:
+    weight: 4
     settings:
       size: 60
       placeholder: ''
@@ -88,7 +97,7 @@ content:
     type: telephone_default
     region: content
   field_preferred_location:
-    weight: 4
+    weight: 5
     settings:
       match_operator: CONTAINS
       size: 60

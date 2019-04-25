@@ -39,6 +39,9 @@ class UserProfileForm extends \Drupal\user\ProfileForm {
         '#type' => 'password',
         '#weight' => $pin['weight'],
         '#title' => $this->t('PIN'),
+        // Turn off autofill for username and PIN fields so that browser
+        // doesn't fill these in if the customer doesn't want to change them.
+        '#attributes' => ['autocomplete' => 'new-password'],
       ];
     }
     // Set the default value for barcode and add a save handler for the pin.
@@ -46,6 +49,11 @@ class UserProfileForm extends \Drupal\user\ProfileForm {
       $this->populateName($entity_form, $patron, $profile);
       $form_state->set('patron', $patron);
       $entity_form['field_barcode']['widget'][0]['value']['#default_value'] = $patron->barcode;
+      // Note: Polaris does not include the Username value in a basic data request.
+      if (isset($patron->basicData()->Username)) {
+        $entity_form['field_ils_username']['widget'][0]['value']['#default_value'] = $patron->basicData()->Username;
+      }
+      // $debug = true;
       $entity_form['field_phone']['widget'][0]['value']['#default_value'] = $patron->basicData()->PhoneNumber;
       $entity_form['field_email_address']['widget'][0]['value']['#default_value'] = $patron->basicData()->EmailAddress;
       $entity_form['#ief_element_submit'][] = [$this, 'saveInlineEntityForm'];
@@ -125,6 +133,10 @@ class UserProfileForm extends \Drupal\user\ProfileForm {
         $authmap->save($user, 'polaris', $patron->barcode(), $patron->basicData());
       }
     }
+    // Update ILS username if requested.
+    $ils_username = $form_state->cleanValues()->getValue(['customer_profile', 'field_ils_username']);
+    $ils_username = $ils_username[0]['value'];
+    $patron->updateUsername($ils_username);
   }
 
   protected function getProfileEntity(UserInterface  $user) {
