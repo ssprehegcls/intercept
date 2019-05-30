@@ -63,10 +63,6 @@ addValidationRule('isAfterStart', (values, value) => value === null || value > v
 addValidationRule('isOnOrAfterStart', (values, value) => value === null || value >= values.start);
 addValidationRule('isBeforeEnd', (values, value) => value === null || value < values.end);
 addValidationRule('isOnOrBeforeEnd', (values, value) => value === null || value <= values.end);
-addValidationRule(
-  'isAfterMeetingStart',
-  (values, value) => value === null || value > values.meetingStart,
-);
 
 function Transition(props) {
   return <Slide direction="up" {...props} />;
@@ -355,8 +351,6 @@ ReserveRoomDateForm.propTypes = {
     date: PropTypes.instanceOf(Date),
     start: PropTypes.string,
     end: PropTypes.string,
-    meetingStart: PropTypes.string,
-    meetingEnd: PropTypes.string,
   }),
   onChange: PropTypes.func.isRequired,
 };
@@ -366,8 +360,6 @@ ReserveRoomDateForm.defaultProps = {
     date: utils.roundTo(new Date()).toDate(),
     start: null,
     end: null,
-    meetingStart: null,
-    meetingEnd: null,
   },
   step: 15,
   min: null,

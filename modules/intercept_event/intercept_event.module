@@ -228,6 +228,58 @@ function intercept_event_node_insert(Drupal\node\NodeInterface $node) {
 }
 
 /**
+ * Implements hook_entity_presave().
+ */
+function intercept_event_entity_presave(Drupal\Core\Entity\EntityInterface $entity) {
+  switch ($entity->bundle()) {
+    case 'event':
+      $keywords = '';
+      $title = $entity->get('title')->value;
+      $teaser = strip_tags($entity->get('field_text_teaser')->value);
+      $content = strip_tags($entity->get('field_text_content')->value);
+      $intro = strip_tags($entity->get('field_text_intro')->value);
+      $keywords = implode(' ', [$title, $teaser, $content, $intro]);
+      $types = $entity->get('field_event_type')->referencedEntities();
+      foreach ($types as $type) {
+        $keywords .= ' ' . $type->getName();
+      }
+      $audiences = $entity->get('field_event_audience')->referencedEntities();
+      foreach ($audiences as $audience) {
+        $keywords .= ' ' . $audience->getName();
+      }
+      // Clean up the keywords string to remove punctuation & extra white space.
+      $keywords = preg_replace("/[^a-zA-Z 0-9\-]/", '', $keywords);
+      $keywords = preg_replace('/\s+/', ' ', $keywords);
+      // Setting the value into the keywords field.
+      $entity->field_keywords->value = $keywords;
+      break;
+    case 'audience':
+    case 'event_type':
+      // It's a taxonomy term from one of our taxonomy fields that gets
+      // concatenated into the keywords field.
+      // Find the term id.
+      $tid = $entity->id();
+      // Then, find all of the event nodes that currently use this term.
+      $nodes = \Drupal::entityTypeManager()->getStorage('node')->loadByProperties([
+        'field_event_audience' => $tid,
+      ]);
+      if (empty($nodes)) {
+        $nodes = \Drupal::entityTypeManager()->getStorage('node')->loadByProperties([
+          'field_event_type' => $tid,
+        ]);
+      }
+      // Trigger a re-save of all of those (thus updating keywords field data).
+      if (count($nodes) > 0) {
+        $eventQueue = Drupal::service('intercept_event.queue');
+        foreach($nodes as $node) {
+          $eventQueue->add($node->id());
+        }
+      }
+      break;
+  }
+}
+
+/**
  * Implements hook_node_delete().
  */
 function intercept_event_node_delete(Drupal\node\NodeInterface $node) {
@@ -235,6 +287,13 @@ function intercept_event_node_delete(Drupal\node\NodeInterface $node) {
     \Drupal::service('intercept_event.manager')->deleteRegisterAlias($node);
     return;
   }
+}
+
+/**
+ * Implements hook_taxonomy_term_update().
+ */
+function intercept_event_taxonomy_term_update() {
+  
 }
 
 /**

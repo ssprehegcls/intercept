@@ -1,3 +1,4 @@
+uuid: 78572514-6f9d-4249-8119-4edf0179b81f
 langcode: en
 status: true
 dependencies:
@@ -11,7 +12,7 @@ entity_type: node
 bundle: event
 label: 'Primary Event Type'
 description: 'Choose the primary event type. This is used for reporting purposes. '
-required: false
+required: true
 translatable: false
 default_value: {  }
 default_value_callback: ''

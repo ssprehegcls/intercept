@@ -47,7 +47,7 @@ const encodeFilters = (value) => {
     [c.DATE_END]: !value[c.DATE_END] ? null : utils.getDayTimeStamp(value[c.DATE_END]),
     [DESIGNATION]: encode(UrlQueryParamTypes.string, value[DESIGNATION]),
   });
-  return encodeObject(filters, ':', '_');
+  return encodeObject(filters, '::', '__');
 };
 
 const decodeFilters = (values) => {
@@ -63,7 +63,7 @@ const decodeFilters = (values) => {
       [DESIGNATION]: 'events',
     };
   }
-  const value = decodeObject(values, ':', '_');
+  const value = decodeObject(values, '::', '__');
   const filters = {
     [c.KEYWORD]: decode(UrlQueryParamTypes.string, value[c.KEYWORD], ''),
     [c.TYPE_LOCATION]: decodeArray(value.location, ',') || [],

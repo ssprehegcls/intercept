@@ -1,3 +1,4 @@
+uuid: 1e115ea6-53a0-4394-84ff-2428e0e33e40
 langcode: en
 status: true
 dependencies:
@@ -11,7 +12,7 @@ entity_type: node
 bundle: event
 label: 'Primary Audience'
 description: 'Choose the primary audience. This is used for reporting purposes.'
-required: false
+required: true
 translatable: false
 default_value: {  }
 default_value_callback: ''

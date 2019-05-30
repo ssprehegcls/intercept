@@ -173,14 +173,6 @@ class ReserveRoomStep1 extends React.Component {
         attendees: 1,
         groupName: '',
         meeting: false,
-        meetingStart: moment()
-          .startOf('hour')
-          .add(1, 'h')
-          .toDate(),
-        meetingEnd: moment()
-          .startOf('hour')
-          .add(2, 'h')
-          .toDate(),
         [c.TYPE_MEETING_PURPOSE]: null,
         meetingDetails: '',
         refreshments: false,

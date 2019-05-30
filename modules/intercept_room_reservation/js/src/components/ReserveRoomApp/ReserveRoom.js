@@ -151,8 +151,6 @@ class ReserveRoom extends React.Component {
         attendees: null,
         groupName: '',
         meeting: false,
-        meetingStart: null,
-        meetingEnd: null,
         [c.TYPE_MEETING_PURPOSE]: null,
         meetingDetails: '',
         refreshments: false,
@@ -238,8 +236,6 @@ class ReserveRoom extends React.Component {
       'date',
       'start',
       'end',
-      'meetingStart',
-      'meetingEnd',
       'attendees',
       'groupName',
     ]);
@@ -277,18 +273,6 @@ class ReserveRoom extends React.Component {
       values.end = moment(endValue)
         .tz(tz)
         .add(ROOM_RESERVATION_MEETING_BUFFER, 'minutes')
-        .format('HHmm');
-    }
-
-    if (!values.meetingStart) {
-      values.meetingStart = moment(startValue)
-        .tz(tz)
-        .format('HHmm');
-    }
-
-    if (!values.meetingEnd) {
-      values.meetingEnd = moment(endValue)
-        .tz(tz)
         .format('HHmm');
     }
 

@@ -2,5 +2,5 @@ intercept_location.general:
   title: 'InterCEPT Locations'
   description: 'InterCEPT location settings.'
   route_name: intercept_location.general
-  parent: intercept_core.settings 
+  parent: intercept_core.settings
 

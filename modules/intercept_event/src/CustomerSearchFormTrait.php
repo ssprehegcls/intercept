@@ -38,17 +38,31 @@ trait CustomerSearchFormTrait {
     if (!empty($values['email'])) { 
       $query['EM'] = $values['email'];
     }
-    $results = $this->client()->patron->searchAnd($query);
+    if ($this->client()) {
+      $results = $this->client()->patron->searchAnd($query);
+    }
+    else {
+      return [];
+    }
     return !empty($results->PatronSearchRows) ? $results->PatronSearchRows : [];
   }
 
   /**
    * Get ILS Client.
    *
-   * @return \Drupal\polaris\Client
+   * @return object $client
    */
   protected function client() {
-    return \Drupal::service('polaris.client');
+    $config_factory = \Drupal::service('config.factory');
+    $settings = $config_factory->get('intercept_ils.settings');
+    $intercept_ils_plugin = $settings->get('intercept_ils_plugin', '');
+    if ($intercept_ils_plugin) {
+      $ils_manager = \Drupal::service('plugin.manager.intercept_ils');
+      $ils_plugin = $ils_manager->createInstance($intercept_ils_plugin);
+      $client = $ils_plugin->getClient();
+      return $client;
+    }
+    return FALSE;
   }
 
   /**
@@ -74,7 +88,7 @@ trait CustomerSearchFormTrait {
       $element['#options'][$result->Barcode] = [
         'name' => $this->formatName($result->PatronFirstLastName),
         'barcode' => $this->obfuscateBarcode($result->Barcode),
-        'email' => $this->obfuscateEmail($patron->data()->EmailAddress),
+        'email' => $this->obfuscateEmail($patron->basicData()->EmailAddress),
       ];
     }
     return $element;
@@ -107,7 +121,7 @@ trait CustomerSearchFormTrait {
   } 
 
   /**
-   * Format Polaris returned name to readable.
+   * Format ILS-returned name to readable.
    *
    * @deprecated
    */

@@ -7,18 +7,12 @@ use Drupal\Core\Form\FormStateInterface;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 use Drupal\Core\Entity\EntityTypeManager;
 use Drupal\Core\Entity\EntityFormBuilder;
-use Drupal\polaris\Client;
 
 /**
  * Class OrganizationMappingForm.
  */
 class OrganizationMappingForm extends FormBase {
 
-  /**
-   * Drupal\polaris\Client definition.
-   *
-   * @var \Drupal\polaris\Client
-   */
   protected $client;
 
   /**
@@ -38,10 +32,18 @@ class OrganizationMappingForm extends FormBase {
   /**
    * Constructs a new OrganizationMappingForm object.
    */
-  public function __construct(Client $client,EntityTypeManager $entity_type_manager, EntityFormBuilder $entity_form_builder) {
-    $this->client = $client;
+  public function __construct(EntityTypeManager $entity_type_manager, EntityFormBuilder $entity_form_builder) {
     $this->entityTypeManager = $entity_type_manager;
     $this->entityFormBuilder = $entity_form_builder;
+
+    $config_factory = \Drupal::service('config.factory');
+    $settings = $config_factory->get('intercept_ils.settings');
+    $intercept_ils_plugin = $settings->get('intercept_ils_plugin', '');
+    if ($intercept_ils_plugin) {
+      $ils_manager = \Drupal::service('plugin.manager.intercept_ils');
+      $ils_plugin = $ils_manager->createInstance($intercept_ils_plugin);
+      $this->client = $ils_plugin->getClient();
+    }
   }
 
   /**
@@ -49,7 +51,6 @@ class OrganizationMappingForm extends FormBase {
    */
   public static function create(ContainerInterface $container) {
     return new static(
-      $container->get('polaris.client'),
       $container->get('entity_type.manager'),
       $container->get('entity.form_builder')
     );
@@ -119,11 +120,13 @@ class OrganizationMappingForm extends FormBase {
   }
 
   private function getOptions() {
-    $organizations = $this->client->organization->getAll();
     $options = [];
-    array_walk($organizations, function($item, $key) use (&$options) {
-      $options[$item->OrganizationID] = $item->Name;
-    });
+    if ($this->client) {
+      $organizations = $this->client->organization->getAll();
+      array_walk($organizations, function($item, $key) use (&$options) {
+        $options[$item->OrganizationID] = $item->Name;
+      });
+    }
     return $options; 
   }
 

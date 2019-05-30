@@ -169,8 +169,6 @@ function intercept_room_reservation_form_views_exposed_form_alter(&$form, FormSt
   if ($view->id() == 'intercept_room_reservations' && $view->current_display == 'embed') {
 
     // Change the locations field to be a dropdown.
-    // See: https://atendesigngroup.com/blog/drupal-8-views-entity-reference-exposed-filter-select-list
-    // Query nodes.
     $storage = Drupal::getContainer()->get('entity_type.manager')->getStorage('node');
     $nids = $storage->getQuery();
 
@@ -311,7 +309,7 @@ function intercept_room_reservation_room_reservation_view(array &$build, RoomRes
       '#markup' => '<div class="js--room-reservation-action" data-reservation-uuid="' . $room_reservation->uuid() . '" data-status="' . $room_reservation->field_status->value . '" >' . $room_reservation->field_status->value . '</div>',
       '#attached' => [
         'library' => ['intercept_room_reservation/roomReservationActionButton'],
-      ]
+      ],
     ];
   }
 }
@@ -322,7 +320,7 @@ function intercept_room_reservation_room_reservation_view(array &$build, RoomRes
 function intercept_room_reservation_views_query_alter(ViewExecutable $view, QueryPluginBase $query) {
   if ($view->id() == 'intercept_room_reservations' && $view->current_display == 'embed') {
     foreach ($query->where as &$condition_group) {
-      // For each condition in condition group
+      // For each condition in condition group.
       foreach ($condition_group['conditions'] as &$condition) {
         if (isset($condition['field']) && strstr($condition['field'], 'field_dates_value')) {
           // Run the query from the beginning of the start date until the end of the end date.

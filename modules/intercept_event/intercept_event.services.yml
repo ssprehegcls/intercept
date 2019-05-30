@@ -8,3 +8,6 @@ services:
   intercept_event.evaluation_manager:
     class: Drupal\intercept_event\EventEvaluationManager
     arguments: ['@current_user', '@entity_type.manager']
+  intercept_event.queue:
+    class: Drupal\intercept_event\EventQueue
+    arguments: ['@queue']

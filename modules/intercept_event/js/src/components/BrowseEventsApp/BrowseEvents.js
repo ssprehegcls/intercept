@@ -7,10 +7,12 @@ import { connect } from 'react-redux';
 
 // Lodash
 import debounce from 'lodash/debounce';
-import mapValues from 'lodash/mapValues';
+import difference from 'lodash/difference';
+import xor from 'lodash/xor';
 import get from 'lodash/get';
 import pick from 'lodash/pick';
 import throttle from 'lodash/throttle';
+import uniq from 'lodash/uniq';
 
 // Moment
 import moment from 'moment';
@@ -161,7 +163,7 @@ function getDateFilters(values, view = 'list', calView = 'day', date = new Date(
   };
 }
 
-function getKeywordFilters(value, group = 'group') {
+function getKeywordFilters(value) {
   const filters = {};
 
   if (!value.keyword) {
@@ -169,29 +171,19 @@ function getKeywordFilters(value, group = 'group') {
   }
 
   const operator = 'CONTAINS';
-  const conjunction = 'OR';
+  const keyword = value.keyword
+    // PHP strip_tags
+    .replace(/<.*?>/g, '')
+    // Remove non alphanumeric characters
+    .replace(/[^a-zA-Z 0-9\-]/g, '')
+    // Trim whitespace
+    .replace(/\s\s+/g, ' ');
 
-  const types = [
-    { id: 'tite', path: 'title' },
-    { id: 'body', path: 'field_text_content.value' },
-    { id: 'intro', path: 'field_text_intro.value' },
-    { id: 'teaser', path: 'field_text_teaser.value' },
-    { id: 'tags', path: 'field_event_tags.name' },
-  ];
-
-  filters[group] = {
-    type: 'group',
-    conjunction,
+  filters['keyword'] = {
+    path: 'field_keywords',
+    operator,
+    value: keyword,
   };
-
-  types.forEach((type) => {
-    filters[type.id] = {
-      memberOf: group,
-      path: type.path,
-      operator,
-      value: value.keyword,
-    };
-  });
 
   return filters;
 }
@@ -211,20 +203,7 @@ function getFilters(values, view = 'list', calView = 'day', date = new Date()) {
   const types = [
     { id: c.TYPE_EVENT_TYPE, path: 'field_event_type.uuid', conjunction: 'OR' },
     { id: c.TYPE_LOCATION, path: 'field_location.uuid', conjunction: 'OR' },
-    {
-      id: c.TYPE_AUDIENCE,
-      path: 'field_event_audience.uuid',
-      conjunction: 'OR',
-      group: 'audience',
-    },
-    {
-      id: c.TYPE_AUDIENCE,
-      path: 'field_event_audience.parent.uuid',
-      conjunction: 'OR',
-      value: c.TYPE_AUDIENCE,
-      label: 'parent',
-      group: 'audience',
-    },
+    { id: c.TYPE_AUDIENCE, path: 'field_event_audience.uuid', conjunction: 'OR' },
   ];
 
   types.forEach((type) => {
@@ -287,6 +266,7 @@ class BrowseEvents extends Component {
     this.handleCalendarView = this.handleCalendarView.bind(this);
     this.handleFilterChange = this.handleFilterChange.bind(this);
     this.handleViewChange = this.handleViewChange.bind(this);
+    this.processAudienceFilters = this.processAudienceFilters.bind(this);
     this.setFetchers = this.setFetchers.bind(this);
     this.doFetch = debounce(this.doFetch, 100).bind(this);
     this.doFetchMore = this.doFetchMore.bind(this);
@@ -358,9 +338,64 @@ class BrowseEvents extends Component {
     this.setFetchers(this.props.filters, 'calendar', calView, this.props.date);
   };
 
+  // Handle audience filter parent child selections.
+  // This ensures parent terms are selected when all children
+  // are selected. As well as selects and deselects the children
+  // in sync with the parents.
+  processAudienceFilters(values) {
+    const oldTerms = this.props.filters[c.TYPE_AUDIENCE] || [];
+    const newTerms = values[c.TYPE_AUDIENCE] || [];
+    const tree = this.props.audienceOptions;
+
+    let selected = newTerms;
+
+    // Return if audiences are the same.
+    if (oldTerms.length === newTerms.length) {
+      return values;
+    }
+
+    // Which audience changed?
+    const altered = xor(oldTerms, newTerms).pop();
+    // Was audience added or removed?
+    const op = oldTerms.length < newTerms.length ? 'add' : 'remove';
+    // Does audience have children?
+    const top = tree.filter(t => t.key === altered).pop();
+    // If this is a parent apply same operation to children
+    if (top) {
+      const related = top.children.map(child => child.key);
+      selected = op === 'add'
+        ? uniq([].concat(newTerms, related))
+        : difference(newTerms, related);
+    }
+    // If this is a child apply same operation to the parent based on all children
+    else {
+      // Find parent
+      const related = tree.filter(
+        node => node.children.filter(child => child.key === altered).length > 0
+      ).pop();
+
+      // If removing a child
+      if (op === 'remove') {
+        // Remove the parent
+        selected = difference(newTerms, [related.key]);
+      }
+      // If adding a child and all children are selected
+      else if (difference(related.children.map(child => child.key), newTerms).length === 0) {
+        // Add the parent
+        selected = uniq([].concat(newTerms, related.key));
+      }
+    }
+
+    return {
+      ...values,
+      [c.TYPE_AUDIENCE]: selected,
+    };
+  }
+
   handleFilterChange(values) {
-    this.props.onChangeFilters(values);
-    this.setFetchers(values);
+    const newValues = this.processAudienceFilters(values);
+    this.props.onChangeFilters(newValues);
+    this.setFetchers(newValues);
   }
 
   handleScroll() {
@@ -388,7 +423,7 @@ class BrowseEvents extends Component {
   }
 
   doFetch(fetcher) {
-    const { fetchEntities, view } = this.props;
+    const { fetchEntities } = this.props;
     fetchEntities(fetcher[c.TYPE_EVENT]);
   }
 
@@ -456,6 +491,7 @@ const mapStateToProps = (state, ownProps) => {
       [c.TYPE_EVENT_REGISTRATION]: select.recordsAreLoading(c.TYPE_EVENT_REGISTRATION)(state),
     },
     calendarEvents: select.calendarEvents(state),
+    audienceOptions: select.recordOptions(c.TYPE_AUDIENCE)(state),
   };
 };
 
@@ -493,6 +529,7 @@ const mapDispatchToProps = dispatch => ({
 BrowseEvents.propTypes = {
   calendarEvents: PropTypes.arrayOf(Object).isRequired,
   events: PropTypes.arrayOf(Object).isRequired,
+  audienceOptions: PropTypes.arrayOf(Object).isRequired,
   loading: PropTypes.object.isRequired,
   fetchEntities: PropTypes.func.isRequired,
   fetchRegistrations: PropTypes.func.isRequired,

@@ -158,7 +158,13 @@ class ReserveRoomConfirmation extends React.Component {
     }
 
     return (
-      <DialogConfirm {...dialogProps} open={open} onBackdropClick={null} disableEscapeKeyDown={disableEscapeKeyDown} disableBackdropClick={disableBackdropClick}>
+      <DialogConfirm
+        {...dialogProps}
+        open={open}
+        onBackdropClick={null}
+        disableEscapeKeyDown={disableEscapeKeyDown}
+        disableBackdropClick={disableBackdropClick}
+      >
         {content}
       </DialogConfirm>
     );

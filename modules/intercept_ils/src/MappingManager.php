@@ -2,10 +2,11 @@
 
 namespace Drupal\intercept_ils;
 
+use Drupal\Core\Config\ConfigFactoryInterface;
 use Drupal\Core\Entity\EntityInterface;
 use Drupal\Core\Entity\EntityTypeManagerInterface;
 use Drupal\Core\Entity\Query\QueryFactory;
-use Drupal\polaris\Client;
+use Drupal\intercept_ils\ILSManager;
 
 class MappingManager {
 
@@ -16,11 +17,23 @@ class MappingManager {
   private $queryFactory;
 
   /**
+   * The Intercept ILS configuration.
+   *
+   * @var \Drupal\Core\Config\ConfigFactoryInterface
+   */
+  protected $interceptILSPlugin;
+
+  /**
    * Mapping constructor.
    */
-  public function __construct(EntityTypeManagerInterface $entity_type_manager, Client $client, QueryFactory $query_factory) {
+  public function __construct(EntityTypeManagerInterface $entity_type_manager, QueryFactory $query_factory, ConfigFactoryInterface $config_factory, ILSManager $ils_manager) {
     $this->entityTypeManager = $entity_type_manager;
-    $this->client = $client;
+    $settings = $config_factory->get('intercept_ils.settings');
+    $intercept_ils_plugin = $settings->get('intercept_ils_plugin', '');
+    if ($intercept_ils_plugin) {
+      $this->interceptILSPlugin = $ils_manager->createInstance($intercept_ils_plugin);
+      $this->client = $this->interceptILSPlugin->getClient();
+    }
     $this->queryFactory = $query_factory;
   }
 
@@ -74,7 +87,12 @@ class MappingManager {
 
   public function loadByBarcode($barcode) {
     // First load from mapping.
-    $user = \Drupal::service('polaris.client')->patron->getUserByBarcode($barcode);
+    if ($this->client) {
+      $user = $this->client->patron->getUserByBarcode($barcode);
+    }
+    else {
+      $user = NULL;
+    }
 
     // Then try Drupal as a regular username.
     /** @var UserStorage $storage */
@@ -82,10 +100,10 @@ class MappingManager {
     if (!$user && ($users = $storage->loadByProperties(['name' => $barcode]))) {
       $user = reset($users);
     }
-    // Then try Polaris directly.
-    if (!$user && ($patron = \Drupal::service('polaris.client')->patron->validate($barcode))) {
+    // Then try the ILS directly.
+    if (!$user && ($patron = $this->client->patron->validate($barcode))) {
       // Try again with the 'actual' barcode, because the original value could have been a username.
-      $user = \Drupal::service('polaris.client')->patron->getUserByBarcode($patron->barcode);
+      $user = $this->client->patron->getUserByBarcode($patron->barcode);
       // Finally go through registration process.
       if (!$user) {
         // @see Auth::authenticate()
@@ -96,7 +114,8 @@ class MappingManager {
           'init' => $data->EmailAddress,
         ];
         // Create a Drupal user automatically and return the new user_id.
-        $user = \Drupal::service('externalauth.externalauth')->register($patron->barcode(), 'polaris', $account_data, $data);
+        $plugin_id = $this->interceptILSPlugin->getId();
+        $user = \Drupal::service('externalauth.externalauth')->register($patron->barcode(), $plugin_id, $account_data, $data);
       }
     }
 
