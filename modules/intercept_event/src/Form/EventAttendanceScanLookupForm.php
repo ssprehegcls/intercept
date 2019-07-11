@@ -100,6 +100,8 @@ class EventAttendanceScanLookupForm extends EventAttendanceScanFormBase {
       '#value' => $this->t('Search'),
       '#validate' => ['::search'],
     ];
+
+    $form['cancel'] = $this->cancelButton();
   }
 
   public function search(array $form, FormStateInterface $form_state) {
