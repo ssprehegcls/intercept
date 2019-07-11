@@ -9,6 +9,7 @@ dependencies:
     - field.field.profile.customer.field_email_address
     - field.field.profile.customer.field_event_types
     - field.field.profile.customer.field_first_name
+    - field.field.profile.customer.field_hold_pickup_location
     - field.field.profile.customer.field_ils_username
     - field.field.profile.customer.field_last_name
     - field.field.profile.customer.field_phone
@@ -16,6 +17,7 @@ dependencies:
     - profile.type.customer
   module:
     - address
+    - options
     - telephone
 _core:
   default_config_hash: q_RVX0EGw3RVWlvOwralxGszcZZP9HvvjJxvdV6Jtn4
@@ -69,6 +71,13 @@ content:
       link_to_entity: false
     third_party_settings: {  }
     type: string
+    region: content
+  field_hold_pickup_location:
+    weight: 10
+    label: above
+    settings: {  }
+    third_party_settings: {  }
+    type: list_default
     region: content
   field_ils_username:
     weight: 4

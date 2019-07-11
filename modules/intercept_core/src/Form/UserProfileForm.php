@@ -77,7 +77,7 @@ class UserProfileForm extends \Drupal\user\ProfileForm {
         '#attributes' => ['autocomplete' => 'new-password'],
       ];
     }
-    // Set the default value for barcode and add a save handler for the pin.
+    // Set the default values for profile and add a save handler for the pin.
     if ($this->client && $patron = $this->client->patron->getByUser($user)) {
       $this->populateName($entity_form, $patron, $profile);
       $form_state->set('patron', $patron);
@@ -86,7 +86,7 @@ class UserProfileForm extends \Drupal\user\ProfileForm {
       if (isset($patron->basicData()->Username)) {
         $entity_form['field_ils_username']['widget'][0]['value']['#default_value'] = $patron->basicData()->Username;
       }
-      // $debug = true;
+
       $entity_form['field_phone']['widget'][0]['value']['#default_value'] = $patron->basicData()->PhoneNumber;
       $entity_form['field_email_address']['widget'][0]['value']['#default_value'] = $patron->basicData()->EmailAddress;
       $entity_form['#ief_element_submit'][] = [$this, 'saveInlineEntityForm'];
@@ -176,7 +176,7 @@ class UserProfileForm extends \Drupal\user\ProfileForm {
     $patron->updateUsername($ils_username);
   }
 
-  protected function getProfileEntity(UserInterface  $user) {
+  protected function getProfileEntity(UserInterface $user) {
     $profile_storage = $this->entityTypeManager->getStorage('profile');
     /** @var $profile_storage ProfileStorageInterface */
     $profile = $profile_storage->loadDefaultByUser($user, 'customer');
@@ -188,6 +188,10 @@ class UserProfileForm extends \Drupal\user\ProfileForm {
     }
     $this->profileEntity = $profile;
     return $profile;
+  }
+
+  public function locationsSort($a, $b) {
+    return strcmp($a->Name, $b->Name);
   }
 
 }

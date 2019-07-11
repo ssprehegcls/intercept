@@ -24,10 +24,14 @@ class UserAccount extends ControllerBase {
 
   public function userRedirect($route_name, Request $request) {
     $params = \Drupal::service('current_route_match')->getParameters();
+    $options = [];
+    if (($return = $request->getRequestUri()) && strpos($return, '?return=')) {
+      $options['query']['return'] = array_pop(explode('?return=', $return));
+    }
     $params->add(['user' => $this->currentUser()->id()]);
     $params->remove('route_name');
 
-    return $this->redirect($route_name, $params->all());
+    return $this->redirect($route_name, $params->all(), $options);
   }
 
   public function customerRegisterApi(Request $request) {

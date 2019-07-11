@@ -131,7 +131,8 @@ class EventManager implements EventManagerInterface {
     if (!$display->getComponent('field_location') || !$display->getComponent('field_room')) {
       return;
     }
-    // Add in helper ajax functionality to change room field values depending on location.
+    // Add in helper ajax functionality to change room field values
+    // depending on location.
     $form['#attached']['library'][] = 'intercept_event/event_form_helper';
     $form['field_location']['widget']['#ajax'] = [
       'callback' => [$this, 'fieldRoomAjaxCallback'],
@@ -162,6 +163,18 @@ class EventManager implements EventManagerInterface {
     }
     $form['field_room']['#prefix'] = '<div id="event-node-field-room-ajax-wrapper">';
     $form['field_room']['#suffix'] = '</div>';
+
+    $meeting_required_state = [
+      'required' => [
+        ':input[name="field_event_designation"]' => [
+          'value' => 'events',
+        ],
+      ],
+    ];
+    $form['field_event_type']['widget']['#states'] = $meeting_required_state;
+    $form['field_event_type_primary']['widget']['#states'] = $meeting_required_state;
+    $form['field_event_audience']['widget']['#states'] = $meeting_required_state;
+    $form['field_audience_primary']['widget']['#states'] = $meeting_required_state;
   }
 
   /**
