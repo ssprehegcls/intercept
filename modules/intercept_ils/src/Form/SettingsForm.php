@@ -44,6 +44,7 @@ class SettingsForm extends ConfigFormBase {
 
     // List all plugins of type ILS.
     $plugins = $this->manager->getDefinitions();
+    $ils_plugins = [];
 
     foreach ($plugins as $ils) {
       $instance = $this->manager->createInstance($ils['id']);
