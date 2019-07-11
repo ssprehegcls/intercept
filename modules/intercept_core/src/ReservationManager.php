@@ -114,7 +114,6 @@ class ReservationManager implements ReservationManagerInterface {
     $values = [
       'field_event' => $event->id(),
       'field_room' => $event->field_room->entity->id(),
-      'field_meeting_dates' => $event->field_date_time->first()->getValue(),
       'field_user' => $this->currentUser->id(),
     ] + $params;
     $room_reservation = $this->entityTypeManager->getStorage('room_reservation')->create($values);
@@ -134,11 +133,8 @@ class ReservationManager implements ReservationManagerInterface {
   public function updateEventReservation(RoomReservationInterface $reservation, NodeInterface $event, array $params = []) {
     if (!$event->field_room->equals($reservation->field_room)) {
       $reservation->field_room = $event->field_room;
+      $reservation->save();
     }
-    if (!$event->field_date_time->equals($reservation->field_meeting_dates)) {
-      $reservation->field_meeting_dates = $event->field_date_time;
-    }
-    $reservation->save();
   }
 
   /**
@@ -287,12 +283,6 @@ class ReservationManager implements ReservationManagerInterface {
     ];
     if (!$event->isNew()) {
       $params['event'] = $event->id();
-    }
-    $availability = $this->availability($params);
-    $status = reset($availability);
-    if ($status['has_reservation_conflict']) {
-      $message = t('This room is not available due to a conflict.');
-      $form_state->setError($form['reservation'], $message);
     }
     // @TODO: Re-enable this when issue in CRL-149 is resolved.
     // else if ($status['has_open_hours_conflict']) {
