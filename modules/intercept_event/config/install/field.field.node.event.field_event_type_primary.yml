@@ -12,7 +12,7 @@ entity_type: node
 bundle: event
 label: 'Primary Event Type'
 description: 'Choose the primary event type. This is used for reporting purposes. '
-required: true
+required: false
 translatable: false
 default_value: {  }
 default_value_callback: ''

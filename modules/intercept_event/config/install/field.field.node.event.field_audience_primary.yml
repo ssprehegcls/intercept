@@ -12,7 +12,7 @@ entity_type: node
 bundle: event
 label: 'Primary Audience'
 description: 'Choose the primary audience. This is used for reporting purposes.'
-required: true
+required: false
 translatable: false
 default_value: {  }
 default_value_callback: ''
