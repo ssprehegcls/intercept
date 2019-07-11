@@ -8,6 +8,7 @@ dependencies:
   - csv_serialization:csv_serialization
   - date_recur:date_recur
   - drupal:datetime_range
+  - drupal:field_ui
   - drupal:rest
   - flag:flag
   - intercept:intercept_location
