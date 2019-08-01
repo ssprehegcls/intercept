@@ -7,6 +7,14 @@ react:
       external: true
       minified: true
 
+user_settings_form_helper:
+  js:
+    js/user_settings_form_helper.js: {}
+  dependencies:
+    - core/jquery
+    - core/drupal
+    - core/drupalSettings
+
 reservation_form_helper:
   js:
     js/reservation_form_helper.js: {}

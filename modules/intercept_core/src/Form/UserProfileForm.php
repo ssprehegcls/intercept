@@ -68,13 +68,19 @@ class UserProfileForm extends \Drupal\user\ProfileForm {
     $user = $form_state->getFormObject()->getEntity();
     $profile = $this->getProfileEntity($user);
     if ($pin = $this->getInlineEntityFormDisplay($profile, $entity_form['#form_mode'])->getComponent('pin')) {
-      $entity_form['pin'] = [
-        '#type' => 'password',
-        '#weight' => $pin['weight'],
-        '#title' => $this->t('PIN'),
-        // Turn off autofill for username and PIN fields so that browser
-        // doesn't fill these in if the customer doesn't want to change them.
-        '#attributes' => ['autocomplete' => 'new-password'],
+      $entity_form['pin']['#type'] = 'password';
+      $entity_form['pin']['#title'] = $this->t('PIN');
+      // $entity_form['pin']['#parents'] = ['customer_profile'];
+      // $entity_form['pin']['#weight'] = $pin['weight'];
+      // Turn off autofill for username and PIN fields so that browser
+      // doesn't fill these in if the customer doesn't want to change them.
+      $entity_form['pin']['#attributes'] = [
+        'autocomplete' => 'new-password',
+        'class' => ['field--pin']
+      ];
+      // Reposition the PIN field.
+      $entity_form['pin']['#attached'] = [
+        'library' => ['intercept_core/user_settings_form_helper'],
       ];
     }
     // Set the default values for profile and add a save handler for the pin.
@@ -86,7 +92,6 @@ class UserProfileForm extends \Drupal\user\ProfileForm {
       if (isset($patron->basicData()->Username)) {
         $entity_form['field_ils_username']['widget'][0]['value']['#default_value'] = $patron->basicData()->Username;
       }
-
       $entity_form['field_phone']['widget'][0]['value']['#default_value'] = $patron->basicData()->PhoneNumber;
       $entity_form['field_email_address']['widget'][0]['value']['#default_value'] = $patron->basicData()->EmailAddress;
       $entity_form['#ief_element_submit'][] = [$this, 'saveInlineEntityForm'];

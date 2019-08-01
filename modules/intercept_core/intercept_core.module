@@ -132,8 +132,8 @@ function intercept_core_entity_extra_field_info() {
   ];
 
   $extra['profile']['customer']['form']['pin'] = [
-    'label' => t('Pin'),
-    'description' => t('ILS pin'),
+    'label' => t('PIN'),
+    'description' => t('ILS PIN'),
     'visible' => FALSE,
   ];
 
