@@ -310,8 +310,14 @@ function intercept_event_theme_suggestions_form_element_alter(&$suggestions, $va
   $form_id = $variables['element']['#form_id'];
 
   // Add a suggestion for staff evaluations.
-  if (strrpos($form_id, 'event_evaluation_staff_form') >= 0) {
+  $evaluation_form_position = strrpos($form_id, 'event_evaluation_staff_form');
+  if ($evaluation_form_position !== FALSE && $evaluation_form_position >= 0) {
     $suggestions[] = "form_element__type__" . $variables['element']['#type'] . "__event_evaluation_staff_form";
+  }
+  else if ($form_id == 'views_exposed_form') {
+    if ($variables['element']['#attributes']['id'] == 'edit-title' && $variables['element']['#title'] == 'Title') {
+      $suggestions[] = "form_element__type__" . $variables['element']['#type'] . "__event_attendance_export_form";
+    }
   }
 }
 
@@ -395,6 +401,17 @@ function intercept_event_form_node_form_alter(&$form, FormStateInterface $form_s
   }
   if ($form_state->getFormObject()->getEntity()->bundle() == 'event') {
     $form['#validate'][] = 'intercept_event_node_event_form_validate';
+  }
+}
+
+/**
+ * Implements hook_form_alter().
+ */
+function intercept_event_form_alter(&$form, FormStateInterface &$form_state, $form_id) {
+  switch($form_id) {
+    case 'node_event_attendance_form':
+      $form['#attached']['library'][] = 'intercept_event/eventNumberAttendees';
+      break;
   }
 }
 
