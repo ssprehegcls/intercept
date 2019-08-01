@@ -8,6 +8,7 @@ dependencies:
     - field.field.node.event.field_audience_primary
     - field.field.node.event.field_capacity_max
     - field.field.node.event.field_date_time
+    - field.field.node.event.field_evanced_id
     - field.field.node.event.field_event_audience
     - field.field.node.event.field_event_designation
     - field.field.node.event.field_event_is_template
@@ -18,8 +19,11 @@ dependencies:
     - field.field.node.event.field_event_type_primary
     - field.field.node.event.field_featured
     - field.field.node.event.field_has_waitlist
+    - field.field.node.event.field_keywords
     - field.field.node.event.field_location
     - field.field.node.event.field_must_register
+    - field.field.node.event.field_presented_by_non_staff
+    - field.field.node.event.field_presenter
     - field.field.node.event.field_room
     - field.field.node.event.field_text_content
     - field.field.node.event.field_text_intro
@@ -31,9 +35,11 @@ dependencies:
     - addtocalendar
     - datetime_range
     - entity_browser_entity_form
+    - existing_values_autocomplete_widget
     - field_group
     - inline_entity_form
     - path
+    - scheduler
     - text
 third_party_settings:
   field_group:
@@ -76,6 +82,8 @@ third_party_settings:
         - field_event_type_primary
         - field_event_audience
         - field_audience_primary
+        - field_presented_by_non_staff
+        - field_presenter
         - field_event_tags
       parent_name: ''
       weight: 12
@@ -100,12 +108,12 @@ content:
     third_party_settings: {  }
   field_add_to_cal:
     type: add_to_calendar_widget_type
-    weight: 19
+    weight: 20
     region: content
     settings: {  }
     third_party_settings: {  }
   field_audience_primary:
-    weight: 18
+    weight: 17
     settings: {  }
     third_party_settings: {  }
     type: options_select
@@ -130,7 +138,7 @@ content:
     type: options_select
     region: content
   field_event_designation:
-    weight: 20
+    weight: 21
     settings: {  }
     third_party_settings: {  }
     type: options_buttons
@@ -148,7 +156,7 @@ content:
     settings: {  }
     third_party_settings: {  }
   field_event_tags:
-    weight: 19
+    weight: 20
     settings:
       match_operator: CONTAINS
       size: 60
@@ -169,7 +177,7 @@ content:
     type: options_select
     region: content
   field_featured:
-    weight: 17
+    weight: 18
     settings:
       display_label: true
     third_party_settings: {  }
@@ -194,6 +202,22 @@ content:
       display_label: true
     third_party_settings: {  }
     type: boolean_checkbox
+    region: content
+  field_presented_by_non_staff:
+    weight: 18
+    settings:
+      display_label: true
+    third_party_settings: {  }
+    type: boolean_checkbox
+    region: content
+  field_presenter:
+    weight: 19
+    settings:
+      size: 60
+      placeholder: ''
+      suggestions_count: 15
+    third_party_settings: {  }
+    type: existing_autocomplete_field_widget
     region: content
   field_room:
     weight: 13
@@ -226,7 +250,7 @@ content:
     type: string_textarea
     region: content
   field_waitlist_max:
-    weight: 22
+    weight: 23
     settings:
       placeholder: ''
     third_party_settings: {  }
@@ -255,7 +279,7 @@ content:
     third_party_settings: {  }
   publish_on:
     type: datetime_timestamp_no_default
-    weight: 15
+    weight: 16
     region: content
     settings: {  }
     third_party_settings: {  }
@@ -266,6 +290,11 @@ content:
     third_party_settings: {  }
   reservation:
     weight: 14
+    region: content
+    settings: {  }
+    third_party_settings: {  }
+  scheduler_settings:
+    weight: 19
     region: content
     settings: {  }
     third_party_settings: {  }
@@ -300,13 +329,15 @@ content:
     settings: {  }
     third_party_settings: {  }
   url_redirects:
-    weight: 16
+    weight: 17
     region: content
     settings: {  }
     third_party_settings: {  }
 hidden:
   event_recurrence: true
   field_attendees: true
+  field_evanced_id: true
   field_event_is_template: true
+  field_keywords: true
   promote: true
   sticky: true

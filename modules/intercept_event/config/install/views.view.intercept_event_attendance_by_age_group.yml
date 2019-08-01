@@ -7,6 +7,8 @@ dependencies:
     - field.storage.node.field_date_time
     - field.storage.node.field_event_type_primary
     - field.storage.node.field_location
+    - field.storage.node.field_presented_by_non_staff
+    - field.storage.node.field_presenter
     - field.storage.node.field_room
     - node.type.event
   module:
@@ -66,21 +68,36 @@ display:
               allow_secondary: false
               secondary_label: 'Advanced options'
               autosubmit: false
-              autosubmit_debounce_delay: 500
               autosubmit_exclude_textfield: false
+              autosubmit_textfield_delay: 500
               autosubmit_hide: false
             field_date_time_value:
               bef_format: bef_datepicker
               more_options:
                 is_secondary: false
+            title:
+              bef_format: default
+              more_options:
+                is_secondary: false
+                placeholder_text: Title
+            field_presenter_value:
+              bef_format: default
+              more_options:
+                is_secondary: false
+                placeholder_text: ''
           text_input_required_format: basic_html
       pager:
-        type: mini
+        type: full
         options:
           items_per_page: 10
           offset: 0
           id: 0
           total_pages: null
+          tags:
+            previous: ‹‹
+            next: ››
+            first: '« First'
+            last: 'Last »'
           expose:
             items_per_page: false
             items_per_page_label: 'Items per page'
@@ -89,9 +106,7 @@ display:
             items_per_page_options_all_label: '- All -'
             offset: false
             offset_label: Offset
-          tags:
-            previous: ‹‹
-            next: ››
+          quantity: 9
       style:
         type: serializer
       row:
@@ -493,7 +508,7 @@ display:
           relationship: none
           group_type: group
           admin_label: ''
-          label: ''
+          label: 'Primary Audience'
           exclude: false
           alter:
             alter_text: false
@@ -556,7 +571,7 @@ display:
           relationship: none
           group_type: group
           admin_label: ''
-          label: ''
+          label: 'Primary Event Type'
           exclude: false
           alter:
             alter_text: false
@@ -602,6 +617,134 @@ display:
           settings:
             link: false
           group_column: target_id
+          group_columns: {  }
+          group_rows: true
+          delta_limit: 0
+          delta_offset: 0
+          delta_reversed: false
+          delta_first_last: false
+          multi_type: separator
+          separator: ', '
+          field_api_classes: false
+          plugin_id: field
+        field_presented_by_non_staff:
+          id: field_presented_by_non_staff
+          table: node__field_presented_by_non_staff
+          field: field_presented_by_non_staff
+          relationship: none
+          group_type: group
+          admin_label: ''
+          label: 'Presented or co-presented by non-library staff'
+          exclude: false
+          alter:
+            alter_text: false
+            text: ''
+            make_link: false
+            path: ''
+            absolute: false
+            external: false
+            replace_spaces: false
+            path_case: none
+            trim_whitespace: false
+            alt: ''
+            rel: ''
+            link_class: ''
+            prefix: ''
+            suffix: ''
+            target: ''
+            nl2br: false
+            max_length: 0
+            word_boundary: true
+            ellipsis: true
+            more_link: false
+            more_link_text: ''
+            more_link_path: ''
+            strip_tags: false
+            trim: false
+            preserve_tags: ''
+            html: false
+          element_type: ''
+          element_class: ''
+          element_label_type: ''
+          element_label_class: ''
+          element_label_colon: true
+          element_wrapper_type: ''
+          element_wrapper_class: ''
+          element_default_classes: true
+          empty: 'No'
+          hide_empty: false
+          empty_zero: false
+          hide_alter_empty: true
+          click_sort_column: value
+          type: boolean
+          settings:
+            format: yes-no
+            format_custom_true: ''
+            format_custom_false: ''
+          group_column: value
+          group_columns: {  }
+          group_rows: true
+          delta_limit: 0
+          delta_offset: 0
+          delta_reversed: false
+          delta_first_last: false
+          multi_type: separator
+          separator: ', '
+          field_api_classes: false
+          plugin_id: field
+        field_presenter:
+          id: field_presenter
+          table: node__field_presenter
+          field: field_presenter
+          relationship: none
+          group_type: group
+          admin_label: ''
+          label: Presenter
+          exclude: false
+          alter:
+            alter_text: false
+            text: ''
+            make_link: false
+            path: ''
+            absolute: false
+            external: false
+            replace_spaces: false
+            path_case: none
+            trim_whitespace: false
+            alt: ''
+            rel: ''
+            link_class: ''
+            prefix: ''
+            suffix: ''
+            target: ''
+            nl2br: false
+            max_length: 0
+            word_boundary: true
+            ellipsis: true
+            more_link: false
+            more_link_text: ''
+            more_link_path: ''
+            strip_tags: false
+            trim: false
+            preserve_tags: ''
+            html: false
+          element_type: ''
+          element_class: ''
+          element_label_type: ''
+          element_label_class: ''
+          element_label_colon: true
+          element_wrapper_type: ''
+          element_wrapper_class: ''
+          element_default_classes: true
+          empty: ''
+          hide_empty: false
+          empty_zero: false
+          hide_alter_empty: true
+          click_sort_column: value
+          type: string
+          settings:
+            link_to_entity: false
+          group_column: value
           group_columns: {  }
           group_rows: true
           delta_limit: 0
@@ -710,6 +853,7 @@ display:
               intercept_staff: '0'
               intercept_system_admin: '0'
               administrator: '0'
+              intercept_room_reservation_approver: '0'
             placeholder: ''
             min_placeholder: ''
             max_placeholder: ''
@@ -730,7 +874,7 @@ display:
           id: title
           table: node_field_data
           field: title
-          relationship: field_location
+          relationship: none
           group_type: group
           admin_label: ''
           operator: contains
@@ -739,7 +883,7 @@ display:
           exposed: true
           expose:
             operator_id: title_op
-            label: Location
+            label: Title
             description: ''
             use_operator: false
             operator: title_op
@@ -750,13 +894,15 @@ display:
             remember_roles:
               authenticated: authenticated
               anonymous: '0'
+              administrator: '0'
               intercept_registered_customer: '0'
               intercept_kiosk: '0'
+              intercept_equipment_reservation_manager: '0'
               intercept_event_manager: '0'
               intercept_event_organizer: '0'
+              intercept_room_reservation_approver: '0'
               intercept_staff: '0'
               intercept_system_admin: '0'
-              administrator: '0'
             placeholder: ''
           is_grouped: false
           group_info:
@@ -772,6 +918,53 @@ display:
             group_items: {  }
           entity_type: node
           entity_field: title
+          plugin_id: string
+        field_presenter_value:
+          id: field_presenter_value
+          table: node__field_presenter
+          field: field_presenter_value
+          relationship: none
+          group_type: group
+          admin_label: ''
+          operator: contains
+          value: ''
+          group: 1
+          exposed: true
+          expose:
+            operator_id: field_presenter_value_op
+            label: Presenter
+            description: ''
+            use_operator: false
+            operator: field_presenter_value_op
+            identifier: field_presenter_value
+            required: false
+            remember: false
+            multiple: false
+            remember_roles:
+              authenticated: authenticated
+              anonymous: '0'
+              administrator: '0'
+              intercept_registered_customer: '0'
+              intercept_kiosk: '0'
+              intercept_equipment_reservation_manager: '0'
+              intercept_event_manager: '0'
+              intercept_event_organizer: '0'
+              intercept_room_reservation_approver: '0'
+              intercept_staff: '0'
+              intercept_system_admin: '0'
+            placeholder: ''
+          is_grouped: false
+          group_info:
+            label: ''
+            description: ''
+            identifier: ''
+            optional: true
+            widget: select
+            multiple: false
+            remember: false
+            default_group: All
+            default_group_multiple: {  }
+            group_items: {  }
           plugin_id: string
       sorts:
         field_date_time_value:
@@ -820,6 +1013,8 @@ display:
         - 'config:field.storage.node.field_date_time'
         - 'config:field.storage.node.field_event_type_primary'
         - 'config:field.storage.node.field_location'
+        - 'config:field.storage.node.field_presented_by_non_staff'
+        - 'config:field.storage.node.field_presenter'
         - 'config:field.storage.node.field_room'
         - extensions
   page:
@@ -828,7 +1023,9 @@ display:
     display_title: Page
     position: 1
     display_options:
-      display_extenders: {  }
+      display_extenders:
+        views_ajax_history:
+          history: true
       path: account/manage/intercept_event_attendance_by_age_group
       style:
         type: table
@@ -892,6 +1089,8 @@ display:
         - 'config:field.storage.node.field_date_time'
         - 'config:field.storage.node.field_event_type_primary'
         - 'config:field.storage.node.field_location'
+        - 'config:field.storage.node.field_presented_by_non_staff'
+        - 'config:field.storage.node.field_presenter'
         - 'config:field.storage.node.field_room'
         - extensions
   rest_export:
@@ -931,5 +1130,7 @@ display:
         - 'config:field.storage.node.field_date_time'
         - 'config:field.storage.node.field_event_type_primary'
         - 'config:field.storage.node.field_location'
+        - 'config:field.storage.node.field_presented_by_non_staff'
+        - 'config:field.storage.node.field_presenter'
         - 'config:field.storage.node.field_room'
         - extensions

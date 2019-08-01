@@ -29,8 +29,9 @@
     "drupal/duration_field": "^1.1",
     "drupal/entity_browser": "^2.0",
     "drupal/entity": "^1.0",
+    "drupal/existing_values_autocomplete_widget": "^1.2",
     "drupal/features": "^3.5",
-    "drupal/field_group": "^1.0",
+    "drupal/field_group": "^3.0@RC",
     "drupal/focal_point": "1.0-beta6",
     "drupal/flag": "^4.0@alpha",
     "drupal/inline_entity_form": "^1.0@RC",
@@ -58,6 +59,11 @@
     "installer-types": [
       "bower-asset",
       "npm-asset"
-    ]
+    ],
+    "patches": {
+      "drupal/field_group": {
+        "Fixes Field Group incompatibility with Inline Entity Form": "https://www.drupal.org/files/issues/2018-10-30/field_group-inline_entity_form_compatibility-2986704-3.patch"
+      }
+    }
   }
 }

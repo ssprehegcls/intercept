@@ -10,6 +10,7 @@ dependencies:
   - drupal:datetime_range
   - drupal:field_ui
   - drupal:rest
+  - existing_values_autocomplete_widget:existing_values_autocomplete_widget
   - flag:flag
   - intercept:intercept_location
   - tally:tally
