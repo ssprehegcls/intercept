@@ -2,13 +2,14 @@ langcode: en
 status: true
 dependencies:
   module:
-    - node
-id: node.field_staff_use_only
-field_name: field_staff_use_only
-entity_type: node
-type: boolean
+    - profile
+    - telephone
+id: profile.field_phone
+field_name: field_phone
+entity_type: profile
+type: telephone
 settings: {  }
-module: core
+module: telephone
 locked: false
 cardinality: 1
 translatable: true

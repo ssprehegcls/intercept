@@ -1,4 +1,3 @@
-uuid: fd5d282d-b05c-47f7-b9ae-f0277a6d2e02
 langcode: en
 status: true
 dependencies:
@@ -20,8 +19,6 @@ dependencies:
     - datetime_range
     - intercept_room_reservation
     - text
-_core:
-  default_config_hash: WTqI0Zaag8z4z1Rtt3VrWFiw5gFRw-q6SIk_kAFqcmc
 id: room_reservation.room_reservation.default
 targetEntityType: room_reservation
 bundle: room_reservation

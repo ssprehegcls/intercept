@@ -1,4 +1,3 @@
-uuid: fc2cc959-773e-4381-ac08-025ebc22588d
 langcode: en
 status: true
 dependencies:
@@ -18,8 +17,6 @@ dependencies:
   module:
     - address
     - telephone
-_core:
-  default_config_hash: AihpJ157T8LWNvOE8bmWW4UHUO1w1UaG0mKHr-cMwDU
 id: profile.customer.default
 targetEntityType: profile
 bundle: customer

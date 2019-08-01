@@ -15,8 +15,6 @@ dependencies:
     - node
     - options
     - user
-_core:
-  default_config_hash: LtbsBfAw1C6K_IMHCD3P81hIs5RygFrosNzbugTOfMA
 id: intercept_room_reservations
 label: 'InterCEPT Room Reservations'
 module: views
@@ -96,6 +94,7 @@ display:
             field_group_name: field_group_name
             field_dates_1: field_dates_1
             field_dates: field_dates
+            field_meeting_dates: field_meeting_dates
             field_status: field_status
             author: author
             operations: operations
@@ -141,6 +140,13 @@ display:
               empty_column: false
               responsive: ''
             field_dates:
+              sortable: true
+              default_sort_order: asc
+              align: ''
+              separator: ''
+              empty_column: false
+              responsive: ''
+            field_meeting_dates:
               sortable: true
               default_sort_order: asc
               align: ''
@@ -954,20 +960,7 @@ display:
             group_items: {  }
           reduce_duplicates: false
           plugin_id: list_field
-      sorts:
-        field_dates_value:
-          id: field_dates_value
-          table: room_reservation__field_dates
-          field: field_dates_value
-          relationship: none
-          group_type: group
-          admin_label: ''
-          order: DESC
-          exposed: false
-          expose:
-            label: ''
-          granularity: second
-          plugin_id: datetime
+      sorts: {  }
       title: 'Room Reservations'
       header: {  }
       footer: {  }
@@ -1777,7 +1770,7 @@ display:
           value:
             min: ''
             max: ''
-            value: today
+            value: now
             type: date
           group: 1
           exposed: false
@@ -1809,6 +1802,46 @@ display:
             default_group_multiple: {  }
             group_items: {  }
           plugin_id: datetime
+        field_status_value:
+          id: field_status_value
+          table: room_reservation__field_status
+          field: field_status_value
+          relationship: none
+          group_type: group
+          admin_label: ''
+          operator: or
+          value:
+            requested: requested
+            approved: approved
+          group: 1
+          exposed: false
+          expose:
+            operator_id: ''
+            label: ''
+            description: ''
+            use_operator: false
+            operator: ''
+            identifier: ''
+            required: false
+            remember: false
+            multiple: false
+            remember_roles:
+              authenticated: authenticated
+            reduce: false
+          is_grouped: false
+          group_info:
+            label: ''
+            description: ''
+            identifier: ''
+            optional: true
+            widget: select
+            multiple: false
+            remember: false
+            default_group: All
+            default_group_multiple: {  }
+            group_items: {  }
+          reduce_duplicates: false
+          plugin_id: list_field
       filter_groups:
         operator: AND
         groups:

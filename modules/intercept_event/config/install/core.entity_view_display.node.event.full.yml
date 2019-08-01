@@ -33,8 +33,6 @@ dependencies:
     - media
     - text
     - user
-_core:
-  default_config_hash: hUIHSDWgTtcCaHvqFZPx2nxl2s2YFTOPS19PWigW69w
 id: node.event.full
 targetEntityType: node
 bundle: event
