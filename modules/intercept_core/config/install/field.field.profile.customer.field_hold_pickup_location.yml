@@ -1,0 +1,21 @@
+uuid: ebc2c0aa-2109-44ea-8c16-0fa9dbdd5292
+langcode: en
+status: true
+dependencies:
+  config:
+    - field.storage.profile.field_hold_pickup_location
+    - profile.type.customer
+  module:
+    - options
+id: profile.customer.field_hold_pickup_location
+field_name: field_hold_pickup_location
+entity_type: profile
+bundle: customer
+label: 'Hold Pickup Location'
+description: ''
+required: false
+translatable: false
+default_value: {  }
+default_value_callback: ''
+settings: {  }
+field_type: list_string

@@ -4,8 +4,11 @@ namespace Drupal\intercept_event;
 
 use Drupal\Core\Entity\EntityInterface;
 use Drupal\Core\Entity\EntityListBuilder;
+use Drupal\Core\Entity\EntityStorageInterface;
+use Drupal\Core\Entity\EntityTypeInterface;
 use Drupal\Core\Link;
 use Drupal\Core\Url;
+use Symfony\Component\DependencyInjection\ContainerInterface;
 
 /**
  * Defines a class to build a listing of Event Registration entities.
@@ -15,6 +18,42 @@ use Drupal\Core\Url;
 class EventRegistrationListBuilder extends EntityListBuilder {
 
   use EventListBuilderTrait;
+
+  protected $client;
+
+  protected $pluginId;
+
+  /**
+   * Constructs a new EventRegistrationListBuilder object.
+   *
+   * @param \Drupal\Core\Entity\EntityTypeInterface $entity_type
+   *   The entity type definition.
+   * @param \Drupal\Core\Entity\EntityStorageInterface $storage
+   *   The entity storage class.
+   */
+  public function __construct(EntityTypeInterface $entity_type, EntityStorageInterface $storage) {
+    parent::__construct($entity_type, $storage);
+
+    $config_factory = \Drupal::service('config.factory');
+    $settings = $config_factory->get('intercept_ils.settings');
+    $intercept_ils_plugin = $settings->get('intercept_ils_plugin', '');
+    if ($intercept_ils_plugin) {
+      $ils_manager = \Drupal::service('plugin.manager.intercept_ils');
+      $ils_plugin = $ils_manager->createInstance($intercept_ils_plugin);
+      $this->client = $ils_plugin->getClient();
+      $this->pluginId = $intercept_ils_plugin;
+    }
+  }
+
+  /**
+   * {@inheritdoc}
+   */
+  public static function createInstance(ContainerInterface $container, EntityTypeInterface $entity_type) {
+    return new static(
+      $entity_type,
+      $container->get('entity_type.manager')->getStorage($entity_type->id())
+    );
+  }
 
   /**
    * {@inheritdoc}
@@ -36,7 +75,6 @@ class EventRegistrationListBuilder extends EntityListBuilder {
     $row = [];
     $authdata = [];
     $this->addEventRow($row, $entity);
-    //kint($entity);
     $user = $entity->get('field_user')->entity;
     $guest_name = $entity->get('field_guest_name')->getValue();
     if ($user) {
@@ -83,15 +121,18 @@ class EventRegistrationListBuilder extends EntityListBuilder {
    * Get authdata for user in the row in order to display customer info.
    */
   protected function getAuthdata($uid) {
-    $authmap = \Drupal::service('externalauth.authmap');
-    $authdata = $authmap->getAuthdata($uid, 'polaris');
-    $authdata_data = unserialize($authdata['data']);
-    if (isset($authdata_data->Barcode)) {
-      $barcode = $authdata_data->Barcode;
-      $client = \Drupal::service('polaris.client');
-      $result = $client->patron->searchByBarcode($barcode);
+    $debug = true;
+    if ($this->pluginId) {
+      $authmap = \Drupal::service('externalauth.authmap');
+      $authdata = $authmap->getAuthdata($uid, $this->pluginId);
+      $authdata_data = unserialize($authdata['data']);
+      if (isset($authdata_data->Barcode)) {
+        $barcode = $authdata_data->Barcode;
+        $result = $this->client->patron->searchByBarcode($barcode);
+      }
+      return $authdata_data;
     }
-    return $authdata_data;
+    return null;
   }
 
 }

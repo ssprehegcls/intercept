@@ -84,7 +84,7 @@ class ReserveRoomStep2 extends React.Component {
   getDefaultValues = () => {
     const { formValues, room, event, eventRecord, locationRecord, filters } = this.props;
 
-    const values = pick(formValues, ['date', 'start', 'end', 'meetingStart', 'meetingEnd']);
+    const values = pick(formValues, ['date', 'start', 'end']);
 
     // If there's an event but it has not populated yet, hold off on default props.
     if (event && !eventRecord) {

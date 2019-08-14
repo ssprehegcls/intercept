@@ -1,3 +1,4 @@
+uuid: 5285c737-0065-4c93-b815-0e6c196cf238
 langcode: en
 status: true
 dependencies:
@@ -7,7 +8,6 @@ dependencies:
     - field.field.room_reservation.room_reservation.field_dates
     - field.field.room_reservation.room_reservation.field_event
     - field.field.room_reservation.room_reservation.field_group_name
-    - field.field.room_reservation.room_reservation.field_meeting_dates
     - field.field.room_reservation.room_reservation.field_meeting_purpose
     - field.field.room_reservation.room_reservation.field_meeting_purpose_details
     - field.field.room_reservation.room_reservation.field_publicize
@@ -126,7 +126,6 @@ content:
 hidden:
   attendees_full: true
   author: true
-  field_meeting_dates: true
   field_meeting_purpose: true
   field_meeting_purpose_details: true
   field_refreshments: true

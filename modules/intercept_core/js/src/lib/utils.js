@@ -146,13 +146,14 @@ export const dateToDrupal = date =>
 
 // Converts a Drupal compatible string to a Date object.
 export const dateFromDrupal = date =>
-  moment(`${date}Z`, moment.ISO_8601).toDate();
+  moment.utc(date).toDate();
+  // moment.utc(date, 'YYYY-MM-DDTHH:mm:ss').toDate();
 
 export const roundTo = (
   date,
   value = 15,
-  units = "minutes",
-  method = "ceil"
+  units = 'minutes',
+  method = 'ceil'
 ) => {
   const duration = moment.duration(value, units);
   return moment(Math[method](+date / +duration) * +duration);

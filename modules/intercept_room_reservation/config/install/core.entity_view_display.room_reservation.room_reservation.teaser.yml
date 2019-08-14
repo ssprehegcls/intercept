@@ -1,3 +1,4 @@
+uuid: e054d3a1-6c7f-4f98-ad0b-7ef31d4a0a3e
 langcode: en
 status: true
 dependencies:
@@ -8,7 +9,6 @@ dependencies:
     - field.field.room_reservation.room_reservation.field_dates
     - field.field.room_reservation.room_reservation.field_event
     - field.field.room_reservation.room_reservation.field_group_name
-    - field.field.room_reservation.room_reservation.field_meeting_dates
     - field.field.room_reservation.room_reservation.field_meeting_purpose
     - field.field.room_reservation.room_reservation.field_meeting_purpose_details
     - field.field.room_reservation.room_reservation.field_publicize
@@ -66,16 +66,6 @@ content:
     label: inline
     settings:
       link_to_entity: false
-    third_party_settings: {  }
-  field_meeting_dates:
-    type: daterange_default
-    weight: 4
-    region: content
-    label: above
-    settings:
-      timezone_override: ''
-      format_type: short
-      separator: '-'
     third_party_settings: {  }
   field_meeting_purpose:
     type: entity_reference_label

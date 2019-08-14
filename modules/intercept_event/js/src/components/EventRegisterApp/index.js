@@ -123,7 +123,6 @@ const mapDispatchToProps = (dispatch, ownProps) => ({
       api[c.TYPE_EVENT].fetchResource(id, {
         fields: {
           [c.TYPE_EVENT]: [
-            'uuid',
             'field_capacity_max',
             'field_waitlist_max',
             'field_event_register_period',
@@ -137,20 +136,13 @@ const mapDispatchToProps = (dispatch, ownProps) => ({
   },
   fetchUser: (id) => {
     dispatch(
-      api[c.TYPE_USER].fetchAll({
-        filters: {
-          uuid: {
-            value: id,
-            path: 'uuid',
-          },
-        },
-      }),
+      api[c.TYPE_USER].fetchResource(id),
     );
   },
   fetchSegments: (
     options = {
       fields: {
-        [c.TYPE_POPULATION_SEGMENT]: ['name', 'uuid', 'weight'],
+        [c.TYPE_POPULATION_SEGMENT]: ['name', 'weight'],
       },
     },
   ) => {
@@ -162,11 +154,11 @@ const mapDispatchToProps = (dispatch, ownProps) => ({
         filters: {
           event: {
             value: eventId,
-            path: 'field_event.uuid',
+            path: 'field_event.id',
           },
           user: {
             value: ownProps.user.uuid,
-            path: 'field_user.uuid',
+            path: 'field_user.id',
           },
         },
       }),

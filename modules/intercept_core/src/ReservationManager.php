@@ -114,7 +114,6 @@ class ReservationManager implements ReservationManagerInterface {
     $values = [
       'field_event' => $event->id(),
       'field_room' => $event->field_room->entity->id(),
-      'field_meeting_dates' => $event->field_date_time->first()->getValue(),
       'field_user' => $this->currentUser->id(),
     ] + $params;
     $room_reservation = $this->entityTypeManager->getStorage('room_reservation')->create($values);
@@ -134,11 +133,8 @@ class ReservationManager implements ReservationManagerInterface {
   public function updateEventReservation(RoomReservationInterface $reservation, NodeInterface $event, array $params = []) {
     if (!$event->field_room->equals($reservation->field_room)) {
       $reservation->field_room = $event->field_room;
+      $reservation->save();
     }
-    if (!$event->field_date_time->equals($reservation->field_meeting_dates)) {
-      $reservation->field_meeting_dates = $event->field_date_time;
-    }
-    $reservation->save();
   }
 
   /**
@@ -287,12 +283,6 @@ class ReservationManager implements ReservationManagerInterface {
     ];
     if (!$event->isNew()) {
       $params['event'] = $event->id();
-    }
-    $availability = $this->availability($params);
-    $status = reset($availability);
-    if ($status['has_reservation_conflict']) {
-      $message = t('This room is not available due to a conflict.');
-      $form_state->setError($form['reservation'], $message);
     }
     // @TODO: Re-enable this when issue in CRL-149 is resolved.
     // else if ($status['has_open_hours_conflict']) {
@@ -448,6 +438,23 @@ class ReservationManager implements ReservationManagerInterface {
   }
 
   /**
+   * Determines the duration between a start and end date.
+   *
+   * @param string $start
+   *   The start time.
+   * @param string $end
+   *   The end time.
+   */
+  public function duration(string $start, string $end) {
+    return $this->dateUtility->duration(
+      $this->dateUtility->getDrupalDate($start),
+      $this->dateUtility->getDrupalDate($end)
+    );
+  }
+
+  /**
+   * Check the availability of a room at a given date range.
+   *
    * Determines the availability of a specified time in a specified room.
    *
    * @param array $params
@@ -458,12 +465,7 @@ class ReservationManager implements ReservationManagerInterface {
     $debug = !empty($params['debug']);
     // Reservations keyed by room uuid.
     if (empty($params['duration'])) {
-
-      $duration = $this->dateUtility->duration(
-        $this->dateUtility->getDrupalDate($params['start']),
-        $this->dateUtility->getDrupalDate($params['end'])
-      );
-      $params['duration'] = $duration;
+      $params['duration'] = $this->duration($params['start'], $params['end']);
     }
     $data = $this->reservationsByNode('room', function ($query) use ($params) {
       $start_date = $this->dateUtility->getDate($params['start']);
@@ -479,6 +481,9 @@ class ReservationManager implements ReservationManagerInterface {
       // count the existing reservation towards unavailability.
       if (!empty($params['event'])) {
         $query->condition('field_event', $params['event'], '!=');
+      }
+      if (!empty($params['exclude'])) {
+        $query->condition('id', $params['exclude'], '!=');
       }
       $query->condition('field_status', ['canceled', 'denied'], 'NOT IN');
       $range = [$start_date->format(self::FORMAT), $end_date->format(self::FORMAT)];
@@ -599,7 +604,6 @@ class ReservationManager implements ReservationManagerInterface {
       // Appears to be closed.
       return TRUE;
     }
-    // Return FALSE.
     return $this->hasReservationConflict($reservations, $params);
   }
 
@@ -607,6 +611,7 @@ class ReservationManager implements ReservationManagerInterface {
    * @param RoomReservationInterface[] $reservations
    * @param array $params
    * @param bool $open_only
+   *
    * @return array
    */
   protected function getOpenings(array $reservations, array $params, $open_only = TRUE) {
@@ -835,20 +840,22 @@ class ReservationManager implements ReservationManagerInterface {
       // Check if this email should be only sent out for certain logged in users.
       $pass = FALSE;
       if (!empty($settings['user'])) {
-        switch($settings['user']) {
+        switch ($settings['user']) {
           case 'reservation_user':
             $reservation_user = $room_reservation->getRegistrant();
             $pass = $reservation_user && $this->matchesCurrentUser($reservation_user->id());
-          break;
+            break;
+
           case 'reservation_author':
             $reservation_author = $room_reservation->getOwner();
             $pass = $reservation_author && $this->matchesCurrentUser($reservation_author->id());
-          break;
+            break;
+
           case 'user_role':
             $user_roles = !empty($settings['user_role']) ? $settings['user_role'] : [];
             $roles = $this->currentUser->getRoles();
             $pass = !empty(array_intersect(array_values($user_roles), $roles));
-          break;
+            break;
         }
 
         if (!$pass) {
@@ -906,11 +913,11 @@ class ReservationManager implements ReservationManagerInterface {
     $email_config = $params['email_config'];
     $variables = [
       '%site_name' => \Drupal::config('system.site')->get('name'),
-      '%username' => 'username', //$account->getDisplayName(),
+      '%username' => 'username',
     ];
 
     $token_replacements = [
-      'room_reservation' => $params['room_reservation']
+      'room_reservation' => $params['room_reservation'],
     ];
     $subject = $this->token->replace($email_config['subject'], $token_replacements);
     $body = $this->token->replace($email_config['body'], $token_replacements);

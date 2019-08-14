@@ -115,7 +115,7 @@ module.exports = function config(env) {
             new Minify({
               deadcode: false,
             }),
-            new BundleAnalyzerPlugin(),
+            // new BundleAnalyzerPlugin(),
           );
         }
 

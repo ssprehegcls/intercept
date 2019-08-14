@@ -4,8 +4,6 @@ dependencies:
   module:
     - options
     - taxonomy
-_core:
-  default_config_hash: aMuswDGv6CAvJuJGJJ_i4sq0Lfz20PzaxHmS1EOBEYQ
 id: taxonomy_term.field_evaluation
 field_name: field_evaluation
 entity_type: taxonomy_term

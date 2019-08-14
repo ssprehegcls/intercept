@@ -85,14 +85,6 @@ const buildRoomReservation = (values) => {
         end_value: utils.dateToDrupal(utils.getDateFromTime(values.end, values.date)),
       },
       field_group_name: values.groupName,
-      field_meeting_dates: {
-        value: values.meetingStart
-          ? utils.dateToDrupal(utils.getDateFromTime(values.meetingStart, values.date))
-          : null,
-        end_value: values.meetingEnd
-          ? utils.dateToDrupal(utils.getDateFromTime(values.meetingEnd, values.date))
-          : null,
-      },
       field_meeting_purpose_details: values.meetingDetails,
       field_refreshments: values.refreshments,
       field_refreshments_description: {

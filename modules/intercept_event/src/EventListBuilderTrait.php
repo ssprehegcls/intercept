@@ -45,7 +45,7 @@ trait EventListBuilderTrait {
     foreach ($operations as &$operation) {
       $operation['url']->setOption('query', [
         'destination' => Url::fromRoute('<current>')->toString(),
-      ]);;
+      ]);
     }
     return $operations;
   }

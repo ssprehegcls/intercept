@@ -1,10 +1,10 @@
-## InterCEPT ILS
+## Intercept ILS
 Handler module for all Integrated Library System modules.
 
-## TODO
-#### ILS Abstraction
+## Installation/Configuration
 
-- Create a new plugin type for ILS Http Client with interface
-- Replace direct calls to Polaris with calls to ILS Client interface
-- Create configuration to choose which Client to use
-- Create more advanced mapping admin tools and config entities (salesforce_mapping model)
+- Choose your ILS Plugin at /admin/config/intercept/intercept_ils_settings
+
+## Plugin Example Code
+
+- An example Intercept ILS plugin module is the Polaris module at https://drupal.org/project/polaris

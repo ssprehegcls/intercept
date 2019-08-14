@@ -1,4 +1,3 @@
-uuid: 0a575185-1f7f-4904-a0b5-bcdbec2e4efe
 langcode: en
 status: true
 dependencies:
@@ -7,8 +6,6 @@ dependencies:
     - profile.type.customer
   module:
     - telephone
-_core:
-  default_config_hash: pZaAMwJ1lRtHws6599ycZTlvP8-i9dlwZgyvtJ0ZoSE
 id: profile.customer.field_phone
 field_name: field_phone
 entity_type: profile

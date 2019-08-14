@@ -2,6 +2,7 @@
 
 use Drupal\Core\Form\FormStateInterface;
 use Drupal\Core\StringTranslation\TranslatableMarkup;
+use Drupal\node\Entity\Node;
 
 /**
  * Implements hook_page_attachments.
@@ -30,12 +31,17 @@ function intercept_core_page_attachments(array &$attachments) {
     'utc_offset' => $user_utc_offset,
   ];
   $authmap = \Drupal::service('externalauth.authmap');
-  $authdata = $authmap->getAuthdata($current_user->id(), 'polaris');
-  $authdata_data = unserialize($authdata['data']);
-  if ($authdata_data) {
-    $attachments['#attached']['drupalSettings']['intercept']['user']['telephone'] = $authdata_data->PhoneNumber;
-    $attachments['#attached']['drupalSettings']['intercept']['user']['email'] = $authdata_data->EmailAddress;
+
+  $plugin_id = \Drupal::config('intercept_ils.settings')->get('intercept_ils_plugin', '');
+  if (!empty($plugin_id)) {
+    $authdata = $authmap->getAuthdata($current_user->id(), $plugin_id);
+    $authdata_data = unserialize($authdata['data']);
+    if ($authdata_data) {
+      $attachments['#attached']['drupalSettings']['intercept']['user']['telephone'] = $authdata_data->PhoneNumber;
+      $attachments['#attached']['drupalSettings']['intercept']['user']['email'] = $authdata_data->EmailAddress;
+    }
   }
+
   $attachments['#cache']['contexts'][] = 'user';
   $attachments['#cache']['tags'][] = 'user:' . $current_user->id();
 }
@@ -75,7 +81,6 @@ function intercept_core_theme() {
  */
 function intercept_core_entity_type_build(array &$entity_types) {
   /** @var $entity_types \Drupal\Core\Entity\EntityTypeInterface[] */
-  $entity_types['profile']->setFormClass('customer', '\Drupal\intercept_core\Form\ProfileForm');
   $entity_types['user']->setFormClass('customer', '\Drupal\intercept_core\Form\UserProfileForm');
 }
 
@@ -128,8 +133,8 @@ function intercept_core_entity_extra_field_info() {
   ];
 
   $extra['profile']['customer']['form']['pin'] = [
-    'label' => t('Pin'),
-    'description' => t('ILS pin'),
+    'label' => t('PIN'),
+    'description' => t('ILS PIN'),
     'visible' => FALSE,
   ];
 
@@ -174,4 +179,17 @@ function intercept_core_user_load(array $entities) {
       $entity->addCacheTags($profile->getCacheTags());
     }
   }
+}
+
+/**
+ * Gets the nested file attached to the image_primary field.
+ */
+function intercept_core_get_primary_image_file(Node $node) {
+  if (!$node->hasField('image_primary')) {
+    return NULL;
+  }
+  if (($image_primary = $node->image_primary->referencedEntities()) && ($files = $image_primary[0]->field_media_image->referencedEntities())) {
+    return $files[0];
+  }
+  return NULL;
 }

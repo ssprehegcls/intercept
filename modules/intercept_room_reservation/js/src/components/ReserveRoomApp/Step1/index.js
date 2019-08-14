@@ -52,7 +52,7 @@ function getRoomsWithLocationsFilters() {
       conjunction: 'AND',
     },
     withLocation: {
-      path: 'field_location',
+      path: 'field_location.id',
       value: null,
       operator: '<>',
       memberOf: 'locations',
@@ -107,8 +107,8 @@ function getFilters(values) {
   }
 
   const types = [
-    { id: c.TYPE_ROOM_TYPE, path: 'field_room_type.uuid', conjunction: 'OR' },
-    { id: c.TYPE_LOCATION, path: 'field_location.uuid', conjunction: 'OR' },
+    { id: c.TYPE_ROOM_TYPE, path: 'field_room_type.id', conjunction: 'OR' },
+    { id: c.TYPE_LOCATION, path: 'field_location.id', conjunction: 'OR' },
   ];
 
   types.forEach((type) => {
@@ -173,19 +173,11 @@ class ReserveRoomStep1 extends React.Component {
         attendees: 1,
         groupName: '',
         meeting: false,
-        meetingStart: moment()
-          .startOf('hour')
-          .add(1, 'h')
-          .toDate(),
-        meetingEnd: moment()
-          .startOf('hour')
-          .add(2, 'h')
-          .toDate(),
         [c.TYPE_MEETING_PURPOSE]: null,
         meetingDetails: '',
         refreshments: false,
         refreshmentsDesc: '',
-        user: drupalSettings.intercept.user.uuid,
+        user: utils.getUserUuid(),
       },
       room: {
         current: null,

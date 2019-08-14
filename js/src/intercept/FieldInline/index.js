@@ -14,6 +14,10 @@ const FieldInline = (props) => {
 
   const valueList = [].concat(values).map(
     (value) => {
+      if (!value.name) {
+        return null;
+      }
+
       if (value.html) {
         return (<div
           key={value.id}

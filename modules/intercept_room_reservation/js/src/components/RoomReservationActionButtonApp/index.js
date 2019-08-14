@@ -9,6 +9,7 @@ import get from 'lodash/get';
 import interceptClient from 'interceptClient';
 
 import ButtonReservationAction from 'intercept/ButtonReservationAction';
+import DialogConfirm from 'intercept/Dialog/DialogConfirm';
 import LoadingIndicator from 'intercept/LoadingIndicator';
 import ReservationStatus from 'intercept/ReservationStatus';
 /* eslint-enable */
@@ -19,6 +20,12 @@ const c = interceptClient.constants;
 class RoomReservationActionButtonApp extends React.Component {
   constructor(props) {
     super(props);
+    this.state = {
+      open: false,
+      disableBackdropClick: true,
+      disableEscapeKeyDown: true,
+      dialogProps: {},
+    };
     this.actionButton = this.actionButton.bind(this);
   }
 
@@ -38,11 +45,51 @@ class RoomReservationActionButtonApp extends React.Component {
       case 'approved':
         return isManager ? [deny(), cancel()] : [cancel()];
       case 'canceled':
-        return isManager ? [request()] : null;
+        return [request()];
       default:
         return null;
     }
   };
+
+  getDialogProps = (status) => {
+    switch (status) {
+      case 'requested':
+        return {
+          status: 'requested',
+          heading: 'Are you sure you want to rerequest this reservation?',
+        };
+      case 'denied':
+        return {
+          status: 'denied',
+          heading: 'Are you sure you want to deny this reservation?',
+        };
+      case 'approved':
+        return {
+          status: 'approved',
+          heading: 'Are you sure you want to approve this reservation?',
+        };
+      case 'canceled':
+        return {
+          status: 'canceled',
+          heading: 'Are you sure you want to cancel this reservation?',
+        };
+      default:
+        return null;
+    }
+  };
+
+  openDialog = (status) => {
+    this.setState({ open: true, dialogProps: this.getDialogProps(status) });
+  }
+
+  closeDialog = () => {
+    this.setState({ open: false });
+  }
+
+  confirmDialog = (status) => {
+    this.props.setStatusTo(status);
+    this.closeDialog();
+  }
 
   cancel = () => this.actionButton({
     status: 'canceled',
@@ -66,7 +113,7 @@ class RoomReservationActionButtonApp extends React.Component {
   });
 
   actionButton({ status, label, variant }) {
-    const { record, entityId, setStatusTo } = this.props;
+    const { record, entityId } = this.props;
 
     return record ? (
       <ButtonReservationAction
@@ -74,11 +121,29 @@ class RoomReservationActionButtonApp extends React.Component {
         type={c.TYPE_ROOM_RESERVATION}
         record={record}
         text={label}
-        onClick={() => setStatusTo(status)}
+        onClick={() => this.openDialog(status)}
         key={status}
         variant={variant}
       />
     ) : null;
+  }
+
+  dialog = () => {
+    const { dialogProps } = this.state;
+    return (
+      <DialogConfirm
+        {...dialogProps}
+        open={this.state.open}
+        onClose={this.onDialogClose}
+        onCancel={this.closeDialog}
+        onBackdropClick={null}
+        disableEscapeKeyDown={this.state.disableEscapeKeyDown}
+        disableBackdropClick={this.state.disableBackdropClick}
+        onConfirm={() => this.confirmDialog(dialogProps.status)}
+        confirmText="Yes"
+        cancelText="No"
+      />
+    );
   };
 
   render() {
@@ -95,6 +160,7 @@ class RoomReservationActionButtonApp extends React.Component {
       <div className="reservation-register-button__inner">
         <ReservationStatus status={status} syncing={get(record, 'state.syncing')} />
         {buttons}
+        {this.dialog()}
       </div>
     );
   }
@@ -152,15 +218,7 @@ const mapDispatchToProps = (dispatch, ownProps) => {
     },
     fetchReservation: (id) => {
       dispatch(
-        // @todo: Add support for fetching a single entity rather than fetching all filtered by uuid.
-        api[c.TYPE_ROOM_RESERVATION].fetchAll({
-          filters: {
-            uuid: {
-              value: id,
-              path: 'uuid',
-            },
-          },
-        }),
+        api[c.TYPE_ROOM_RESERVATION].fetchResource(id),
       );
     },
   };

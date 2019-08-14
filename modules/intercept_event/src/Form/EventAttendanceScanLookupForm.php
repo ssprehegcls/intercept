@@ -9,7 +9,6 @@ use Drupal\Core\Entity\EntityTypeBundleInfoInterface;
 use Drupal\Core\Form\FormStateInterface;
 use Drupal\externalauth\ExternalAuth;
 use Drupal\intercept_event\CustomerSearchFormTrait;
-use Drupal\polaris\Client;
 use Drupal\user\UserInterface;
 use Drupal\user\UserStorage;
 use Symfony\Component\DependencyInjection\ContainerInterface;
@@ -24,16 +23,10 @@ class EventAttendanceScanLookupForm extends EventAttendanceScanFormBase {
   use CustomerSearchFormTrait;
 
   /**
-   * @var Client
-   */
-  protected $client;
-
-  /**
    * {@inheritdoc}
    */
-  public function __construct(EntityManagerInterface $entity_manager, EntityTypeBundleInfoInterface $entity_type_bundle_info = NULL, TimeInterface $time = NULL, ExternalAuth $external_auth, Client $client) {
+  public function __construct(EntityManagerInterface $entity_manager, EntityTypeBundleInfoInterface $entity_type_bundle_info = NULL, TimeInterface $time = NULL, ExternalAuth $external_auth) {
     parent::__construct($entity_manager, $entity_type_bundle_info, $time, $external_auth);
-    $this->client = $client;
   }
 
   /**
@@ -44,8 +37,7 @@ class EventAttendanceScanLookupForm extends EventAttendanceScanFormBase {
       $container->get('entity.manager'),
       $container->get('entity_type.bundle.info'),
       $container->get('datetime.time'),
-      $container->get('externalauth.externalauth'),
-      $container->get('polaris.client')
+      $container->get('externalauth.externalauth')
     );
   }
 
@@ -108,6 +100,8 @@ class EventAttendanceScanLookupForm extends EventAttendanceScanFormBase {
       '#value' => $this->t('Search'),
       '#validate' => ['::search'],
     ];
+
+    $form['cancel'] = $this->cancelButton();
   }
 
   public function search(array $form, FormStateInterface $form_state) {

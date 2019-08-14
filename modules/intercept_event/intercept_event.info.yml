@@ -8,7 +8,9 @@ dependencies:
   - csv_serialization:csv_serialization
   - date_recur:date_recur
   - drupal:datetime_range
+  - drupal:field_ui
   - drupal:rest
+  - existing_values_autocomplete_widget:existing_values_autocomplete_widget
   - flag:flag
   - intercept:intercept_location
   - tally:tally

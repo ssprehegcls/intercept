@@ -2,7 +2,6 @@
 
 namespace Drupal\intercept_room_reservation\Form;
 
-
 use Drupal\Core\Form\FormBase;
 use Drupal\Core\Form\FormStateInterface;
 use Drupal\Core\DateTime\DrupalDateTime;
@@ -14,19 +13,19 @@ use Symfony\Component\DependencyInjection\ContainerInterface;
 class RoomReservationAvailabilityForm extends FormBase {
 
   /**
-   * @var ReservationManager
+   * @var Drupal\intercept_core\ReservationManager
    */
   protected $reservationManager;
 
   /**
-   * @var Dates
+   * @var Drupal\intercept_core\Utility\Dates
    */
   protected $dateUtility;
 
   /**
    * RoomReservationAvailabilityForm constructor.
    *
-   * @param ReservationManager $reservation_manager
+   * @param Drupal\intercept_core\ReservationManager $reservation_manager
    */
   public function __construct(ReservationManager $reservation_manager, Dates $date_utility) {
     $this->reservationManager = $reservation_manager;
@@ -213,7 +212,7 @@ class RoomReservationAvailabilityForm extends FormBase {
   }
 
   private function format() {
-    return \Drupal\intercept_core\ReservationManager::FORMAT;
+    return ReservationManager::FORMAT;
   }
 
   private function scheduleTable(array $openings , array &$rows, $duration) {
@@ -272,7 +271,7 @@ class RoomReservationAvailabilityForm extends FormBase {
   public function submitForm(array &$form, FormStateInterface $form_state) {
     $form_state->setRebuild(TRUE);
     $values = $form_state->getValues();
-    $format = \Drupal\intercept_core\ReservationManager::FORMAT;
+    $format = ReservationManager::FORMAT;
     $availability = \Drupal::service('intercept_core.reservation.manager')->availability([
       'debug' => TRUE,
       'start' => $values['start_date']->format($format),

@@ -2,18 +2,51 @@
 
 namespace Drupal\intercept_core\Form;
 
+use Drupal\Component\Datetime\TimeInterface;
+use Drupal\Core\Config\ConfigFactoryInterface;
 use Drupal\Core\Entity\ContentEntityInterface;
+use Drupal\Core\Entity\EntityRepositoryInterface;
+use Drupal\Core\Entity\EntityTypeBundleInfoInterface;
 use Drupal\Core\Entity\Entity\EntityFormDisplay;
 use Drupal\Core\Form\FormStateInterface;
+use Drupal\Core\Language\LanguageManagerInterface;
+use Drupal\intercept_ils\ILSManager;
 use Drupal\profile\Entity\ProfileInterface;
 use Drupal\profile\ProfileStorageInterface;
 use Drupal\user\UserInterface;
-use RCPL\Polaris\Entity\Patron;
+use Symfony\Component\DependencyInjection\ContainerInterface;
 
 class UserProfileForm extends \Drupal\user\ProfileForm {
 
   protected $profileEntity;
 
+  private $client;
+
+  protected $interceptILSPlugin;
+
+  public function __construct(EntityRepositoryInterface $entity_repository, EntityTypeBundleInfoInterface $entity_type_bundle_info = NULL, TimeInterface $time = NULL, LanguageManagerInterface $language_manager, ConfigFactoryInterface $config_factory, ILSManager $ils_manager) {
+    // Pass necessary info to parent constructor at \Drupal\user\AccountForm.php
+    parent::__construct($entity_repository, $language_manager, $entity_type_bundle_info, $time);
+
+    $settings = $config_factory->get('intercept_ils.settings');
+    $intercept_ils_plugin = $settings->get('intercept_ils_plugin', '');
+    if ($intercept_ils_plugin) {
+      $this->interceptILSPlugin = $ils_manager->createInstance($intercept_ils_plugin);
+      $this->client = $this->interceptILSPlugin->getClient();
+    }
+  }
+
+  public static function create(ContainerInterface $container) {
+    return new static(
+      $container->get('entity.repository'),
+      $container->get('entity_type.bundle.info'),
+      $container->get('datetime.time'),
+      $container->get('language_manager'),
+      $container->get('config.factory'),
+      $container->get('plugin.manager.intercept_ils')
+    );
+  }
+  
   /**
    * {@inheritdoc}
    */
@@ -35,17 +68,23 @@ class UserProfileForm extends \Drupal\user\ProfileForm {
     $user = $form_state->getFormObject()->getEntity();
     $profile = $this->getProfileEntity($user);
     if ($pin = $this->getInlineEntityFormDisplay($profile, $entity_form['#form_mode'])->getComponent('pin')) {
-      $entity_form['pin'] = [
-        '#type' => 'password',
-        '#weight' => $pin['weight'],
-        '#title' => $this->t('PIN'),
-        // Turn off autofill for username and PIN fields so that browser
-        // doesn't fill these in if the customer doesn't want to change them.
-        '#attributes' => ['autocomplete' => 'new-password'],
+      $entity_form['pin']['#type'] = 'password';
+      $entity_form['pin']['#title'] = $this->t('PIN');
+      // $entity_form['pin']['#parents'] = ['customer_profile'];
+      // $entity_form['pin']['#weight'] = $pin['weight'];
+      // Turn off autofill for username and PIN fields so that browser
+      // doesn't fill these in if the customer doesn't want to change them.
+      $entity_form['pin']['#attributes'] = [
+        'autocomplete' => 'new-password',
+        'class' => ['field--pin']
+      ];
+      // Reposition the PIN field.
+      $entity_form['pin']['#attached'] = [
+        'library' => ['intercept_core/user_settings_form_helper'],
       ];
     }
-    // Set the default value for barcode and add a save handler for the pin.
-    if ($patron = \Drupal::service('polaris.client')->patron->getByUser($user)) {
+    // Set the default values for profile and add a save handler for the pin.
+    if ($this->client && $patron = $this->client->patron->getByUser($user)) {
       $this->populateName($entity_form, $patron, $profile);
       $form_state->set('patron', $patron);
       $entity_form['field_barcode']['widget'][0]['value']['#default_value'] = $patron->barcode;
@@ -53,7 +92,6 @@ class UserProfileForm extends \Drupal\user\ProfileForm {
       if (isset($patron->basicData()->Username)) {
         $entity_form['field_ils_username']['widget'][0]['value']['#default_value'] = $patron->basicData()->Username;
       }
-      // $debug = true;
       $entity_form['field_phone']['widget'][0]['value']['#default_value'] = $patron->basicData()->PhoneNumber;
       $entity_form['field_email_address']['widget'][0]['value']['#default_value'] = $patron->basicData()->EmailAddress;
       $entity_form['#ief_element_submit'][] = [$this, 'saveInlineEntityForm'];
@@ -65,7 +103,7 @@ class UserProfileForm extends \Drupal\user\ProfileForm {
     $entity_form['field_barcode']['widget']['#disabled'] = TRUE;
   }
 
-  private function populateName(array &$form, Patron $patron,  ProfileInterface $profile) {
+  private function populateName(array &$form, $patron,  ProfileInterface $profile) {
     if ($patron->getFirstName() != $profile->get('field_first_name')->getString()) {
       $form['field_first_name']['widget'][0]['value']['#default_value'] = $patron->getFirstName();
     }
@@ -121,16 +159,20 @@ class UserProfileForm extends \Drupal\user\ProfileForm {
       }
       $patron->update();
 
-      // Also update externalauth authdata
-      $user = $form_state->getFormObject()->getEntity();
-      $externalauth = \Drupal::service('externalauth.externalauth');
-      $authmap = \Drupal::service('externalauth.authmap');
-      $authdata = $authmap->getAuthdata($user->id(), 'polaris');
-      $authdata_data = unserialize($authdata['data']);
+      if (!empty($this->interceptILSPlugin)) {
+        $plugin_id = $this->interceptILSPlugin->getId();
+        // Also update externalauth authdata
+        $user = $form_state->getFormObject()->getEntity();
+        $externalauth = \Drupal::service('externalauth.externalauth');
+        $authmap = \Drupal::service('externalauth.authmap');
+        $authdata = $authmap->getAuthdata($user->id(), $plugin_id);
+        $authdata_data = unserialize($authdata['data']);
 
-      // Update the authdata & user account based on the latest Polaris info.
-      if ($patron = \Drupal::service('polaris.client')->patron->getByUser($user)) {
-        $authmap->save($user, 'polaris', $patron->barcode(), $patron->basicData());
+        // Update the authdata & user account based on the latest ILS info.
+        if ($patron = $this->client->patron->getByUser($user)) {
+          $plugin_id = $this->interceptILSPlugin->getId();
+          $authmap->save($user, $plugin_id, $patron->barcode(), $patron->basicData());
+        }
       }
     }
     // Update ILS username if requested.
@@ -139,7 +181,7 @@ class UserProfileForm extends \Drupal\user\ProfileForm {
     $patron->updateUsername($ils_username);
   }
 
-  protected function getProfileEntity(UserInterface  $user) {
+  protected function getProfileEntity(UserInterface $user) {
     $profile_storage = $this->entityTypeManager->getStorage('profile');
     /** @var $profile_storage ProfileStorageInterface */
     $profile = $profile_storage->loadDefaultByUser($user, 'customer');
@@ -151,6 +193,10 @@ class UserProfileForm extends \Drupal\user\ProfileForm {
     }
     $this->profileEntity = $profile;
     return $profile;
+  }
+
+  public function locationsSort($a, $b) {
+    return strcmp($a->Name, $b->Name);
   }
 
 }

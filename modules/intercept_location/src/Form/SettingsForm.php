@@ -6,7 +6,6 @@ use Drupal\Core\Config\ConfigFactoryInterface;
 use Drupal\Core\Entity\EntityTypeManagerInterface;
 use Drupal\Core\Form\ConfigFormBase;
 use Drupal\Core\Form\FormStateInterface;
-use Drupal\polaris\Client;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 use Drupal\intercept_location\LocationListBuilder;
 
@@ -14,18 +13,15 @@ class SettingsForm extends ConfigFormBase {
 
   private $entityTypeManager;
 
-  private $client;
-
   /**
    * Constructs a \Drupal\system\ConfigFormBase object.
    *
    * @param \Drupal\Core\Config\ConfigFactoryInterface $config_factory
    *   The factory for configuration objects.
    */
-  public function __construct(ConfigFactoryInterface $config_factory, EntityTypeManagerInterface $entity_type_manager, Client $client) {
+  public function __construct(ConfigFactoryInterface $config_factory, EntityTypeManagerInterface $entity_type_manager) {
     $this->setConfigFactory($config_factory);
     $this->entityTypeManager = $entity_type_manager;
-    $this->client = $client;
   }
 
   /**
@@ -34,8 +30,7 @@ class SettingsForm extends ConfigFormBase {
   public static function create(ContainerInterface $container) {
     return new static(
       $container->get('config.factory'),
-      $container->get('entity_type.manager'),
-      $container->get('polaris.client')
+      $container->get('entity_type.manager')
     );
   }
 
@@ -55,7 +50,7 @@ class SettingsForm extends ConfigFormBase {
       '#default_value' => $settings->get('mapping_enabled', 0),
     ];
     $form['mapping_integration_type'] = [
-      '#title' => $this->t('Import organizations as locations from Polaris'),
+      '#title' => $this->t('Import organizations as locations from ILS'),
       '#type' => 'select',
       '#options' => [
         'once' => $this->t('Run once'),

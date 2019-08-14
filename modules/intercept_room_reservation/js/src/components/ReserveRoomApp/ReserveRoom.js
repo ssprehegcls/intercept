@@ -100,9 +100,8 @@ function getFilters(values, view = 'list', calView = 'day', date = new Date()) {
   }
 
   const types = [
-    { id: c.TYPE_ROOM_TYPE, path: 'field_room_type.uuid', conjunction: 'OR' },
-    { id: c.TYPE_LOCATION, path: 'field_location.uuid', conjunction: 'OR' },
-    // { id: c.TYPE_AUDIENCE, path: 'field_event_audience.uuid', conjunction: 'OR' },
+    { id: c.TYPE_ROOM_TYPE, path: 'field_room_type.id', conjunction: 'OR' },
+    { id: c.TYPE_LOCATION, path: 'field_location.id', conjunction: 'OR' },
   ];
 
   types.forEach((type) => {
@@ -151,8 +150,6 @@ class ReserveRoom extends React.Component {
         attendees: null,
         groupName: '',
         meeting: false,
-        meetingStart: null,
-        meetingEnd: null,
         [c.TYPE_MEETING_PURPOSE]: null,
         meetingDetails: '',
         refreshments: false,
@@ -172,7 +169,7 @@ class ReserveRoom extends React.Component {
     if (this.props.event) {
       const filters = {
         uuid: {
-          path: 'uuid',
+          path: 'id',
           value: this.props.event,
         },
       };
@@ -185,7 +182,7 @@ class ReserveRoom extends React.Component {
     if (this.props.room) {
       const filters = {
         uuid: {
-          path: 'uuid',
+          path: 'id',
           value: this.props.room,
         },
       };
@@ -216,7 +213,7 @@ class ReserveRoom extends React.Component {
         },
       },
       fields: {
-        [c.TYPE_LOCATION]: ['uuid', 'title', 'field_location_hours', 'field_branch_location'],
+        [c.TYPE_LOCATION]: ['title', 'field_location_hours', 'field_branch_location'],
       },
     });
 
@@ -238,8 +235,6 @@ class ReserveRoom extends React.Component {
       'date',
       'start',
       'end',
-      'meetingStart',
-      'meetingEnd',
       'attendees',
       'groupName',
     ]);
@@ -277,18 +272,6 @@ class ReserveRoom extends React.Component {
       values.end = moment(endValue)
         .tz(tz)
         .add(ROOM_RESERVATION_MEETING_BUFFER, 'minutes')
-        .format('HHmm');
-    }
-
-    if (!values.meetingStart) {
-      values.meetingStart = moment(startValue)
-        .tz(tz)
-        .format('HHmm');
-    }
-
-    if (!values.meetingEnd) {
-      values.meetingEnd = moment(endValue)
-        .tz(tz)
         .format('HHmm');
     }
 

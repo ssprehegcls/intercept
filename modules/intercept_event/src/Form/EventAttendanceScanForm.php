@@ -71,7 +71,7 @@ class EventAttendanceScanForm extends EventAttendanceScanFormBase {
       ]),
     ];
 
-    $form['#attached']['library'][] = 'intercept_event/eventCheckin';;
+    $form['#attached']['library'][] = 'intercept_event/eventCheckin';
     $form['#attached']['drupalSettings']['eventCheckinMessage'] = $this->t(self::SUCCESS_MESSAGE);
     return $form;
   }
