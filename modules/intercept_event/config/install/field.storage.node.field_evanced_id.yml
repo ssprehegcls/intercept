@@ -2,16 +2,16 @@ langcode: en
 status: true
 dependencies:
   module:
-    - entity_reference_revisions
     - node
-    - paragraphs
-id: node.field_gallery
-field_name: field_gallery
+id: node.field_evanced_id
+field_name: field_evanced_id
 entity_type: node
-type: entity_reference_revisions
+type: string
 settings:
-  target_type: paragraph
-module: entity_reference_revisions
+  max_length: 255
+  is_ascii: false
+  case_sensitive: false
+module: core
 locked: false
 cardinality: 1
 translatable: true

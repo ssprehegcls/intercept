@@ -3,7 +3,7 @@ status: true
 dependencies:
   module:
     - node
-id: node.summary
-label: Summary
+id: node.listing
+label: Listing
 targetEntityType: node
 cache: true

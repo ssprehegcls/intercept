@@ -2,14 +2,14 @@ langcode: en
 status: true
 dependencies:
   module:
-    - link
     - node
-id: node.field_link_directions
-field_name: field_link_directions
+id: node.field_keywords
+field_name: field_keywords
 entity_type: node
-type: link
-settings: {  }
-module: link
+type: string_long
+settings:
+  case_sensitive: false
+module: core
 locked: false
 cardinality: 1
 translatable: true

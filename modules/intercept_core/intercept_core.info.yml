@@ -18,8 +18,10 @@ dependencies:
   - drupal:user
   - drupal:views
   - entity:entity
+  - externalauth:externalauth
   - field_group:field_group
   - focal_point:focal_point
   - intercept:intercept
+  - intercept:intercept_ils
   - profile:profile
 package: 'InterCEPT'
