@@ -23,6 +23,10 @@ class RoomReservationForm extends ContentEntityForm {
     }
     $form = parent::buildForm($form, $form_state);
 
+    $form['#attached'] = [
+      'library' => ['intercept_room_reservation/room-reservations']
+    ];
+
     $form['field_dates']['widget'][0]['message'] = [
       '#type' => 'item',
     ];
@@ -115,7 +119,7 @@ class RoomReservationForm extends ContentEntityForm {
       if ($availability = $reservation_manager->availability($reservation_params)) {
         foreach ($availability as $room_availability) {
           if ($room_availability['has_reservation_conflict']) {
-            return ['#markup' => '<div id="edit-field-dates-0-message">It looks like the time that you\'re picking already has a room reservation. Are you sure you want to proceed?</div>'];
+            return ['#markup' => '<div id="edit-field-dates-0-message" style="color:red;">WARNING: It looks like the time that you\'re picking already has a room reservation. Are you sure you want to proceed?</div>'];
           }
         }
       }

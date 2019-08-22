@@ -41,3 +41,9 @@ roomReservationActionButton:
     - intercept_core/interceptClient
     - intercept_core/interceptCommon
     - intercept_core/interceptTheme
+
+# RoomReservationForm.php
+room-reservations:
+  css:
+    theme:
+      css/intercept_room_reservation.css: {}

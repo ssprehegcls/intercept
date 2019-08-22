@@ -43,6 +43,7 @@ class SuggestedEventsQuery extends Query {
       $this->sqlQuery->groupBy($expr_alias);
       $this->sqlQuery->orderBy($expr_alias, 'DESC');
     }
+    // $this->debug();
   }
 
   private function debug() {

@@ -321,6 +321,7 @@ class RoomReservationController extends ControllerBase implements ContainerInjec
     $result = [
       'uuid' => $user->uuid(),
       'limit' => $this->config('intercept_room_reservation.settings')->get('reservation_limit', 1),
+      'advanced_limit' => $this->config('intercept_room_reservation.settings')->get('advanced_reservation_limit', 0),
       'count' => $this->reservationManager->userReservationCount($this->currentUser()),
       'exceededLimit' => $this->reservationManager->userExceededReservationLimit($this->currentUser()),
     ];

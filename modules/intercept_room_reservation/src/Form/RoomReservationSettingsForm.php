@@ -101,6 +101,25 @@ class RoomReservationSettingsForm extends ConfigFormBase {
       '#format' => $this->getTextFormat('reservation_limit_text', 'format'),
     ];
 
+    $form['advanced_reservation_limit'] = [
+      '#title' => $this->t('Advanced room reservation limit'),
+      '#type' => 'number',
+      '#field_suffix' => $this->t('days'),
+      '#default_value' => $this->getAdvancedReservationLimit(),
+      '#description' => $this->t('Set the number of days in advance in which customers may submit room reservations. Example: entering "30" will allow customers to reserve rooms up to 30 days ahead of time. Enter "0" for no limit.'),
+      '#attributes' => [
+        'step' => 1,
+        'min' => 0
+      ]
+    ];
+
+    $form['advanced_reservation_limit_text'] = [
+      '#title' => $this->t('Room reservation limit user message'),
+      '#type' => 'text_format',
+      '#default_value' => $this->getTextFormat('advanced_reservation_limit_text', 'value'),
+      '#format' => $this->getTextFormat('advanced_reservation_limit_text', 'format'),
+    ];
+
     $form['email'] = [
       '#type' => 'vertical_tabs',
       '#title' => $this->t('Emails'),
@@ -207,6 +226,15 @@ class RoomReservationSettingsForm extends ConfigFormBase {
     $config = $this->config(self::CONFIG_NAME);
     $reservation_limit = $config->get('reservation_limit');
     return isset($reservation_limit) ? $reservation_limit : 0;
+  }
+
+  /**
+   * Helper function to get reservation limit or a default 0.
+   */
+  private function getAdvancedReservationLimit() {
+    $config = $this->config(self::CONFIG_NAME);
+    $advanced_reservation_limit = $config->get('advanced_reservation_limit');
+    return isset($advanced_reservation_limit) ? $advanced_reservation_limit : 0;
   }
 
   /**

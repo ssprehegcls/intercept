@@ -51,8 +51,19 @@ function intercept_room_reservation_node_access(NodeInterface $node, $op, Accoun
  * Implements hook_preprocess_page().
  */
 function intercept_room_reservation_preprocess_page(array &$variables) {
+  // Add customer room reservation limit
   $limit = \Drupal::config('intercept_room_reservation.settings')->get('reservation_limit', 0);
   $variables['#attached']['drupalSettings']['intercept']['room_reservations']['customer_limit'] = $limit;
+
+  // Add customer room reservation limit
+  $advanced_limit = \Drupal::config('intercept_room_reservation.settings')->get('advanced_reservation_limit', 0);
+  $variables['#attached']['drupalSettings']['intercept']['room_reservations']['customer_advanced_limit'] = $advanced_limit;
+  if (isset($advanced_limit) && $advanced_limit !== '0') {
+    $variables['#attached']['drupalSettings']['intercept']['room_reservations']['customer_advanced_text'] = t(
+      'Reservations may be made up to @limit days in advance', ['@limit' => $advanced_limit]);
+  }
+
+  // Add publicize field
   $reservation_fields = Drupal::service('entity_field.manager')->getFieldDefinitions('room_reservation', 'room_reservation');
   if (array_key_exists('field_publicize', $reservation_fields)) {
     $publicize_settings = $reservation_fields['field_publicize']->getSettings();
@@ -212,6 +223,31 @@ function intercept_room_reservation_form_views_exposed_form_alter(&$form, FormSt
 }
 
 /**
+ * Implements hook_form_FORM_ID_alter().
+ */
+function intercept_room_reservation_form_room_reservation_update_status_form_alter(&$form, $form_state, $form_id) {
+  $arguments = $form['#title']->getArguments();
+  $operation = $arguments['@action'];
+  if ($operation == 'cancel') {
+    // Rewrite the confirmation message to match the customer confirmation.
+    $form['description'] = [
+      '#markup' => '<p>' . t('Are you sure you want to cancel this reservation?') . '</p>',
+    ];
+    // Add margin to the right of the first action button.
+    $form['actions']['cancel']['#prefix'] = '<div class="actions">';
+    $form['actions']['submit']['#suffix'] = '</div>';
+    $form['actions']['cancel']['#attached'] = [
+      'library' => ['intercept_room_reservation/roomReservationActionButton'],
+    ];
+    // Change the titles and position of the buttons.
+    $form['actions']['cancel']['#title'] = 'No';
+    $form['actions']['cancel']['#weight'] = 4;
+    $form['actions']['submit']['#value'] = 'Yes';
+    $form['actions']['submit']['#weight'] = 5;
+  }
+}
+
+/**
  * Prepares variables for Room reservation templates.
  *
  * Default template: room_reservation.html.twig.
@@ -326,9 +362,17 @@ function intercept_room_reservation_views_query_alter(ViewExecutable $view, Quer
       // For each condition in condition group.
       foreach ($condition_group['conditions'] as &$condition) {
         if (isset($condition['field']) && strstr($condition['field'], 'field_dates_value')) {
+          $multi_date_reservation_or = $condition['field'];
           // Run the query from the beginning of the start date until the end of the end date.
-          $condition['field'] = preg_replace("/(?<=AND DATE_FORMAT\(\('\d{4}-\d{2}-\d{2}T)\d{2}:\d{2}:\d{2}' \+ INTERVAL [-+]?\d* SECOND\)/", "23:59:59')", $condition['field']);
           $condition['field'] = preg_replace("/(?<=BETWEEN DATE_FORMAT\(\('\d{4}-\d{2}-\d{2}T)\d{2}:\d{2}:\d{2}' \+ INTERVAL [-+]?\d* SECOND\)/", "00:00:00')", $condition['field']);
+          $condition['field'] = preg_replace("/(?<=AND DATE_FORMAT\(\('\d{4}-\d{2}-\d{2}T)\d{2}:\d{2}:\d{2}' \+ INTERVAL [-+]?\d* SECOND\)/", "23:59:59')", $condition['field']);
+
+          // Also we need to account for the user asking for a time period in the middle of a multi-day reservation.
+          preg_match("/BETWEEN DATE_FORMAT\(\('(\d{4}-\d{2}-\d{2})T\d{2}:\d{2}:\d{2}' \+ (INTERVAL [-+]?\d* SECOND)\).*AND DATE_FORMAT\(\('(\d{4}-\d{2}-\d{2})/", $multi_date_reservation_or, $matches);
+          // Need 3 captures from the original value of the condition.
+          // 1) Start date, 2) Interval and 3) end date
+          $multi_date_reservation_or = "DATE_FORMAT((room_reservation__field_dates.field_dates_value + " . $matches[2] . "), '%Y-%m-%d\T%H:%i:%s') <= DATE_FORMAT(('" . $matches[1] . "T00:00:00' + " . $matches[2] . "), '%Y-%m-%d\T%H:%i:%s') AND DATE_FORMAT((room_reservation__field_dates.field_dates_end_value + " . $matches[2] . "), '%Y-%m-%d\T%H:%i:%s') >= DATE_FORMAT(('" . $matches[3] . "T00:00:00' + " . $matches[2] . "), '%Y-%m-%d\T%H:%i:%s')";
+          $condition['field'] = '(' . $condition['field'] . ') OR (' . $multi_date_reservation_or . ')';
         }
       }
     }

@@ -37,6 +37,7 @@ const MenuProps = {
   PaperProps: {
     style: {
       // maxHeight: (ITEM_HEIGHT * 8.5) + ITEM_PADDING_TOP,
+      backfaceVisibility: 'hidden',
       maxHeight: 200,
       width: 250,
     },

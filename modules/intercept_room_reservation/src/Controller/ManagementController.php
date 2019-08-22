@@ -50,6 +50,7 @@ class ManagementController extends ManagementControllerBase {
 
     $table = $this->table();
     $table->row($this->getButtonSubpage('reservation_limit', 'Customer Reservation Limit'), 'Set the number of active room reservations a customer may have at any given time.');
+    $table->row($this->getButtonSubpage('advanced_reservation_limit', 'Advanced Reservation Limit'), 'Limit how far in advance customers may reserve rooms.');
 
     $build['sections']['general'] = [
       '#content' => $table->toRenderable(),

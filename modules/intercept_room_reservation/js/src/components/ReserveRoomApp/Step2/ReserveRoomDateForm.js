@@ -5,6 +5,8 @@ import PropTypes from 'prop-types';
 // Lodash
 import get from 'lodash/get';
 
+// Lodash
+
 // Redux
 import { connect } from 'react-redux';
 
@@ -244,20 +246,35 @@ class ReserveRoomDateForm extends PureComponent {
   };
 
   render() {
-    const { availability, disabledTimespans, values, min, max, step, onSubmit, room } = this.props;
-    const isClosed = (min === max) || get(availability, `rooms.${room}.is_closed`);
-    const validationErrors = {};
+    const {
+      availability,
+      disabledTimespans,
+      values,
+      min,
+      max,
+      maxDate,
+      minDate,
+      maxDateDescription,
+      step,
+      onSubmit,
+      room
+    } = this.props;
+    const isClosed = (min !== null && min === max) || get(availability, `rooms.${room}.is_closed`);
+    const exceedsMaxDuration = get(availability, `rooms.${room}.has_max_duration_conflict`);
+    const validationErrors = (!utils.userIsStaff() && isClosed) ? { [c.DATE]: 'Location is closed' } : {};
     const conflictProp = utils.userIsStaff()
       ? 'has_reservation_conflict'
       : 'has_open_hours_conflict';
     let conflictMessage = 'Room is not available at this time';
 
     if (!utils.userIsStaff() && isClosed) {
-      validationErrors[c.DATE] = 'Location is closed';
       conflictMessage = 'Location is closed';
     }
+    if (!utils.userIsStaff() && exceedsMaxDuration) {
+      conflictMessage = 'Reservation exceeds maximum duration';
+    }
 
-    if (get(availability, `rooms.${room}.${conflictProp}`) || (!utils.userIsStaff() && isClosed)) {
+    if (get(availability, `rooms.${room}.${conflictProp}`) || (!utils.userIsStaff() && isClosed) || (!utils.userIsStaff() && exceedsMaxDuration)) {
       validationErrors.start = conflictMessage;
       validationErrors.end = conflictMessage;
     }
@@ -283,6 +300,9 @@ class ReserveRoomDateForm extends PureComponent {
               clearable={false}
               validations="isFutureDate"
               validationError="Date must be in the future"
+              maxDate={maxDate}
+              minDate={minDate}
+              helperText={maxDateDescription}
             />
             <SelectTime
               clearable

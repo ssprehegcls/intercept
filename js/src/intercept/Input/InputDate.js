@@ -72,7 +72,17 @@ class InputDate extends React.Component {
   onClear = () => this.onChange(null);
 
   render() {
-    const { clearable, disabled, required, label } = this.props;
+    const {
+      clearable,
+      disabled,
+      required,
+      label,
+      helperText,
+      maxDate,
+      maxDateMessage,
+      minDate,
+      minDateMessage
+    } = this.props;
 
     const value = this.props.getValue();
     const inputValue = value === '' ? null : value;
@@ -89,7 +99,11 @@ class InputDate extends React.Component {
           value={inputValue}
           className="date-filter input input--date"
           error={!this.props.isValid()}
-          helperText={this.props.getErrorMessage()}
+          helperText={this.props.getErrorMessage() || helperText}
+          maxDate={maxDate}
+          maxDateMessage={maxDateMessage}
+          minDate={minDate}
+          minDateMessage={minDateMessage}
         />
       </MuiPickersUtilsProvider>
     );

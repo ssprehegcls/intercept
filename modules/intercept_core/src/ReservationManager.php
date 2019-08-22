@@ -123,7 +123,7 @@ class ReservationManager implements ReservationManagerInterface {
   /**
    * Update a reservation entity when a node is updated.
    *
-   * @param RoomReservationInterface $reservation
+   * @param \Drupal\intercept_room_reservation\Entity\RoomReservationInterface $reservation
    *   The reservation entity to update.
    * @param \Drupal\node\NodeInterface $event
    *   The event node that also has been updated.
@@ -524,6 +524,7 @@ class ReservationManager implements ReservationManagerInterface {
       $reservations = !empty($data[$node->uuid()]) ? $data[$node->uuid()] : [];
       $return[$uuid]['has_reservation_conflict'] = $this->hasReservationConflict($reservations, $params);
       $return[$uuid]['has_open_hours_conflict'] = $this->hasOpeningHoursConflict($reservations, $params, $node);
+      $return[$uuid]['has_max_duration_conflict'] = $this->hasMaxDurationConflict($params, $node);
       $is_closed = $this->isClosed($params, $node);
       $return[$uuid]['is_closed'] = $is_closed;
       $return[$uuid]['closed_message'] = $this->closedMessage($params, $node);
@@ -599,7 +600,7 @@ class ReservationManager implements ReservationManagerInterface {
     return empty($this->getOpeningsByDuration($reservations, $params));
   }
 
-  public function hasOpeningHoursConflict($reservations, $params, $node) {
+  public function hasOpeningHoursConflict(array $reservations, array $params, $node) {
     if (!$params = $this->getOpenHoursParams($reservations, $params, $node)) {
       // Appears to be closed.
       return TRUE;
@@ -608,8 +609,35 @@ class ReservationManager implements ReservationManagerInterface {
   }
 
   /**
-   * @param RoomReservationInterface[] $reservations
+   * Checks if a reservation duration exceeds the room's maximum duration limit.
+   *
    * @param array $params
+   *   The requested start and end times.
+   * @param \Drupal\node\NodeInterface $node
+   *   The Room node.
+   *
+   * @return bool
+   *   Whether there is a conflict with the room's maximum duration.
+   */
+  public function hasMaxDurationConflict(array $params, NodeInterface $node) {
+    if (!empty($params['duration']) && $max_duration_interval = $this->getMaxRoomDuration($node)) {
+      $max_duration = 0;
+      if ($max_duration_interval->format('%h') > 0) {
+        $max_duration = $max_duration_interval->format('%h') * 60;
+      }
+      $max_duration += $max_duration_interval->format('%i');
+      if ($params['duration'] > $max_duration) {
+        return TRUE;
+      }
+    }
+    return FALSE;
+  }
+
+  /**
+   * @param \Drupal\intercept_room_reservation\Entity\RoomReservationInterface[] $reservations
+   *
+   * @param array $params
+   *
    * @param bool $open_only
    *
    * @return array
@@ -730,6 +758,25 @@ class ReservationManager implements ReservationManagerInterface {
 
   protected function getLocation(NodeInterface $node) {
     return !empty($node->field_location->entity) ? $node->field_location->entity : FALSE;
+  }
+
+  /**
+   * Gets the room's maximum reservation duration.
+   *
+   * @param \Drupal\node\NodeInterface $node
+   *   The Room node.
+   *
+   * @return DateInterval|bool
+   *   The DateInterval object or FALSE.
+   */
+  protected function getMaxRoomDuration(NodeInterface $node) {
+    if (!$node->hasField('field_reservation_time_max')) {
+      return FALSE;
+    }
+    if ($duration = $node->get('field_reservation_time_max')->getValue()) {
+      return new \DateInterval($duration[0]['value']);
+    }
+    return FALSE;
   }
 
   protected function getHours(array $params, NodeInterface $node) {

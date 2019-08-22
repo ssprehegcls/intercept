@@ -42,8 +42,7 @@ intercept_room_reservation.api.reserve:
     _controller: '\Drupal\intercept_room_reservation\Controller\RoomReservationController::reserveRoom'
   methods: [POST, GET]
   requirements:
-    # TODO: Find out if this is the right permission.
-    _permission: 'access content'
+    _user_is_logged_in: 'TRUE'
 
 intercept_room_reservation.api.user_status:
   path: '/api/rooms/user/status'

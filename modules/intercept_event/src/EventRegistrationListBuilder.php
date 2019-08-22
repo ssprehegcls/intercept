@@ -2,6 +2,7 @@
 
 namespace Drupal\intercept_event;
 
+use Drupal\Core\Datetime\DateFormatter;
 use Drupal\Core\Entity\EntityInterface;
 use Drupal\Core\Entity\EntityListBuilder;
 use Drupal\Core\Entity\EntityStorageInterface;
@@ -24,6 +25,13 @@ class EventRegistrationListBuilder extends EntityListBuilder {
   protected $pluginId;
 
   /**
+   * The date formatter service.
+   *
+   * @var \Drupal\Core\Datetime\DateFormatter
+   */
+  protected $dateFormatter;
+
+  /**
    * Constructs a new EventRegistrationListBuilder object.
    *
    * @param \Drupal\Core\Entity\EntityTypeInterface $entity_type
@@ -31,7 +39,7 @@ class EventRegistrationListBuilder extends EntityListBuilder {
    * @param \Drupal\Core\Entity\EntityStorageInterface $storage
    *   The entity storage class.
    */
-  public function __construct(EntityTypeInterface $entity_type, EntityStorageInterface $storage) {
+  public function __construct(EntityTypeInterface $entity_type, EntityStorageInterface $storage, DateFormatter $date_formatter) {
     parent::__construct($entity_type, $storage);
 
     $config_factory = \Drupal::service('config.factory');
@@ -43,6 +51,7 @@ class EventRegistrationListBuilder extends EntityListBuilder {
       $this->client = $ils_plugin->getClient();
       $this->pluginId = $intercept_ils_plugin;
     }
+    $this->dateFormatter = $date_formatter;
   }
 
   /**
@@ -51,7 +60,8 @@ class EventRegistrationListBuilder extends EntityListBuilder {
   public static function createInstance(ContainerInterface $container, EntityTypeInterface $entity_type) {
     return new static(
       $entity_type,
-      $container->get('entity_type.manager')->getStorage($entity_type->id())
+      $container->get('entity_type.manager')->getStorage($entity_type->id()),
+      $container->get('date.formatter')
     );
   }
 
@@ -65,6 +75,7 @@ class EventRegistrationListBuilder extends EntityListBuilder {
     $header['count'] = $this->t('Total');
     $header['status'] = $this->t('Status');
     $header['user'] = $this->t('Registered By');
+    $header['created'] = $this->t('Created');
     return $header + parent::buildHeader();
   }
 
@@ -114,6 +125,8 @@ class EventRegistrationListBuilder extends EntityListBuilder {
     $row['count'] = $entity->total();
     $row['status'] = $entity->status->getString();
     $row['user'] = strip_tags($this->getUserLink($entity));
+    $row['created'] = $this->dateFormatter->format($entity->getCreatedTime(), 'custom', 'm-d-Y g:i A');
+
     return $row + parent::buildRow($entity);
   }
 

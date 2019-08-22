@@ -16,11 +16,17 @@ Drupal.behaviors.eventRecurring = {
     $('.intercept-event-recurring-container', context).once().each(function(id, el) {
       $root.handle($(el).uniqueId(), context, settings);
     });
+    $('.form-item-recurring-event-readable-value, #edit-recurring-event-date', context).once().hide();
   },
 
   initialize: function($container, context, settings) {
     var $eventStartDate = $($container.data('start-date-selector')).val();
     $container.find('.form-item-recurring-event-date-start .picker__input', context).val($eventStartDate);
+    // Fill in the hidden input for recurring start date so that it works even
+    // ...if they don't interact with the datepicker.
+    $container.find('input[name="recurring_event[date][start]"]', context).val($eventStartDate);
+    // Hide a couple of inputs we don't really need to see.
+    $container.find('.form-item-recurring-event-readable-value, #edit-recurring-event-date', context).hide();
   },
 
   populate: function($container, context, settings) {
@@ -107,6 +113,12 @@ Drupal.behaviors.eventRecurring = {
         var $container = $(this).parents('.intercept-event-recurring-container');
         $root.collect($container, context, settings, this);
       });
+    });
+    // If it's checked, and we change the base event date value, let's update the first recurrence date.
+    $('#edit-field-date-time-0-value-date').on('change', function(e) {
+      if ($container.find('.intercept-event-recurring-enable').is(':checked')) {
+        $root.initialize($container, context);
+      }
     });
   },
 

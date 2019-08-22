@@ -27,6 +27,44 @@ import withAvailability from './../withAvailability';
 const { constants, select, utils } = interceptClient;
 const c = constants;
 
+const daysInAdvance = get(drupalSettings, 'intercept.room_reservations.customer_advanced_limit', '10');
+const daysInAdvanceText = get(drupalSettings, 'intercept.room_reservations.customer_advanced_text');
+
+const getMaxDate = () => {
+  if (utils.userIsStaff()) {
+    return undefined;
+  }
+
+  return (daysInAdvance && daysInAdvance !== '0')
+    ? moment()
+      .tz(utils.getUserTimezone())
+      .add(daysInAdvance, 'days')
+      .format('YYYY-MM-DD')
+    : undefined;
+};
+
+const getMinDate = () => {
+  if (utils.userIsStaff()) {
+    return undefined;
+  }
+
+  return moment()
+    .tz(utils.getUserTimezone())
+    .format('YYYY-MM-DD');
+};
+
+const getMaxDateDescription = () => {
+  if (utils.userIsStaff()) {
+    return undefined;
+  }
+
+  return daysInAdvanceText;
+};
+
+const MAX_DATE = getMaxDate();
+const MAX_DATE_DESCRIPTION = getMaxDateDescription();
+const MIN_DATE = getMinDate();
+
 class ReserveRoomStep2 extends React.Component {
   constructor(props) {
     super(props);
@@ -168,11 +206,11 @@ class ReserveRoomStep2 extends React.Component {
     return hours
       ? {
         min: hours.min,
-        max: (hours.max.endsWith('00') ? String(hours.max - 55) : String(hours.max - 15))
+        max: (hours.max.endsWith('00') ? String(hours.max - 55) : String(hours.max - 15)),
       }
       : {
-        min: '0000',
-        max: '0000',
+        min: null,
+        max: null,
       };
   }
 
@@ -214,6 +252,9 @@ class ReserveRoomStep2 extends React.Component {
               min={limits.min}
               max={limits.max}
               disabledTimespans={this.getDisabledTimespans()}
+              maxDate={MAX_DATE}
+              minDate={MIN_DATE}
+              maxDateDescription={MAX_DATE_DESCRIPTION}
             />
           </div>
           <div className="l__primary">
@@ -224,6 +265,8 @@ class ReserveRoomStep2 extends React.Component {
                 room={room}
                 min={limits.min}
                 max={limits.max}
+                maxDate={MAX_DATE}
+                minDate={MIN_DATE}
                 defaultDate={formValues.date}
                 date={formValues.date}
                 onNavigate={this.handleCalendarNavigate}

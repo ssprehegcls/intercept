@@ -30,7 +30,7 @@ const CalendarEvent = (props) => {
 
 class CustomToolbar extends Toolbar {
   render() {
-    const { messages, label } = this.props;
+    const { messages, label, maxDate, minDate, date } = this.props;
 
     return (
       <div className="rbc-toolbar">
@@ -52,6 +52,7 @@ class CustomToolbar extends Toolbar {
             color="primary"
             aria-label="Previous"
             variant="flat"
+            disabled={minDate && utils.getDateFromDayTimeStamp(minDate) >= date}
           >
             <ArrowBack />
           </IconButton>
@@ -61,6 +62,7 @@ class CustomToolbar extends Toolbar {
             onClick={() => this.navigate('NEXT')}
             color="primary"
             aria-label="Next"
+            disabled={maxDate && utils.getDateFromDayTimeStamp(maxDate) <= date}
           >
             <ArrowForward />
           </IconButton>
@@ -72,10 +74,10 @@ class CustomToolbar extends Toolbar {
   }
 }
 
-const components = {
+const components = parentProps => ({
   event: CalendarEvent,
-  toolbar: CustomToolbar,
-};
+  toolbar: props => (<CustomToolbar {...parentProps} {...props} />),
+});
 
 class RoomAvailabilityCalendar extends React.Component {
   constructor(props) {
@@ -168,7 +170,7 @@ class RoomAvailabilityCalendar extends React.Component {
       <React.Fragment>
         <BigCalendar
           className={'rbc-calendar--no-overlap'}
-          components={components}
+          components={components(this.props)}
           date={date}
           defaultDate={defaultDate}
           defaultView={this.props.defaultView}
