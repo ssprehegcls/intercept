@@ -33,6 +33,7 @@ import InputTime from 'intercept/Input/InputTime';
 import InputNumber from 'intercept/Input/InputNumber';
 import InputText from 'intercept/Input/InputText';
 import InputCheckbox from 'intercept/Input/InputCheckbox';
+import RadioGroup from 'intercept/RadioGroup/RadioGroup';
 
 // Formsy
 import Formsy, { addValidationRule } from 'formsy-react';
@@ -44,7 +45,29 @@ import ReservationTeaser from './../../../ReservationTeaser';
 const { actions, constants, select, utils } = interceptClient;
 const c = constants;
 
+const FIELD_REFRESHMENTS_DESC = "I would like to serve refreshments and agree to the $25 charge that will be added to my library card. (Note: Some spaces may not allow refreshments. We will contact you if we are unable to fulfill this request.)";
+const FIELD_REFRESHMENTS_OPTIONS = [
+  {
+    key: '1',
+    value: 'Yes',
+  },
+  {
+    key: '0',
+    value: 'No',
+  },
+];
+
 const FIELD_PUBLICIZE_DESC = get(drupalSettings, 'intercept.room_reservations.field_publicize.description', 'I would like to publicize this meeting');
+const FIELD_PUBLICIZE_OPTIONS = [
+  {
+    key: '1',
+    value: 'Yes',
+  },
+  {
+    key: '0',
+    value: 'No',
+  },
+];
 
 const matchTime = (original, ref) => {
   if (ref instanceof Date === false || original instanceof Date === false) {
@@ -66,7 +89,7 @@ addValidationRule('isRequired', (values, value) => value !== '');
 addValidationRule('isPositive', (values, value) => value > 0);
 addValidationRule(
   'isRequiredIfServingRefreshments',
-  (values, value) => !values.refreshments || value !== '',
+  (values, value) => true,
 );
 addValidationRule('isRequiredIfMeeting', (values, value) => !values.meeting || value !== '');
 addValidationRule('isGreaterOrEqualTo', (values, value, min) => min === null || value >= min);
@@ -86,11 +109,11 @@ const buildRoomReservation = (values) => {
       },
       field_group_name: values.groupName,
       field_meeting_purpose_details: values.meetingDetails,
-      field_refreshments: values.refreshments,
+      field_refreshments: values.refreshments === '1',
       field_refreshments_description: {
         value: values.refreshmentsDesc,
       },
-      field_publicize: values.publicize,
+      field_publicize: values.publicize === '1',
       field_status: 'requested',
     },
     relationships: {
@@ -375,30 +398,32 @@ class ReserveRoomForm extends PureComponent {
                 </div>
                 <div className="l--subsection">
                   <h4 className="section-title section-title--secondary">Refreshments</h4>
-                  <InputCheckbox
-                    label="I would like to serve refreshments and agree to the $25 charge that will be added to my library card. (Note: Some spaces may not allow refreshments. We will contact you if we are unable to fulfill this request.)"
-                    checked={values.refreshments}
-                    onChange={this.toggleValue}
-                    value="refreshments"
+                  <RadioGroup
+                    label={FIELD_REFRESHMENTS_DESC}
+                    value={values.refreshments}
+                    onChange={this.onValueChange('refreshments')}
                     name="refreshments"
+                    required={true}
+                    options={FIELD_REFRESHMENTS_OPTIONS}
                   />
                   <InputText
                     label="Please describe your light refreshments."
                     value={values.refreshmentsDesc}
                     onChange={this.onValueChange('refreshmentsDesc')}
                     name="refreshmentDesc"
-                    required={values.refreshments}
-                    disabled={!values.refreshments}
+                    required={values.refreshments === '1'}
+                    disabled={values.refreshments !== '1'}
                   />
                 </div>
                 <div className="l--subsection">
                   <h4 className="section-title section-title--secondary">Publicize</h4>
-                  <InputCheckbox
+                  <RadioGroup
                     label={FIELD_PUBLICIZE_DESC}
-                    checked={values.publicize}
-                    onChange={this.toggleValue}
-                    value="publicize"
+                    value={values.publicize}
+                    onChange={this.onValueChange('publicize')}
                     name="publicize"
+                    required={true}
+                    options={FIELD_PUBLICIZE_OPTIONS}
                   />
                 </div>
                 <Button
@@ -467,9 +492,9 @@ ReserveRoomForm.propTypes = {
     groupName: PropTypes.string,
     meetingDetails: PropTypes.string,
     [c.TYPE_MEETING_PURPOSE]: PropTypes.string,
-    refreshments: PropTypes.bool,
+    refreshments: PropTypes.string,
     refreshmentsDesc: PropTypes.string,
-    publicize: PropTypes.bool,
+    publicize: PropTypes.string,
     user: PropTypes.string,
   }),
   onChange: PropTypes.func.isRequired,
@@ -492,9 +517,9 @@ ReserveRoomForm.defaultProps = {
     groupName: '',
     meetingPurpose: '',
     meetingDetails: '',
-    refreshments: false,
+    refreshments: '',
     refreshmentsDesc: '',
-    publicize: false,
+    publicize: '',
     user: drupalSettings.intercept.user.uuid,
   },
   meetingPurpose: null,

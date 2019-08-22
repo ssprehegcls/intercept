@@ -153,7 +153,6 @@ class ReserveRoom extends React.Component {
         meeting: false,
         [c.TYPE_MEETING_PURPOSE]: null,
         meetingDetails: '',
-        refreshments: false,
         refreshmentsDesc: '',
         user: utils.getUserUuid(),
       },

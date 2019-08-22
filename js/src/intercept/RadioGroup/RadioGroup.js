@@ -1,3 +1,4 @@
+/* eslint-disable react/prefer-stateless-function */
 import React from 'react';
 import PropTypes from 'prop-types';
 import { withStyles } from '@material-ui/core/styles';
@@ -17,9 +18,10 @@ class Radios extends React.Component {
       isValid,
       onChange,
       getErrorMessages,
-      isRequired,
+      required,
       disabled,
       options,
+      name,
     } = this.props;
 
     const handleChange = (event) => {
@@ -34,17 +36,21 @@ class Radios extends React.Component {
     }
 
     return (
-      <FormControl component="fieldset" className={'radios'}>
+      <FormControl
+        component="fieldset"
+        className={'radios'}
+        required={required}
+        error={!this.props.isValid()} >
         {label && (<FormLabel component="legend">{label}</FormLabel>)}
         <RadioGroup
           aria-label={ariaLabel}
-          name="gender1"
+          name={name}
           value={this.props.getValue()}
           className={'radios__group'}
           onChange={handleChange}
         >
         {options.map(option => (
-            <FormControlLabel key={option.key} value={option.key} control={<Radio />} label={option.value} className={'radios__radio-label'}/>
+          <FormControlLabel key={option.key} value={option.key} control={<Radio />} label={option.value} className={'radios__radio-label'}/>
         ))}
         </RadioGroup>
         {helperText && (<FormHelperText error={!isValid()}>{helperText}</FormHelperText>)}
