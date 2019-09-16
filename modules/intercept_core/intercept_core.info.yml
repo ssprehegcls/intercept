@@ -5,7 +5,6 @@ core: 8.x
 dependencies:
   - address:address
   - consumers:consumers
-  - drupal:consumer_image_styles
   - drupal:field
   - drupal:file
   - drupal:jsonapi
