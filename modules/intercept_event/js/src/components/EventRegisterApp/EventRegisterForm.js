@@ -14,7 +14,6 @@ import map from 'lodash/map';
 
 // Intercept
 import interceptClient from 'interceptClient';
-import drupalSettings from 'drupalSettings';
 
 // Components
 import Button from '@material-ui/core/Button';
@@ -149,6 +148,10 @@ class EventRegisterForm extends React.Component {
     return get(this, 'props.event.data.attributes.field_capacity_max') || 0;
   }
 
+  getRegistrationLimit() {
+    return get(this, 'props.event.data.attributes.field_event_user_reg_max') || 0;
+  }
+
   getRegistrationCount() {
     return get(this, 'props.event.data.attributes.registration.total');
   }
@@ -205,6 +208,16 @@ class EventRegisterForm extends React.Component {
     }
   }
 
+  getLimitText() {
+    const limit = this.getRegistrationLimit();
+    // Must not exceed total registrations per user.
+    if (limit > 0) {
+      return `Limit ${limit} registrations per user`;
+    }
+
+    return null;
+  }
+
   getStatusText() {
     const total = this.getValuesTotal();
     // Must meet the minimum requirements.
@@ -238,6 +251,7 @@ class EventRegisterForm extends React.Component {
     return (
       !this.state.canSubmit ||
       total <= 0 ||
+      this.isOverUserLimit(total) ||
       this.isOverTotalCapacity(total) ||
       (this.isOverCapacity(total) && !this.hasWaitlist()) ||
       (this.isOverCapacity(total) && this.isOverWaitlistCapacity(total))
@@ -260,6 +274,10 @@ class EventRegisterForm extends React.Component {
 
   isOverWaitlistCapacity(total) {
     return this.getWaitlistCapacity() !== 0 && this.getAvailableWaitlistCapacity() - total < 0;
+  }
+
+  isOverUserLimit(total) {
+    return this.getRegistrationLimit() !== 0 && (this.getRegistrationLimit() - total) < 0;
   }
 
   saveEntitytoStore = (values) => {
@@ -316,6 +334,7 @@ class EventRegisterForm extends React.Component {
     const { uuid } = this.state;
     const total = this.getValuesTotal();
     let currentStatus = status;
+    const limitText = this.getLimitText();
     const statusText = this.getStatusText();
 
     if (
@@ -347,6 +366,12 @@ class EventRegisterForm extends React.Component {
           onInvalid={this.disableButton}
           validationErrors={this.state.validationErrors}
         >
+          {limitText && (
+            <p className="action-button__message action-button__message--left">{limitText}</p>
+          )}
+          {statusText && (
+            <p className="action-button__message action-button__message--left">{statusText}</p>
+          )}
           <div className="l--subsection input-group--find-room">
             {segments.map(s => (
               <InputIncrementer
@@ -376,9 +401,6 @@ class EventRegisterForm extends React.Component {
             >
               {text[currentStatus].button}
             </Button>
-            {statusText && (
-              <p className="action-button__message action-button__message--left">{statusText}</p>
-            )}
           </div>
         </Formsy>
         <EventRegisterConfirmation
