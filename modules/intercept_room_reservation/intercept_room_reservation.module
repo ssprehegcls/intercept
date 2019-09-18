@@ -371,8 +371,20 @@ function intercept_room_reservation_views_query_alter(ViewExecutable $view, Quer
           preg_match("/BETWEEN DATE_FORMAT\(\('(\d{4}-\d{2}-\d{2})T\d{2}:\d{2}:\d{2}' \+ (INTERVAL [-+]?\d* SECOND)\).*AND DATE_FORMAT\(\('(\d{4}-\d{2}-\d{2})/", $multi_date_reservation_or, $matches);
           // Need 3 captures from the original value of the condition.
           // 1) Start date, 2) Interval and 3) end date
-          $multi_date_reservation_or = "DATE_FORMAT((room_reservation__field_dates.field_dates_value + " . $matches[2] . "), '%Y-%m-%d\T%H:%i:%s') <= DATE_FORMAT(('" . $matches[1] . "T00:00:00' + " . $matches[2] . "), '%Y-%m-%d\T%H:%i:%s') AND DATE_FORMAT((room_reservation__field_dates.field_dates_end_value + " . $matches[2] . "), '%Y-%m-%d\T%H:%i:%s') >= DATE_FORMAT(('" . $matches[3] . "T00:00:00' + " . $matches[2] . "), '%Y-%m-%d\T%H:%i:%s')";
-          $condition['field'] = '(' . $condition['field'] . ') OR (' . $multi_date_reservation_or . ')';
+          // Need # seconds exactly.
+          preg_match("/INTERVAL ([-+]?\d*) SECOND/", $matches[2], $matches_seconds);
+          if ($matches_seconds) {
+            if ($matches_seconds[1] < 0) { // The number is negative.
+              $start_date = date('Y-m-d\TH:i:s', strtotime($matches[1] . 'T00:00:00') + abs($matches_seconds[1]));
+              $end_date = date('Y-m-d\TH:i:s', strtotime($matches[3] . 'T00:00:00') + abs($matches_seconds[1]));
+            }
+            else { // The number is positive.
+              $start_date = date('Y-m-d\TH:i:s', strtotime($matches[1] . 'T00:00:00') - abs($matches_seconds[1]));
+              $end_date = date('Y-m-d\TH:i:s', strtotime($matches[3] . 'T00:00:00') - abs($matches_seconds[1]));
+            }
+            $multi_date_reservation_or = "DATE_FORMAT((room_reservation__field_dates.field_dates_value), '%Y-%m-%d\T%H:%i:%s') <= DATE_FORMAT(('" . $start_date . "'), '%Y-%m-%d\T%H:%i:%s') AND DATE_FORMAT((room_reservation__field_dates.field_dates_end_value), '%Y-%m-%d\T%H:%i:%s') >= DATE_FORMAT(('" . $end_date . "'), '%Y-%m-%d\T%H:%i:%s')";
+            $condition['field'] = '(' . $condition['field'] . ') OR (' . $multi_date_reservation_or . ')';
+          }
         }
       }
     }
