@@ -19,6 +19,7 @@ import Button from '@material-ui/core/Button';
 // Intercept Components
 import InputDate from 'intercept/Input/InputDate';
 import SelectTime from 'intercept/Select/SelectTime';
+import InputCheckbox from 'intercept/Input/InputCheckbox';
 
 // Formsy
 import Formsy, { addValidationRule } from 'formsy-react';
@@ -28,6 +29,8 @@ import withAvailability from './../withAvailability';
 
 const { constants, utils } = interceptClient;
 const c = constants;
+
+const SHOW_CLOSED = 'showClosed';
 
 const matchTime = (original, ref) => {
   if (ref instanceof Date === false || original instanceof Date === false) {
@@ -304,6 +307,13 @@ class ReserveRoomDateForm extends PureComponent {
               minDate={minDate}
               helperText={maxDateDescription}
             />
+            {utils.userIsStaff() && (<InputCheckbox
+              label="Show Closed Hours"
+              checked={values[SHOW_CLOSED]}
+              onChange={() => this.updateValue(SHOW_CLOSED, !values[SHOW_CLOSED])}
+              value={SHOW_CLOSED}
+              name={SHOW_CLOSED}
+            />)}
             <SelectTime
               clearable
               label="Start Time"

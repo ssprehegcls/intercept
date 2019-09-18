@@ -155,6 +155,7 @@ class ReserveRoom extends React.Component {
         meetingDetails: '',
         refreshmentsDesc: '',
         user: utils.getUserUuid(),
+        showClosed: false,
       },
       room: {
         current: null,

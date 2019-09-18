@@ -70,6 +70,7 @@ class ReserveRoomStep2 extends React.Component {
     super(props);
     this.state = {
       availabilityShouldUpdate: false,
+      showClosedHours: false,
     };
   }
 
@@ -123,6 +124,7 @@ class ReserveRoomStep2 extends React.Component {
     const { formValues, room, event, eventRecord, locationRecord, filters } = this.props;
 
     const values = pick(formValues, ['date', 'start', 'end']);
+    const { showClosed } = formValues;
 
     // If there's an event but it has not populated yet, hold off on default props.
     if (event && !eventRecord) {
@@ -138,7 +140,7 @@ class ReserveRoomStep2 extends React.Component {
       values.date = filters.date || utils.getUserStartOfDay();
     }
 
-    if ((!values.start || !values.end) && (utils.userIsStaff() || this.isWithinOpenHours(nowish))) {
+    if ((!values.start || !values.end) && ((utils.userIsStaff() && showClosed) || this.isWithinOpenHours(nowish))) {
       if (!values.start) {
         values.start = nowish.format('HHmm');
       }
@@ -227,7 +229,7 @@ class ReserveRoomStep2 extends React.Component {
     } = this.props;
     const isClosed = !hours || get(availability, `rooms.${room}.is_closed`);
     const closedMessage = isClosed ? get(availability, `rooms.${room}.closed_message`) : 'Location Closed';
-    const limits = utils.userIsStaff()
+    const limits = (utils.userIsStaff() && formValues.showClosed)
       ? {
         min: '0000',
         max: '2400',
