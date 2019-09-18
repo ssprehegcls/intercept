@@ -653,6 +653,14 @@ function intercept_event_views_query_alter(ViewExecutable $view, QueryPluginBase
     $query->addField('node', 'nid', 'node_nid', ['function' => 'groupby']);
     $query->addGroupBy('node.nid');
   }
+  elseif ($view->id() == 'intercept_user_events' && $view->current_display == 'embed') {
+    $query_params = \Drupal::request()->query->all();
+    if ($query_params['field_date_time_value'] == 1) { // Past events
+      // Past events under My Account need to be sorted DESC instead of ASC.
+      $query->orderby[0]['direction'] = 'DESC';
+    }
+
+  }
 }
 
 /**
