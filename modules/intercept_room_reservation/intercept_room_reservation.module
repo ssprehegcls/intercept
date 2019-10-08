@@ -27,7 +27,7 @@ function intercept_room_reservation_help($route_name, RouteMatchInterface $route
     case 'help.page.intercept_room_reservation':
       $output = '';
       $output .= '<h3>' . t('About') . '</h3>';
-      $output .= '<p>' . t('Room reservation functionality for the InterCEPT library') . '</p>';
+      $output .= '<p>' . t('Room reservation functionality for the Intercept library') . '</p>';
       return $output;
 
     default:

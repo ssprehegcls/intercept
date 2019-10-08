@@ -17,7 +17,7 @@ dependencies:
     - taxonomy
     - user
 id: intercept_equipment
-label: 'InterCEPT Equipment'
+label: 'Intercept Equipment'
 module: views
 description: 'Lists all pieces of equipment in the site.'
 tag: ''

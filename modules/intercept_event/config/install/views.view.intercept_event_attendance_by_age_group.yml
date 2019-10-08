@@ -22,7 +22,7 @@ dependencies:
     - tally
     - user
 id: intercept_event_attendance_by_age_group
-label: 'InterCEPT Event Attendance By Age Group'
+label: 'Intercept Event Attendance By Age Group'
 module: views
 description: 'Shows overall attendance by age groups for each event.'
 tag: ''

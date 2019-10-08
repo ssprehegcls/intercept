@@ -21,7 +21,7 @@ dependencies:
     - tally
     - user
 id: intercept_event_attendance
-label: 'InterCEPT Event attendance'
+label: 'Intercept Event attendance'
 module: views
 description: ''
 tag: ''

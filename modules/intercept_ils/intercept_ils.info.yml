@@ -1,4 +1,4 @@
-name: 'InterCEPT ILS'
+name: 'Intercept ILS'
 type: module
 description: 'Intercept ILS integration'
 core: 8.x
@@ -7,4 +7,4 @@ dependencies:
   - intercept:intercept_core
   - externalauth:externalauth
   - profile:profile
-package: 'InterCEPT'
+package: 'Intercept'

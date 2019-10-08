@@ -1,8 +1,8 @@
-name: 'InterCEPT Room Reservation'
+name: 'Intercept Room Reservation'
 type: module
-description: 'Room reservation functionality for the InterCEPT library'
+description: 'Room reservation functionality for the Intercept library'
 core: 8.x
-package: 'InterCEPT'
+package: 'Intercept'
 dependencies:
   - drupal:datetime_range
   - intercept:intercept_location

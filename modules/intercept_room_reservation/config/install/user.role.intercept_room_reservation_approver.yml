@@ -2,7 +2,7 @@ langcode: en
 status: true
 dependencies: {  }
 id: intercept_room_reservation_approver
-label: 'InterCEPT Room Reservation Approver'
+label: 'Intercept Room Reservation Approver'
 weight: 4
 is_admin: null
 permissions:
