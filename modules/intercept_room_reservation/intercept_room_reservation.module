@@ -6,12 +6,16 @@
  */
 
 use Drupal\Core\Access\AccessResult;
-use Drupal\Core\Entity\EntityInterface;
 use Drupal\Core\Entity\Display\EntityViewDisplayInterface;
+use Drupal\Core\Entity\EntityInterface;
+use Drupal\Core\Entity\EntityTypeInterface;
+use Drupal\Core\Field\BaseFieldDefinition;
 use Drupal\Core\Form\FormStateInterface;
 use Drupal\Core\Render\Element;
 use Drupal\Core\Routing\RouteMatchInterface;
 use Drupal\Core\Session\AccountInterface;
+use Drupal\Core\StringTranslation\TranslatableMarkup;
+use Drupal\Core\TypedData\DataDefinition;
 use Drupal\Core\Url;
 use Drupal\intercept_room_reservation\Entity\RoomReservationInterface;
 use Drupal\node\NodeInterface;
@@ -35,16 +39,16 @@ function intercept_room_reservation_help($route_name, RouteMatchInterface $route
 }
 
 /**
- * Implements hook_node_access().
+ * Implements hook_jsonapi_ENTITY_TYPE_filter_access().
  */
-function intercept_room_reservation_node_access(NodeInterface $node, $op, AccountInterface $account) {
-  if ($node->bundle() == 'room' && $op == 'view') {
-    if ($node->field_staff_use_only->getString() === "1" && !$account->hasPermission('view staff use room reservation')) {
-      return AccessResult::forbidden()->cachePerPermissions()->cachePerUser()->addCacheableDependency($node);
-    }
-  }
-  // No opinion.
-  return AccessResult::neutral();
+function intercept_room_reservation_jsonapi_room_reservation_filter_access(\Drupal\Core\Entity\EntityTypeInterface $entity_type, \Drupal\Core\Session\AccountInterface $account) {
+  return ([
+    // @todo CRL-163: The 'view referenced user room_reservation' permission does not yet exist.
+    // Once it has been implemented, the AMONG_ALL should be commented out and AMONG_OWN deleted.
+    // JSONAPI_FILTER_AMONG_ALL => AccessResult::allowedIfHasPermissions($account, ['view room_reservation', 'view referenced user room_reservation'], 'OR'),
+    JSONAPI_FILTER_AMONG_ALL => AccessResult::allowedIfHasPermissions($account, ['view room_reservation'], 'OR'),
+    JSONAPI_FILTER_AMONG_OWN => AccessResult::allowedIfHasPermission($account, 'view own room_reservation'),
+  ]);
 }
 
 /**
@@ -189,7 +193,7 @@ function intercept_room_reservation_form_views_exposed_form_alter(&$form, FormSt
       ->sort('title')
       ->execute();
 
-    // If there are no nodes, move on.
+    // If there are no nodes, move on
     if (!$nids) {
       return FALSE;
     }
@@ -198,7 +202,7 @@ function intercept_room_reservation_form_views_exposed_form_alter(&$form, FormSt
     $options = [];
     $nodes = $storage->loadMultiple($nids);
 
-    // Push titles into select list.
+    // Push titles into select list
     foreach ($nodes as $node) {
       $title = $node->getTitle();
       $options[$title] = $title;
@@ -316,6 +320,24 @@ function intercept_room_reservation_entity_extra_field_info() {
     'visible' => FALSE,
   ];
   return $extra;
+}
+
+/**
+ * Implements hook_entity_bundle_field_info().
+ */
+function intercept_room_reservation_entity_bundle_field_info(EntityTypeInterface $entity_type, $bundle, array $base_field_definitions) {
+  $fields = [];
+  if ($entity_type->id() == 'node' && $bundle == 'room') {
+    // @TODO: Make this configurable by privileged user accounts.
+    $fields['room_thumbnail'] = BaseFieldDefinition::create('intercept_computed')
+      ->setLabel(new TranslatableMarkup('Image Thumbnail'))
+      ->setComputed(TRUE)
+      ->setSetting('properties', [
+        'thumbnail' => DataDefinition::create('string')->setLabel(t('Image Thumbnail')),
+      ])
+      ->setClass(\Drupal\intercept_core\EntityImageThumbnailUriField::class);
+  }
+  return $fields;
 }
 
 /**

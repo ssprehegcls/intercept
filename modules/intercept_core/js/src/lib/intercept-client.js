@@ -2,12 +2,15 @@ import redis from 'redis';
 import crypto from 'crypto';
 
 function actionCreator(type) {
-  for (var _len = arguments.length, argNames = new Array(_len > 1 ? _len - 1 : 0), _key = 1; _key < _len; _key++) {
+  let argNames = new Array();
+  for (let _key = 1; _key < arguments.length; _key += 1) {
     argNames[_key - 1] = arguments[_key];
   }
 
   return function () {
-    for (var _len2 = arguments.length, args = new Array(_len2), _key2 = 0; _key2 < _len2; _key2++) {
+    const _len2 = arguments.length;
+    let args = new Array(_len2);
+    for (let _key2 = 0; _key2 < _len2; _key2 += 1) {
       args[_key2] = arguments[_key2];
     }
 
@@ -21,37 +24,37 @@ function actionCreator(type) {
   };
 }
 
-let ADD = 'intercept/ADD';
-let CLEAR_ERRORS = 'intercept/CLEAR_ERRORS';
-let EDIT = 'intercept/EDIT';
-let FAILURE = 'intercept/FAILURE';
-let MARK_DIRTY = 'intercept/MARK_DIRTY';
-let PURGE = 'intercept/PURGE';
-let RECEIVE = 'intercept/RECEIVE';
-let RECEIVE_TRANSLATION = 'intercept/RECEIVE_TRANSLATION';
-let REQUEST = 'intercept/REQUEST';
-let RESET = 'intercept/RESET';
-let SET_SAVED = 'intercept/SET_SAVED';
-let SET_TIMESTAMP = 'intercept/SET_TIMESTAMP';
-let SET_VALIDATING = 'intercept/SET_VALIDATING';
+const ADD = 'intercept/ADD';
+const CLEAR_ERRORS = 'intercept/CLEAR_ERRORS';
+const EDIT = 'intercept/EDIT';
+const FAILURE = 'intercept/FAILURE';
+const MARK_DIRTY = 'intercept/MARK_DIRTY';
+const PURGE = 'intercept/PURGE';
+const RECEIVE = 'intercept/RECEIVE';
+const RECEIVE_TRANSLATION = 'intercept/RECEIVE_TRANSLATION';
+const REQUEST = 'intercept/REQUEST';
+const RESET = 'intercept/RESET';
+const SET_SAVED = 'intercept/SET_SAVED';
+const SET_TIMESTAMP = 'intercept/SET_TIMESTAMP';
+const SET_VALIDATING = 'intercept/SET_VALIDATING';
 
-let request = actionCreator(REQUEST, 'resource', 'id');
-let receive = actionCreator(RECEIVE, 'resp', 'resource', 'id');
-let receiveTranslation = actionCreator(RECEIVE_TRANSLATION, 'resp', 'resource', 'langcode', 'id');
-let failure = actionCreator(FAILURE, 'error', 'resource', 'id'); // Removes all local items and resets API syncing state;
+const request = actionCreator(REQUEST, 'resource', 'id');
+const receive = actionCreator(RECEIVE, 'resp', 'resource', 'id');
+const receiveTranslation = actionCreator(RECEIVE_TRANSLATION, 'resp', 'resource', 'langcode', 'id');
+const failure = actionCreator(FAILURE, 'error', 'resource', 'id'); // Removes all local items and resets API syncing state;
 
-let purge = actionCreator(PURGE, 'resource'); // Resets API syncing state;
+const purge = actionCreator(PURGE, 'resource'); // Resets API syncing state;
 
-let reset = actionCreator(RESET, 'resource');
-let clearErrors = actionCreator(CLEAR_ERRORS, 'resource', 'id');
-let setSaved = actionCreator(SET_SAVED, 'value', 'resource', 'id');
-let markDirty = actionCreator(MARK_DIRTY, 'resource', 'id');
-let setTimestamp = actionCreator(SET_TIMESTAMP, 'resource', 'timestamp');
-let setValidating = actionCreator(SET_VALIDATING, 'resource', 'value');
-let add = actionCreator(ADD, 'data', 'resource', 'id');
-let edit = actionCreator(EDIT, 'data', 'resource', 'id');
+const reset = actionCreator(RESET, 'resource');
+const clearErrors = actionCreator(CLEAR_ERRORS, 'resource', 'id');
+const setSaved = actionCreator(SET_SAVED, 'value', 'resource', 'id');
+const markDirty = actionCreator(MARK_DIRTY, 'resource', 'id');
+const setTimestamp = actionCreator(SET_TIMESTAMP, 'resource', 'timestamp');
+const setValidating = actionCreator(SET_VALIDATING, 'resource', 'value');
+const add = actionCreator(ADD, 'data', 'resource', 'id');
+const edit = actionCreator(EDIT, 'data', 'resource', 'id');
 
-let actions = Object.freeze({
+const actions = Object.freeze({
   request,
   receive,
   receiveTranslation,
@@ -67,41 +70,41 @@ let actions = Object.freeze({
   edit,
 });
 
-let NAME = 'intercept'; // Filters
+const NAME = 'intercept'; // Filters
 
-let DATE = 'date';
-let DATE_START = 'date--start';
-let DATE_END = 'date--end';
-let KEYWORD = 'keyword'; // Entity Types
+const DATE = 'date';
+const DATE_START = 'date--start';
+const DATE_END = 'date--end';
+const KEYWORD = 'keyword'; // Entity Types
 
-let TYPE_FILE = 'file--file';
-let TYPE_SAVED_EVENT = 'flagging--saved_event';
-let TYPE_EVENT_RECURRENCE = 'event_recurrence--event_recurrence';
-let TYPE_MEDIA_FILE = 'media--file';
-let TYPE_MEDIA_IMAGE = 'media--image';
-let TYPE_MEDIA_SLIDESHOW = 'media--slideshow';
-let TYPE_MEDIA_VIDEO = 'media--web_video';
-let TYPE_EQUIPMENT = 'node--equipment';
-let TYPE_EQUIPMENT_RESERVATION = 'equipment_reservation--equipment_reservation';
-let TYPE_EVENT = 'node--event';
-let TYPE_EVENT_ATTENDANCE = 'event_attendance--event_attendance';
-let TYPE_EVENT_SERIES = 'node--event_series';
-let TYPE_EVENT_REGISTRATION = 'event_registration--event_registration';
-let TYPE_LOCATION = 'node--location';
-let TYPE_ROOM = 'node--room';
-let TYPE_ROOM_RESERVATION = 'room_reservation--room_reservation';
-let TYPE_AUDIENCE = 'taxonomy_term--audience';
-let TYPE_EQUIPMENT_TYPE = 'taxonomy_term--equipment_type';
-let TYPE_EVALUATION_CRITERIA = 'taxonomy_term--evaluation_criteria';
-let TYPE_EVENT_TYPE = 'taxonomy_term--event_type';
-let TYPE_SUBJECT = 'taxonomy_term--lc_subject';
-let TYPE_MEETING_PURPOSE = 'taxonomy_term--meeting_purpose';
-let TYPE_POPULATION_SEGMENT = 'taxonomy_term--population_segment';
-let TYPE_ROOM_TYPE = 'taxonomy_term--room_type';
-let TYPE_TAG = 'taxonomy_term--tag';
-let TYPE_USER = 'user--user';
+const TYPE_FILE = 'file--file';
+const TYPE_SAVED_EVENT = 'flagging--saved_event';
+const TYPE_EVENT_RECURRENCE = 'event_recurrence--event_recurrence';
+const TYPE_MEDIA_FILE = 'media--file';
+const TYPE_MEDIA_IMAGE = 'media--image';
+const TYPE_MEDIA_SLIDESHOW = 'media--slideshow';
+const TYPE_MEDIA_VIDEO = 'media--web_video';
+const TYPE_EQUIPMENT = 'node--equipment';
+const TYPE_EQUIPMENT_RESERVATION = 'equipment_reservation--equipment_reservation';
+const TYPE_EVENT = 'node--event';
+const TYPE_EVENT_ATTENDANCE = 'event_attendance--event_attendance';
+const TYPE_EVENT_SERIES = 'node--event_series';
+const TYPE_EVENT_REGISTRATION = 'event_registration--event_registration';
+const TYPE_LOCATION = 'node--location';
+const TYPE_ROOM = 'node--room';
+const TYPE_ROOM_RESERVATION = 'room_reservation--room_reservation';
+const TYPE_AUDIENCE = 'taxonomy_term--audience';
+const TYPE_EQUIPMENT_TYPE = 'taxonomy_term--equipment_type';
+const TYPE_EVALUATION_CRITERIA = 'taxonomy_term--evaluation_criteria';
+const TYPE_EVENT_TYPE = 'taxonomy_term--event_type';
+const TYPE_SUBJECT = 'taxonomy_term--lc_subject';
+const TYPE_MEETING_PURPOSE = 'taxonomy_term--meeting_purpose';
+const TYPE_POPULATION_SEGMENT = 'taxonomy_term--population_segment';
+const TYPE_ROOM_TYPE = 'taxonomy_term--room_type';
+const TYPE_TAG = 'taxonomy_term--tag';
+const TYPE_USER = 'user--user';
 
-let constants = Object.freeze({
+const constants = Object.freeze({
   NAME,
   DATE,
   DATE_START,
@@ -135,7 +138,7 @@ let constants = Object.freeze({
   TYPE_USER,
 });
 
-let commonjsGlobal = typeof window !== 'undefined' ? window : typeof global !== 'undefined' ? global : typeof self !== 'undefined' ? self : {};
+const commonjsGlobal = typeof window !== 'undefined' ? window : typeof global !== 'undefined' ? global : typeof self !== 'undefined' ? self : {};
 
 
 function createCommonjsModule(fn, module) {
@@ -144,38 +147,38 @@ function createCommonjsModule(fn, module) {
 
 /** Detect free variable `global` from Node.js. */
 
-let freeGlobal = typeof commonjsGlobal === 'object' && commonjsGlobal && commonjsGlobal.Object === Object && commonjsGlobal;
-let _freeGlobal = freeGlobal;
+const freeGlobal = typeof commonjsGlobal === 'object' && commonjsGlobal && commonjsGlobal.Object === Object && commonjsGlobal;
+const _freeGlobal = freeGlobal;
 
 /** Detect free variable `self`. */
 
-let freeSelf = typeof self === 'object' && self && self.Object === Object && self;
+const freeSelf = typeof self === 'object' && self && self.Object === Object && self;
 /** Used as a reference to the global object. */
 
-let root = _freeGlobal || freeSelf || Function('return this')();
-let _root = root;
+const root = _freeGlobal || freeSelf || Function('return this')();
+const _root = root;
 
 /** Built-in value references. */
 
-let Symbol$1 = _root.Symbol;
-let _Symbol = Symbol$1;
+const Symbol$1 = _root.Symbol;
+const _Symbol = Symbol$1;
 
 /** Used for built-in method references. */
 
-let objectProto = Object.prototype;
+const objectProto = Object.prototype;
 /** Used to check objects for own properties. */
 
-let hasOwnProperty = objectProto.hasOwnProperty;
+const hasOwnProperty = objectProto.hasOwnProperty;
 /**
  * Used to resolve the
  * [`toStringTag`](http://ecma-international.org/ecma-262/7.0/#sec-object.prototype.tostring)
  * of values.
  */
 
-let nativeObjectToString = objectProto.toString;
+const nativeObjectToString = objectProto.toString;
 /** Built-in value references. */
 
-let symToStringTag = _Symbol ? _Symbol.toStringTag : undefined;
+const symToStringTag = _Symbol ? _Symbol.toStringTag : undefined;
 /**
  * A specialized version of `baseGetTag` which ignores `Symbol.toStringTag` values.
  *
@@ -185,22 +188,23 @@ let symToStringTag = _Symbol ? _Symbol.toStringTag : undefined;
  */
 
 function getRawTag(value) {
-  let isOwn = hasOwnProperty.call(value, symToStringTag),
-    tag = value[symToStringTag];
+  const isOwn = hasOwnProperty.call(value, symToStringTag);
+  const tag = value[symToStringTag];
+  let unmasked = false;
 
   try {
     value[symToStringTag] = undefined;
-    var unmasked = true;
+    unmasked = true;
   }
- catch (e) {}
+  catch (e) {}
 
-  let result = nativeObjectToString.call(value);
+  const result = nativeObjectToString.call(value);
 
   if (unmasked) {
     if (isOwn) {
       value[symToStringTag] = tag;
     }
- else {
+  else {
       delete value[symToStringTag];
     }
   }
@@ -6539,9 +6543,11 @@ function responseHandler(request$$1, resolve, reject) {
         //   403 - Permission denied responses.
         //   404 - Not Found.
         //   409 - Conflict.
+        //   504 - Timeout.
         case 403:
         case 404:
         case 409:
+        case 504:
           resolve(resp);
           break;
         // Retry all other responses.
@@ -7100,13 +7106,13 @@ let ApiManager =
 
                 if (count === 0 || count > totalFetched) {
                   dispatch(_fetchAll(_objectSpread({}, options, {
-                    endpoint: json.links.next,
+                    endpoint: json.links.next.href,
                     totalFetched: totalFetched,
                     replace: replace
                   })));
                 } else if (onNext) {
                   // Call onNext()
-                  onNext(json.links.next, totalFetched);
+                  onNext(json.links.next.href, totalFetched);
                 }
               });
             } //
@@ -7312,7 +7318,7 @@ let ApiManager =
 
                 if (json.links && json.links.next) {
                   dispatch(_fetchTranslations({
-                    endpoint: json.links.next,
+                    endpoint: json.links.next.href,
                     langcode: options.langcode
                   }));
                 }
@@ -7540,22 +7546,13 @@ let ApiManager =
   }, {
     key: 'wrapFetch',
     value: function wrapFetch$$1(request$$1) {
-      var priority = this.priority;
       return function () {
-        var limiter = request$$1.method === 'GET' ? readLimiter : writeLimiter;
-
-        function makeApiCall() {
-          return new Promise(function (resolve, reject) {
-            // Fetch the request.
-            fetch(request$$1.clone()) // Handle a successful request.
-            .then(responseHandler(request$$1, resolve, reject)).catch(errorHandler(request$$1, resolve, reject));
-          });
-        }
-
-        return limiter.schedule({
-          priority: priority
-        }, makeApiCall, request$$1);
-      };
+        return new Promise(function (resolve, reject) {
+          // Fetch the request.
+          fetch(request$$1.clone()) // Handle a successful request.
+          .then(responseHandler(request$$1, resolve, reject)).catch(errorHandler(request$$1, resolve, reject));
+        });
+      }
     }
     /**
      * Retries a failed request using Exponential Backoff.
@@ -8201,32 +8198,124 @@ function apiReducer(resource, mergeStrategy) {
 }
 
 let schema = {
-  'evaluation_criteria--evaluation_criteria': { id: { type: 'integer' }, uuid: { type: 'string' }, text: { type: 'string' }, evaluation: { type: 'integer' }, status: { type: 'boolean' }, created: { type: 'number' }, changed: { type: 'number' }, author: { type: 'relationship', model: 'user--user', multiple: false } },
-  'file--file': { fid: { type: 'integer' }, uuid: { type: 'string' }, filename: { type: 'string' }, uri: { type: 'uri' }, filemime: { type: 'string' }, filesize: { type: 'integer' }, status: { type: 'boolean' }, created: { type: 'number' }, changed: { type: 'number' }, url: { type: 'string' }, uid: { type: 'relationship', model: 'user--user', multiple: false } },
-  'flagging--saved_event': { id: { type: 'integer' }, uuid: { type: 'string' }, entity_type: { type: 'string' }, entity_id: { type: 'integer' }, global: { type: 'boolean' }, session_id: { type: 'integer' }, created: { type: 'number' }, flagged_entity: { type: 'relationship', model: 'node--event', multiple: false }, uid: { type: 'relationship', model: 'user--user', multiple: false } },
-  'event_registration--event_registration': { title: { type: 'string' }, id: { type: 'integer' }, uuid: { type: 'string' }, created: { type: 'number' }, changed: { type: 'number' }, status: { type: 'string' }, author: { type: 'relationship', model: 'user--user', multiple: false }, field_event: { type: 'relationship', model: 'node--event', multiple: false }, field_registrants: { type: 'relationship', model: 'taxonomy_term--population_segment', multiple: true }, field_user: { type: 'relationship', model: 'user--user', multiple: false } },
-  'event_attendance--event_attendance': { title: { type: 'string' }, id: { type: 'integer' }, uuid: { type: 'string' }, created: { type: 'number' }, changed: { type: 'number' }, status: { type: 'string' }, author: { type: 'relationship', model: 'user--user', multiple: false }, field_event: { type: 'relationship', model: 'node--event', multiple: false }, field_attendees: { type: 'relationship', model: 'taxonomy_term--population_segment', multiple: true }, field_user: { type: 'relationship', model: 'user--user', multiple: false } },
-  'event_recurrence--event_recurrence': { id: { type: 'integer' }, uuid: { type: 'string' }, created: { type: 'number' }, changed: { type: 'number' }, author: { type: 'relationship', model: 'user--user', multiple: false } },
-  'media--file': { mid: { type: 'integer' }, uuid: { type: 'string' }, status: { type: 'boolean' }, name: { type: 'string' }, created: { type: 'number' }, changed: { type: 'number' }, path: { type: 'object' }, thumbnail: { type: 'relationship', model: 'file--file', multiple: false }, uid: { type: 'relationship', model: 'user--user', multiple: false }, field_media_file: { type: 'relationship', model: 'file--file', multiple: false } },
-  'media--image': { mid: { type: 'integer' }, uuid: { type: 'string' }, status: { type: 'boolean' }, name: { type: 'string' }, created: { type: 'number' }, changed: { type: 'number' }, path: { type: 'object' }, field_media_caption: { type: 'object' }, field_media_credit: { type: 'object' }, thumbnail: { type: 'relationship', model: 'file--file', multiple: false }, uid: { type: 'relationship', model: 'user--user', multiple: false }, field_media_image: { type: 'relationship', model: 'file--file', multiple: false } },
-  'media--slideshow': { mid: { type: 'integer' }, uuid: { type: 'string' }, status: { type: 'boolean' }, name: { type: 'string' }, created: { type: 'number' }, changed: { type: 'number' }, path: { type: 'object' }, thumbnail: { type: 'relationship', model: 'file--file', multiple: false }, uid: { type: 'relationship', model: 'user--user', multiple: false }, field_media_slideshow: { type: 'relationship', model: 'media--image', multiple: true } },
-  'media--web_video': { mid: { type: 'integer' }, uuid: { type: 'string' }, status: { type: 'boolean' }, name: { type: 'string' }, created: { type: 'number' }, changed: { type: 'number' }, path: { type: 'object' }, field_media_caption: { type: 'object' }, field_media_video_embed_field: { type: 'string' }, thumbnail: { type: 'relationship', model: 'file--file', multiple: false }, uid: { type: 'relationship', model: 'user--user', multiple: false } },
-  'node--equipment': { nid: { type: 'integer' }, uuid: { type: 'string' }, status: { type: 'boolean' }, title: { type: 'string' }, created: { type: 'number' }, changed: { type: 'number' }, promote: { type: 'boolean' }, sticky: { type: 'boolean' }, path: { type: 'object' }, field_duration_min: { type: 'string' }, field_text_content: { type: 'object' }, type: { type: 'relationship', model: 'node_type--node_type', multiple: false }, uid: { type: 'relationship', model: 'user--user', multiple: false }, field_equipment_type: { type: 'relationship', model: 'taxonomy_term--equipment_type', multiple: false }, image_primary: { type: 'relationship', model: 'media--image', multiple: false } },
-  'node--event': { nid: { type: 'integer' }, uuid: { type: 'string' }, status: { type: 'boolean' }, title: { type: 'string' }, created: { type: 'number' }, changed: { type: 'number' }, promote: { type: 'boolean' }, sticky: { type: 'boolean' }, path: { type: 'object' }, field_capacity_max: { type: 'integer' }, field_date_time: { type: 'object' }, field_event_is_template: { type: 'boolean' }, field_event_register_period: { type: 'object' }, field_event_user_reg_max: { type: 'integer' }, field_featured: { type: 'boolean' }, field_has_waitlist: { type: 'boolean' }, field_must_register: { type: 'boolean' }, field_text_content: { type: 'object' }, field_text_intro: { type: 'object' }, field_text_teaser: { type: 'string' }, field_waitlist_max: { type: 'integer' }, field_evanced_id: { type: 'string' }, registration: { type: 'object' }, type: { type: 'relationship', model: 'node_type--node_type', multiple: false }, uid: { type: 'relationship', model: 'user--user', multiple: false }, field_event_audience: { type: 'relationship', model: 'taxonomy_term--audience', multiple: true }, field_event_audience_primary: { type: 'relationship', model: 'taxonomy_term--audience', multiple: false }, field_event_recurrence: { type: 'relationship', model: 'event_recurrence--event_recurrence', multiple: false }, field_event_series: { type: 'relationship', model: 'node--event_series', multiple: false }, field_event_tags: { type: 'relationship', model: 'taxonomy_term--tag', multiple: true }, field_event_type: { type: 'relationship', model: 'taxonomy_term--event_type', multiple: true }, field_event_type_primary: { type: 'relationship', model: 'taxonomy_term--event_type', multiple: false }, image_primary: { type: 'relationship', model: 'media--image', multiple: false }, field_location: { type: 'relationship', model: 'node--location', multiple: false }, field_room: { type: 'relationship', model: 'node--room', multiple: false }, field_event_designation: { type: 'string' } },
-  'node--event_series': { nid: { type: 'integer' }, uuid: { type: 'string' }, status: { type: 'boolean' }, title: { type: 'string' }, created: { type: 'number' }, changed: { type: 'number' }, promote: { type: 'boolean' }, sticky: { type: 'boolean' }, path: { type: 'object' }, type: { type: 'relationship', model: 'node_type--node_type', multiple: false }, uid: { type: 'relationship', model: 'user--user', multiple: false } },
-  'node--location': { nid: { type: 'integer' }, uuid: { type: 'string' }, status: { type: 'boolean' }, title: { type: 'string' }, field_location_abbreviation: { type: 'string' }, created: { type: 'number' }, changed: { type: 'number' }, promote: { type: 'boolean' }, sticky: { type: 'boolean' }, path: { type: 'object' }, field_address: { type: 'object' }, field_affiliated: { type: 'boolean' }, field_contact_number: { type: 'string' }, field_features: { type: 'string' }, field_location_hours: { type: 'array' }, field_map_link: { type: 'object' }, field_text_content: { type: 'object' }, field_text_intro: { type: 'object' }, type: { type: 'relationship', model: 'node_type--node_type', multiple: false }, uid: { type: 'relationship', model: 'user--user', multiple: false }, image_primary: { type: 'relationship', model: 'media--image', multiple: false } },
-  'node--room': { nid: { type: 'integer' }, uuid: { type: 'string' }, status: { type: 'boolean' }, title: { type: 'string' }, created: { type: 'number' }, changed: { type: 'number' }, promote: { type: 'boolean' }, sticky: { type: 'boolean' }, path: { type: 'object' }, field_capacity_max: { type: 'integer' }, field_capacity_min: { type: 'integer' }, field_reservable_online: { type: 'boolean' }, field_room_fees: { type: 'object' }, field_room_standard_equipment: { type: 'array' }, field_reservation_phone_number: { type: 'string' }, field_staff_use_only: { type: 'boolean' }, field_text_content: { type: 'object' }, field_text_intro: { type: 'object' }, field_text_teaser: { type: 'string' }, type: { type: 'relationship', model: 'node_type--node_type', multiple: false }, uid: { type: 'relationship', model: 'user--user', multiple: false }, image_primary: { type: 'relationship', model: 'media--image', multiple: false }, field_location: { type: 'relationship', model: 'node--location', multiple: false }, field_room_type: { type: 'relationship', model: 'taxonomy_term--room_type', multiple: false } },
-  'room_reservation--room_reservation': { title: { type: 'string' }, id: { type: 'integer' }, uuid: { type: 'string' }, status: { type: 'boolean' }, created: { type: 'number' }, changed: { type: 'number' }, location: { type: 'string' }, field_attendee_count: { type: 'integer' }, field_dates: { type: 'object' }, field_group_name: { type: 'string' }, field_meeting_purpose_details: { type: 'string' }, field_refreshments: { type: 'boolean' }, field_refreshments_description: { type: 'object' }, field_publicize: { type: 'boolean' }, field_status: { type: 'string' }, author: { type: 'relationship', model: 'user--user', multiple: false }, image: { type: 'relationship', model: 'media--image', multiple: false }, field_room: { type: 'relationship', model: 'node--room', multiple: false }, field_meeting_purpose: { type: 'relationship', model: 'taxonomy_term--meeting_purpose', multiple: false }, field_event: { type: 'relationship', model: 'node--event', multiple: false }, field_user: { type: 'relationship', model: 'user--user', multiple: false } },
-  'taxonomy_term--audience': { tid: { type: 'integer' }, uuid: { type: 'string' }, name: { type: 'string' }, description: { type: 'object' }, weight: { type: 'integer' }, changed: { type: 'number' }, path: { type: 'object' }, parent: { type: 'relationship', model: 'taxonomy_term--audience', multiple: true } },
-  'taxonomy_term--equipment_type': { tid: { type: 'integer' }, uuid: { type: 'string' }, name: { type: 'string' }, description: { type: 'object' }, weight: { type: 'integer' }, changed: { type: 'number' }, path: { type: 'object' }, parent: { type: 'relationship', model: 'taxonomy_term--equipment_type', multiple: true } },
-  'taxonomy_term--evaluation_criteria': { tid: { type: 'integer' }, uuid: { type: 'string' }, name: { type: 'string' }, description: { type: 'object' }, weight: { type: 'integer' }, changed: { type: 'number' }, path: { type: 'object' }, field_evaluation: { type: 'integer' }, parent: { type: 'relationship', model: 'taxonomy_term--evaluation_criteria', multiple: true } },
-  'taxonomy_term--event_type': { tid: { type: 'integer' }, uuid: { type: 'string' }, name: { type: 'string' }, description: { type: 'object' }, weight: { type: 'integer' }, changed: { type: 'number' }, path: { type: 'object' }, field_examples: { type: 'string' }, parent: { type: 'relationship', model: 'taxonomy_term--event_type', multiple: true } },
-  'taxonomy_term--lc_subject': { tid: { type: 'integer' }, uuid: { type: 'string' }, name: { type: 'string' }, description: { type: 'object' }, weight: { type: 'integer' }, changed: { type: 'number' }, path: { type: 'object' }, parent: { type: 'relationship', model: 'taxonomy_term--lc_subject', multiple: true } },
-  'taxonomy_term--meeting_purpose': { tid: { type: 'integer' }, uuid: { type: 'string' }, name: { type: 'string' }, description: { type: 'object' }, field_requires_explanation: { type: 'boolean' }, weight: { type: 'integer' }, changed: { type: 'number' }, path: { type: 'object' }, parent: { type: 'relationship', model: 'taxonomy_term--meeting_purpose', multiple: true } },
-  'taxonomy_term--population_segment': { tid: { type: 'integer' }, uuid: { type: 'string' }, name: { type: 'string' }, description: { type: 'object' }, weight: { type: 'integer' }, changed: { type: 'number' }, path: { type: 'object' }, parent: { type: 'relationship', model: 'taxonomy_term--population_segment', multiple: true } },
-  'taxonomy_term--room_type': { tid: { type: 'integer' }, uuid: { type: 'string' }, name: { type: 'string' }, description: { type: 'object' }, weight: { type: 'integer' }, changed: { type: 'number' }, path: { type: 'object' }, parent: { type: 'relationship', model: 'taxonomy_term--room_type', multiple: true } },
-  'taxonomy_term--tag': { tid: { type: 'integer' }, uuid: { type: 'string' }, name: { type: 'string' }, description: { type: 'object' }, weight: { type: 'integer' }, changed: { type: 'number' }, path: { type: 'object' }, parent: { type: 'relationship', model: 'taxonomy_term--tag', multiple: true } },
-  'user--user': { uid: { type: 'integer' }, uuid: { type: 'string' }, preferred_langcode: { type: 'object' }, preferred_admin_langcode: { type: 'object' }, name: { type: 'string' }, pass: { type: 'object' }, mail: { type: 'string' }, timezone: { type: 'string' }, status: { type: 'boolean' }, created: { type: 'number' }, changed: { type: 'number' }, access: { type: 'number' }, login: { type: 'number' }, init: { type: 'string' }, path: { type: 'object' }, roles: { type: 'relationship', model: 'user_role--user_role', multiple: true } },
+  'evaluation_criteria--evaluation_criteria': {
+    drupal_internal__id: { type: 'integer' }, uuid: { type: 'string' }, text: { type: 'string' }, evaluation: { type: 'integer' }, status: { type: 'boolean' }, created: { type: 'number' }, changed: { type: 'number' }, author: { type: 'relationship', model: 'user--user', multiple: false }
+  },
+  'file--file': {
+    drupal_internal__fid: { type: 'integer' }, uuid: { type: 'string' }, filename: { type: 'string' }, uri: { type: 'uri' }, filemime: { type: 'string' }, filesize: { type: 'integer' }, status: { type: 'boolean' }, created: { type: 'number' }, changed: { type: 'number' }, url: { type: 'string' }, uid: { type: 'relationship', model: 'user--user', multiple: false }
+  },
+  'flagging--saved_event': {
+    drupal_internal__id: { type: 'integer' }, uuid: { type: 'string' }, entity_type: { type: 'string' }, entity_id: { type: 'integer' }, global: { type: 'boolean' }, session_id: { type: 'integer' }, created: { type: 'number' }, flagged_entity: { type: 'relationship', model: 'node--event', multiple: false }, uid: { type: 'relationship', model: 'user--user', multiple: false }
+  },
+  'event_registration--event_registration': {
+    title: { type: 'string' },
+    drupal_internal__id: { type: 'integer' },
+    uuid: { type: 'string' },
+    created: { type: 'number' },
+    changed: { type: 'number' },
+    status: { type: 'string' },
+    author: { type: 'relationship', model: 'user--user', multiple: false },
+    field_event: { type: 'relationship', model: 'node--event', multiple: false },
+    field_registrants: { type: 'relationship', model: 'taxonomy_term--population_segment', multiple: true },
+    field_user: { type: 'relationship', model: 'user--user', multiple: false }
+  },
+  'event_attendance--event_attendance': {
+    title: { type: 'string' },
+    drupal_internal__id: { type: 'integer' }, uuid: { type: 'string' }, created: { type: 'number' }, changed: { type: 'number' }, status: { type: 'string' }, author: { type: 'relationship', model: 'user--user', multiple: false }, field_event: { type: 'relationship', model: 'node--event', multiple: false }, field_attendees: { type: 'relationship', model: 'taxonomy_term--population_segment', multiple: true }, field_user: { type: 'relationship', model: 'user--user', multiple: false }
+  },
+  'event_recurrence--event_recurrence': {
+    drupal_internal__id: { type: 'integer' }, uuid: { type: 'string' }, created: { type: 'number' }, changed: { type: 'number' }, author: { type: 'relationship', model: 'user--user', multiple: false }
+  },
+  'media--file': {
+    drupal_internal__mid: { type: 'integer' }, uuid: { type: 'string' }, status: { type: 'boolean' }, name: { type: 'string' }, created: { type: 'number' }, changed: { type: 'number' }, path: { type: 'object' }, thumbnail: { type: 'relationship', model: 'file--file', multiple: false }, uid: { type: 'relationship', model: 'user--user', multiple: false }, field_media_file: { type: 'relationship', model: 'file--file', multiple: false }
+  },
+  'media--image': {
+    drupal_internal__mid: { type: 'integer' }, uuid: { type: 'string' }, status: { type: 'boolean' }, name: { type: 'string' }, created: { type: 'number' }, changed: { type: 'number' }, path: { type: 'object' }, field_media_caption: { type: 'object' }, field_media_credit: { type: 'object' }, thumbnail: { type: 'relationship', model: 'file--file', multiple: false }, uid: { type: 'relationship', model: 'user--user', multiple: false }, field_media_image: { type: 'relationship', model: 'file--file', multiple: false }
+  },
+  'media--slideshow': {
+    drupal_internal__mid: { type: 'integer' }, uuid: { type: 'string' }, status: { type: 'boolean' }, name: { type: 'string' }, created: { type: 'number' }, changed: { type: 'number' }, path: { type: 'object' }, thumbnail: { type: 'relationship', model: 'file--file', multiple: false }, uid: { type: 'relationship', model: 'user--user', multiple: false }, field_media_slideshow: { type: 'relationship', model: 'media--image', multiple: true }
+  },
+  'media--web_video': {
+    drupal_internal__mid: { type: 'integer' }, uuid: { type: 'string' }, status: { type: 'boolean' }, name: { type: 'string' }, created: { type: 'number' }, changed: { type: 'number' }, path: { type: 'object' }, field_media_caption: { type: 'object' }, field_media_video_embed_field: { type: 'string' }, thumbnail: { type: 'relationship', model: 'file--file', multiple: false }, uid: { type: 'relationship', model: 'user--user', multiple: false }
+  },
+  'node--equipment': {
+    drupal_internal__nid: { type: 'integer' },
+    uuid: { type: 'string' }, status: { type: 'boolean' }, title: { type: 'string' }, created: { type: 'number' }, changed: { type: 'number' }, promote: { type: 'boolean' }, sticky: { type: 'boolean' }, path: { type: 'object' }, field_duration_min: { type: 'string' }, field_text_content: { type: 'object' }, type: { type: 'relationship', model: 'node_type--node_type', multiple: false }, uid: { type: 'relationship', model: 'user--user', multiple: false }, field_equipment_type: { type: 'relationship', model: 'taxonomy_term--equipment_type', multiple: false }, image_primary: { type: 'relationship', model: 'media--image', multiple: false }
+  },
+  'node--event': {
+    drupal_internal__nid: { type: 'integer' },
+    uuid: { type: 'string' },
+    status: { type: 'boolean' },
+    title: { type: 'string' },
+    created: { type: 'number' },
+    changed: { type: 'number' },
+    promote: { type: 'boolean' },
+    sticky: { type: 'boolean' },
+    path: { type: 'object' },
+    field_capacity_max: { type: 'integer' },
+    field_date_time: { type: 'object' },
+    field_event_is_template: { type: 'boolean' },
+    field_event_register_period: { type: 'object' },
+    field_event_user_reg_max: { type: 'integer' },
+    field_featured: { type: 'boolean' },
+    field_has_waitlist: { type: 'boolean' },
+    field_must_register: { type: 'boolean' },
+    field_text_content: { type: 'object' },
+    field_text_intro: { type: 'object' },
+    field_text_teaser: { type: 'string' },
+    field_waitlist_max: { type: 'integer' },
+    field_evanced_id: { type: 'string' }, registration: { type: 'object' }, type: { type: 'relationship', model: 'node_type--node_type', multiple: false }, uid: { type: 'relationship', model: 'user--user', multiple: false }, field_event_audience: { type: 'relationship', model: 'taxonomy_term--audience', multiple: true }, field_event_audience_primary: { type: 'relationship', model: 'taxonomy_term--audience', multiple: false }, field_event_recurrence: { type: 'relationship', model: 'event_recurrence--event_recurrence', multiple: false }, field_event_series: { type: 'relationship', model: 'node--event_series', multiple: false }, field_event_tags: { type: 'relationship', model: 'taxonomy_term--tag', multiple: true }, field_event_type: { type: 'relationship', model: 'taxonomy_term--event_type', multiple: true }, field_event_type_primary: { type: 'relationship', model: 'taxonomy_term--event_type', multiple: false }, image_primary: { type: 'relationship', model: 'media--image', multiple: false }, field_location: { type: 'relationship', model: 'node--location', multiple: false }, field_room: { type: 'relationship', model: 'node--room', multiple: false }, field_event_designation: { type: 'string' }
+  },
+  'node--event_series': {
+    drupal_internal__nid: { type: 'integer' }, uuid: { type: 'string' }, status: { type: 'boolean' }, title: { type: 'string' }, created: { type: 'number' }, changed: { type: 'number' }, promote: { type: 'boolean' }, sticky: { type: 'boolean' }, path: { type: 'object' }, type: { type: 'relationship', model: 'node_type--node_type', multiple: false }, uid: { type: 'relationship', model: 'user--user', multiple: false }
+  },
+  'node--location': {
+    drupal_internal__nid: { type: 'integer' }, uuid: { type: 'string' }, status: { type: 'boolean' }, title: { type: 'string' }, field_location_abbreviation: { type: 'string' }, created: { type: 'number' }, changed: { type: 'number' }, promote: { type: 'boolean' }, sticky: { type: 'boolean' }, path: { type: 'object' }, field_address: { type: 'object' }, field_affiliated: { type: 'boolean' }, field_contact_number: { type: 'string' }, field_features: { type: 'string' }, field_location_hours: { type: 'array' }, field_map_link: { type: 'object' }, field_text_content: { type: 'object' }, field_text_intro: { type: 'object' }, type: { type: 'relationship', model: 'node_type--node_type', multiple: false }, uid: { type: 'relationship', model: 'user--user', multiple: false }, image_primary: { type: 'relationship', model: 'media--image', multiple: false }
+  },
+  'node--room': {
+    drupal_internal__nid: { type: 'integer' },
+    uuid: { type: 'string' },
+    status: { type: 'boolean' },
+    title: { type: 'string' },
+    created: { type: 'number' },
+    changed: { type: 'number' },
+    room_thumbnail: { type: 'string' },
+    promote: { type: 'boolean' }, sticky: { type: 'boolean' }, path: { type: 'object' }, field_capacity_max: { type: 'integer' }, field_capacity_min: { type: 'integer' }, field_reservable_online: { type: 'boolean' }, field_room_fees: { type: 'object' }, field_room_standard_equipment: { type: 'array' }, field_reservation_phone_number: { type: 'string' }, field_staff_use_only: { type: 'boolean' }, field_text_content: { type: 'object' }, field_text_intro: { type: 'object' }, field_text_teaser: { type: 'string' }, type: { type: 'relationship', model: 'node_type--node_type', multiple: false }, uid: { type: 'relationship', model: 'user--user', multiple: false }, image_primary: { type: 'relationship', model: 'media--image', multiple: false }, field_location: { type: 'relationship', model: 'node--location', multiple: false }, field_room_type: { type: 'relationship', model: 'taxonomy_term--room_type', multiple: false }
+  },
+  'room_reservation--room_reservation': {
+    title: { type: 'string' },
+    drupal_internal__id: { type: 'integer' }, uuid: { type: 'string' }, status: { type: 'boolean' }, created: { type: 'number' }, changed: { type: 'number' }, location: { type: 'string' }, field_attendee_count: { type: 'integer' }, field_dates: { type: 'object' }, field_group_name: { type: 'string' }, field_meeting_purpose_details: { type: 'string' }, field_refreshments: { type: 'boolean' }, field_refreshments_description: { type: 'object' }, field_publicize: { type: 'boolean' }, field_status: { type: 'string' }, author: { type: 'relationship', model: 'user--user', multiple: false }, image: { type: 'relationship', model: 'media--image', multiple: false }, field_room: { type: 'relationship', model: 'node--room', multiple: false }, field_meeting_purpose: { type: 'relationship', model: 'taxonomy_term--meeting_purpose', multiple: false }, field_event: { type: 'relationship', model: 'node--event', multiple: false }, field_user: { type: 'relationship', model: 'user--user', multiple: false }
+  },
+  'taxonomy_term--audience': {
+    drupal_internal__tid: { type: 'integer' }, uuid: { type: 'string' }, name: { type: 'string' }, description: { type: 'object' }, weight: { type: 'integer' }, changed: { type: 'number' }, path: { type: 'object' }, parent: { type: 'relationship', model: 'taxonomy_term--audience', multiple: true }
+  },
+  'taxonomy_term--equipment_type': {
+    drupal_internal__tid: { type: 'integer' }, uuid: { type: 'string' }, name: { type: 'string' }, description: { type: 'object' }, weight: { type: 'integer' }, changed: { type: 'number' }, path: { type: 'object' }, parent: { type: 'relationship', model: 'taxonomy_term--equipment_type', multiple: true }
+  },
+  'taxonomy_term--evaluation_criteria': {
+    drupal_internal__tid: { type: 'integer' }, uuid: { type: 'string' }, name: { type: 'string' }, description: { type: 'object' }, weight: { type: 'integer' }, changed: { type: 'number' }, path: { type: 'object' }, field_evaluation: { type: 'integer' }, parent: { type: 'relationship', model: 'taxonomy_term--evaluation_criteria', multiple: true }
+  },
+  'taxonomy_term--event_type': {
+    drupal_internal__tid: { type: 'integer' }, uuid: { type: 'string' }, name: { type: 'string' }, description: { type: 'object' }, weight: { type: 'integer' }, changed: { type: 'number' }, path: { type: 'object' }, field_examples: { type: 'string' }, parent: { type: 'relationship', model: 'taxonomy_term--event_type', multiple: true }
+  },
+  'taxonomy_term--lc_subject': {
+    drupal_internal__tid: { type: 'integer' }, uuid: { type: 'string' }, name: { type: 'string' }, description: { type: 'object' }, weight: { type: 'integer' }, changed: { type: 'number' }, path: { type: 'object' }, parent: { type: 'relationship', model: 'taxonomy_term--lc_subject', multiple: true }
+  },
+  'taxonomy_term--meeting_purpose': {
+    drupal_internal__tid: { type: 'integer' }, uuid: { type: 'string' }, name: { type: 'string' }, description: { type: 'object' }, field_requires_explanation: { type: 'boolean' }, weight: { type: 'integer' }, changed: { type: 'number' }, path: { type: 'object' }, parent: { type: 'relationship', model: 'taxonomy_term--meeting_purpose', multiple: true }
+  },
+  'taxonomy_term--population_segment': {
+    drupal_internal__tid: { type: 'integer' }, uuid: { type: 'string' }, name: { type: 'string' }, description: { type: 'object' }, weight: { type: 'integer' }, changed: { type: 'number' }, path: { type: 'object' }, parent: { type: 'relationship', model: 'taxonomy_term--population_segment', multiple: true }
+  },
+  'taxonomy_term--room_type': {
+    drupal_internal__tid: { type: 'integer' }, uuid: { type: 'string' }, name: { type: 'string' }, description: { type: 'object' }, weight: { type: 'integer' }, changed: { type: 'number' }, path: { type: 'object' }, parent: { type: 'relationship', model: 'taxonomy_term--room_type', multiple: true }
+  },
+  'taxonomy_term--tag': {
+    drupal_internal__tid: { type: 'integer' }, uuid: { type: 'string' }, name: { type: 'string' }, description: { type: 'object' }, weight: { type: 'integer' }, changed: { type: 'number' }, path: { type: 'object' }, parent: { type: 'relationship', model: 'taxonomy_term--tag', multiple: true }
+  },
+  'user--user': {
+    drupal_internal__uid: { type: 'integer' }, uuid: { type: 'string' }, preferred_langcode: { type: 'object' }, preferred_admin_langcode: { type: 'object' }, name: { type: 'string' }, pass: { type: 'object' }, mail: { type: 'string' }, timezone: { type: 'string' }, status: { type: 'boolean' }, created: { type: 'number' }, changed: { type: 'number' }, access: { type: 'number' }, login: { type: 'number' }, init: { type: 'string' }, path: { type: 'object' }, roles: { type: 'relationship', model: 'user_role--user_role', multiple: true }
+  },
 };
 
 let resources = Object.keys(schema).map((resource) => {

@@ -57,7 +57,6 @@ const buildEventRegistration = (values) => {
     id: uuid,
     type: c.TYPE_EVENT_REGISTRATION,
     attributes: {
-      uuid,
       status: values.status,
     },
     relationships: {

@@ -21,6 +21,8 @@ import InputDate from 'intercept/Input/InputDate';
 import SelectTime from 'intercept/Select/SelectTime';
 import InputCheckbox from 'intercept/Input/InputCheckbox';
 
+import { isFutureTime, isLessThanMaxTime } from '../ReserveRoom';
+
 // Formsy
 import Formsy, { addValidationRule } from 'formsy-react';
 
@@ -60,9 +62,13 @@ addValidationRule('isFutureTime', (values, value) => {
   if (value === null) {
     return true;
   }
-  const now = new Date();
-  const time = utils.getDateFromTime(value, values[c.DATE]);
-  return time >= now;
+  return isFutureTime(value, values[c.DATE]);
+});
+addValidationRule('isLessThanMaxDate', (values, value) => {
+  if (value === null) {
+    return true;
+  }
+  return isLessThanMaxTime(value, values[c.DATE]);
 });
 addValidationRule('isAfterStart', (values, value) => value === null || value > values.start);
 addValidationRule('isOnOrAfterStart', (values, value) => value === null || value >= values.start);
@@ -255,9 +261,7 @@ class ReserveRoomDateForm extends PureComponent {
       values,
       min,
       max,
-      maxDate,
-      minDate,
-      maxDateDescription,
+      dateLimits,
       step,
       onSubmit,
       room
@@ -269,6 +273,12 @@ class ReserveRoomDateForm extends PureComponent {
       ? 'has_reservation_conflict'
       : 'has_open_hours_conflict';
     let conflictMessage = 'Room is not available at this time';
+
+    const {
+      maxDate,
+      minDate,
+      maxDateDescription,
+    } = dateLimits;
 
     if (!utils.userIsStaff() && isClosed) {
       conflictMessage = 'Location is closed';
@@ -301,8 +311,11 @@ class ReserveRoomDateForm extends PureComponent {
               name={c.DATE}
               required
               clearable={false}
-              validations="isFutureDate"
-              validationError="Date must be in the future"
+              validations="isFutureDate,isLessThanMaxDate"
+              validationErrors={{
+                isFutureDate: "Date must be in the future",
+                isLessThanMaxDate: maxDateDescription
+              }}
               maxDate={maxDate}
               minDate={minDate}
               helperText={maxDateDescription}
