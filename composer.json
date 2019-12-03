@@ -25,7 +25,7 @@
     "drupal/consumers": "^1",
     "drupal/consumer_image_styles": "3.0",
     "drupal/core": "^8.7",
-    "drupal/csv_serialization": "^1.0",
+    "drupal/csv_serialization": "^2.0@beta",
     "drupal/date_recur": "^2.0",
     "drupal/duration_field": "^1.1",
     "drupal/entity_browser": "^2.0",
