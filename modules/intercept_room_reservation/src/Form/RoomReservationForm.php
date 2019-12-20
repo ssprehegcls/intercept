@@ -29,7 +29,7 @@ class RoomReservationForm extends ContentEntityForm {
 
     $form['field_room']['widget'][0]['target_id']['#ajax'] = [
       'callback' => '::checkAvailability',
-      'event' => 'change',
+      'event' => 'autocompleteclose',
       'wrapper' => 'edit-field-dates-0-message',
       'progress' => [
         'type' => 'throbber',
@@ -43,7 +43,8 @@ class RoomReservationForm extends ContentEntityForm {
     // Add an ajax callback validating the room reservation availability.
     $form['field_dates']['widget'][0]['value']['#ajax'] = [
       'callback' => '::checkAvailability',
-      'event' => 'change',
+      'disable-refocus' => TRUE,
+      'event' => 'blur',
       'wrapper' => 'edit-field-dates-0-message',
       'progress' => [
         'type' => 'throbber',
@@ -52,7 +53,8 @@ class RoomReservationForm extends ContentEntityForm {
     ];
     $form['field_dates']['widget'][0]['end_value']['#ajax'] = [
       'callback' => '::checkAvailability',
-      'event' => 'change',
+      'disable-refocus' => TRUE,
+      'event' => 'blur',
       'wrapper' => 'edit-field-dates-0-message',
       'progress' => [
         'type' => 'throbber',

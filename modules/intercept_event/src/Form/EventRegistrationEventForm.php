@@ -27,18 +27,25 @@ class EventRegistrationEventForm extends ContentEntityForm {
 
     $form['#theme'] = 'event_registration_event_form';
 
-    // TODO: Move to intercept_base theme.
+    $form['customer_barcode'] = [
+      '#type' => 'textfield',
+      '#title' => $this->t('Card Number'),
+      '#weight' => '-1',
+    ];
     $form['customer_first_name'] = [
       '#type' => 'textfield',
       '#title' => $this->t('Customer First Name'),
+      '#weight' => '-1',
     ];
     $form['customer_last_name'] = [
       '#type' => 'textfield',
       '#title' => $this->t('Customer Last Name'),
+      '#weight' => '-1',
     ];
     $form['customer_email'] = [
       '#type' => 'textfield',
       '#title' => $this->t('Customer Email'),
+      '#weight' => '-1',
     ];
     $form['lookup'] = [
       '#value' => $this->t('Search customer'),
@@ -53,11 +60,13 @@ class EventRegistrationEventForm extends ContentEntityForm {
           'message' => $this->t('Searching ILS...'),
         ],
       ],
+      '#weight' => '-1',
     ];
     $values = $form_state->getUserInput();
     $results = $this->searchQuery($this->mapValues($values));
     $form['results'] = $this->buildTableElement($results);
     $form['results']['#attributes'] = ['id' => ['edit-results']];
+    $form['results']['#weight'] = '-1';
 
     return $form;
   }
@@ -88,6 +97,7 @@ class EventRegistrationEventForm extends ContentEntityForm {
       'customer_first_name' => 'first_name',
       'customer_last_name' => 'last_name',
       'customer_email' => 'email',
+      'customer_barcode' => 'barcode',
     ];
   }
 

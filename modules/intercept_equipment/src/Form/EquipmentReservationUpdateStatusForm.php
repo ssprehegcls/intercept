@@ -4,7 +4,6 @@ namespace Drupal\intercept_equipment\Form;
 
 use Drupal\Core\Entity\ContentEntityConfirmFormBase;
 use Drupal\Core\Form\FormStateInterface;
-use Drupal\Core\Url;
 
 /**
  * Class UpdateStatusForm.
