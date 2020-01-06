@@ -172,14 +172,12 @@ class ReservationManager implements ReservationManagerInterface {
    *   The reservation entity to update.
    * @param \Drupal\node\NodeInterface $event
    *   The event node that also has been updated.
-   * @param array $params
-   *   Additional info to pass to the reservation entity. (not used)
    */
-  public function updateEventReservation(RoomReservationInterface $reservation, NodeInterface $event, array $params = []) {
+  public function updateEventReservation(RoomReservationInterface $reservation, NodeInterface $event) {
     if (!$event->field_room->equals($reservation->field_room)) {
       $reservation->field_room = $event->field_room;
-      $reservation->save();
     }
+    $reservation->save();
   }
 
   /**

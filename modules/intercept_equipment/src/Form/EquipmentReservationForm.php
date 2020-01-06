@@ -231,7 +231,7 @@ class EquipmentReservationForm extends ContentEntityForm {
       // Don't check it against itself for conflicts.
       if ($er_id != $this->entity->id()) {
         // Get the reservation dates.
-        $entity_manager = $this->entityTypeManager();
+        $entity_manager = $this->entityTypeManager;
         $equipment_reservation = $entity_manager->getStorage('equipment_reservation')->load($er_id);
         $dates = $equipment_reservation->get('field_dates')->getValue();
         $existing_reservation_start = $dates[0]['value'];
