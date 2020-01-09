@@ -142,7 +142,7 @@ class EquipmentReservationForm extends ContentEntityForm {
 
     parent::save($form, $form_state);
 
-    drupal_set_message('Your equipment was successfully reserved.');
+    \Drupal::messenger()->addMessage('Your equipment was successfully reserved.');
     // Redirect to the staff member's reservation screen on the site.
     // (e.g., /user/6/room-reservations)
     $form_state->setRedirect('intercept_equipment.account.equipment_reservations');

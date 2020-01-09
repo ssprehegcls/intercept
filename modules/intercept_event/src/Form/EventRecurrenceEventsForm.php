@@ -239,7 +239,7 @@ class EventRecurrenceEventsForm extends ContentEntityForm {
       $node->save();
       $count++;
     }
-    drupal_set_message($this->t('@count events updated.', ['@count' => $count]));
+    \Drupal::messenger()->addMessage($this->t('@count events updated.', ['@count' => $count]));
   }
 
   /**
