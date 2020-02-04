@@ -9,6 +9,7 @@ use Drupal\Core\Access\AccessResult;
 use Drupal\Core\Database\Database;
 use Drupal\Core\Datetime\DrupalDateTime;
 use Drupal\Core\Entity\EntityInterface;
+use Drupal\Core\Entity\EntityTypeInterface;
 use Drupal\Core\Form\FormStateInterface;
 use Drupal\Core\Render\Element;
 use Drupal\Core\Session\AccountInterface;
@@ -23,7 +24,7 @@ use Drupal\views\Plugin\views\query\QueryPluginBase;
 /**
  * Implements hook_jsonapi_ENTITY_TYPE_filter_access().
  */
-function intercept_equipment_reservation_jsonapi_equipment_reservation_filter_access(EntityTypeInterface $entity_type, AccountInterface $account) {
+function intercept_equipment_jsonapi_equipment_reservation_filter_access(EntityTypeInterface $entity_type, AccountInterface $account) {
   return ([
     // @todo CRL-163: The 'view referenced user equipment_reservation' permission does not yet exist.
     // Once it has been implemented, the AMONG_ALL should be commented out and AMONG_OWN deleted.
