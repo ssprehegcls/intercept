@@ -6,8 +6,9 @@ intercept_event:
       menu_weight: 0
       parent: intercept_event.event_parent
     event_templates:
-      title: 'Create an Event'
-      menu_link: FALSE
+      title: 'Create Event'
+      menu_weight: 1
+      parent: intercept_event.event_parent
     event_configuration:
       title: 'Event configuration'
       menu_link: FALSE
