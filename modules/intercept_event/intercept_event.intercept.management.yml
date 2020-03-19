@@ -16,3 +16,8 @@ intercept_event:
       title: 'Event Attendance'
       menu_weight: 0
       parent: intercept_event.export_parent
+    meetings_export:
+      title: 'Meetings'
+      route_name: view.intercept_meetings.page
+      menu_weight: 1
+      parent: intercept_event.export_parent
