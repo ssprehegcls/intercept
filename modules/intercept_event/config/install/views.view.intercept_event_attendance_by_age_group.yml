@@ -72,7 +72,6 @@ display:
               secondary_label: 'Advanced options'
               autosubmit: false
               autosubmit_exclude_textfield: false
-              autosubmit_textfield_delay: 500
               autosubmit_hide: false
             field_date_time_value:
               bef_format: bef_datepicker
@@ -1118,7 +1117,7 @@ display:
           precision: 0
           decimal: .
           separator: ','
-          format_plural: 0
+          format_plural: false
           format_plural_string: !!binary MQNAY291bnQ=
           prefix: ''
           suffix: ''
@@ -1176,7 +1175,7 @@ display:
           precision: 0
           decimal: .
           separator: ','
-          format_plural: 0
+          format_plural: false
           format_plural_string: !!binary MQNAY291bnQ=
           prefix: ''
           suffix: ''
@@ -1234,7 +1233,7 @@ display:
           precision: 0
           decimal: .
           separator: ','
-          format_plural: 0
+          format_plural: false
           format_plural_string: !!binary MQNAY291bnQ=
           prefix: ''
           suffix: ''
@@ -1292,7 +1291,7 @@ display:
           precision: 0
           decimal: .
           separator: ','
-          format_plural: 0
+          format_plural: false
           format_plural_string: !!binary MQNAY291bnQ=
           prefix: ''
           suffix: ''

@@ -141,7 +141,7 @@ class RoomReservationSettingsForm extends ConfigFormBase {
     ];
 
     $form['advanced_reservation_limit_text'] = [
-      '#title' => $this->t('Room reservation limit user message'),
+      '#title' => $this->t('Room reservation advanced limit user message'),
       '#type' => 'text_format',
       '#default_value' => $this->getTextFormat('advanced_reservation_limit_text', 'value'),
       '#format' => $this->getTextFormat('advanced_reservation_limit_text', 'format'),

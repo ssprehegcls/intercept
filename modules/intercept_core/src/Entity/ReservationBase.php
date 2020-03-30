@@ -37,7 +37,7 @@ abstract class ReservationBase extends RevisionableContentEntityBase {
    * {@inheritdoc}
    */
   public function label() {
-    $timezone = drupal_get_user_timezone();
+    $timezone = date_default_timezone_get();
     return $this->getDateRange($timezone);
   }
 

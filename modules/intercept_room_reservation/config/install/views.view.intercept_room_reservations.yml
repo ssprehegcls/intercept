@@ -792,7 +792,7 @@ display:
             placeholder: ''
             operator_limit_selection: false
             operator_list: {  }
-            reduce: 0
+            reduce: false
           is_grouped: false
           group_info:
             label: ''
@@ -805,7 +805,7 @@ display:
             default_group: All
             default_group_multiple: {  }
             group_items: {  }
-          reduce_duplicates: 0
+          reduce_duplicates: false
           handler: views
           handler_settings:
             view:
@@ -813,7 +813,7 @@ display:
               display_name: entity_reference
               arguments: {  }
           widget: autocomplete
-          list_max: '10'
+          list_max: 10
           plugin_id: intercept_entity_reference
           handler_submit: 'Change handler'
         field_group_name_value:
@@ -883,7 +883,7 @@ display:
             use_operator: false
             operator: field_dates_end_value_op
             operator_limit_selection: false
-            operator_list: {  }
+            operator_list: { }
             identifier: date--start
             required: false
             remember: false
@@ -909,8 +909,8 @@ display:
             multiple: false
             remember: false
             default_group: All
-            default_group_multiple: {  }
-            group_items: {  }
+            default_group_multiple: { }
+            group_items: { }
           plugin_id: datetime
         field_dates_end_value_1:
           id: field_dates_end_value_1
@@ -1110,7 +1110,6 @@ display:
               secondary_label: 'Advanced options'
               autosubmit: false
               autosubmit_exclude_textfield: false
-              autosubmit_textfield_delay: 500
               autosubmit_hide: false
             title:
               bef_format: default

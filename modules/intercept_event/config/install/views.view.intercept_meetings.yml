@@ -64,7 +64,6 @@ display:
               secondary_label: 'Advanced options'
               autosubmit: false
               autosubmit_exclude_textfield: false
-              autosubmit_textfield_delay: 500
               autosubmit_hide: false
             field_date_time_value:
               bef_format: bef_datepicker
@@ -727,9 +726,7 @@ display:
     display_title: Page
     position: 1
     display_options:
-      display_extenders:
-        views_ajax_history:
-          history: true
+      display_extenders: { }
       path: account/manage/intercept_meetings
     cache_metadata:
       max-age: -1
@@ -751,9 +748,7 @@ display:
     display_title: 'REST export'
     position: 2
     display_options:
-      display_extenders:
-        views_ajax_history:
-          history: true
+      display_extenders: { }
       path: data/export/meetings.csv
       style:
         type: serializer

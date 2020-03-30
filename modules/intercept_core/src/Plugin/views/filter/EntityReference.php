@@ -144,7 +144,7 @@ class EntityReference extends ManyToOne {
     $options['handler'] = ['default' => 'default:' . $this->getReferencedEntityType()->id()];
     $options['handler_settings'] = ['default' => []];
     $options['widget'] = ['default' => self::WIDGET_AUTOCOMPLETE];
-    $options['list_max'] = ['default' => ''];
+    $options['list_max'] = ['default' => 10];
 
     return $options;
   }
@@ -252,7 +252,7 @@ class EntityReference extends ManyToOne {
       '#type' => 'number',
       '#title' => $this->t('Maximum entities in select list'),
       '#description' => $this->t('This is the limit to the number of entities to allow for select type of widget. It is strongly recommended to set a limit to avoid performance issues. When this limit is reached the widget switches automatically to an autocomplete widget.'),
-      '#default_value' => $this->options['list_max'],
+      '#default_value' => (int) $this->options['list_max'],
       '#min' => 1,
       '#max' => 1000,
       '#states' => [
@@ -713,7 +713,7 @@ class EntityReference extends ManyToOne {
    * {@inheritdoc}
    */
   protected function valueSubmit($form, FormStateInterface $form_state) {
-    // Prevent array_filter from messing up our arrays in parent submit.
+    $form_state->unsetValue('handler_submit');
   }
 
   /**

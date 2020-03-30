@@ -5,7 +5,6 @@ namespace Drupal\intercept_event\Plugin\views\field;
 use Drupal\Core\Form\FormStateInterface;
 use Drupal\views\Plugin\views\field\NumericField;
 use Drupal\views\ResultRow;
-// use Drupal\intercept_event\EventEvaluationManager;
 
 /**
  * Event evaluation criteria count.
