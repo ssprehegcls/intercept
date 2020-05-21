@@ -218,7 +218,7 @@ function intercept_room_reservation_form_node_form_alter(&$form, FormStateInterf
  */
 function intercept_room_reservation_form_views_exposed_form_alter(&$form, FormStateInterface $form_state, $form_id) {
   $view = $form_state->get('view');
-  if ($view->id() == 'intercept_room_reservations' && $view->current_display == 'embed') {
+  if ($view->id() == 'intercept_room_reservations' && $view->current_display == 'page') {
 
     // Change the locations field to be a dropdown.
     $storage = Drupal::getContainer()->get('entity_type.manager')->getStorage('node');
@@ -417,7 +417,7 @@ function intercept_room_reservation_room_reservation_view(array &$build, RoomRes
  * Implements hook_views_query_alter().
  */
 function intercept_room_reservation_views_query_alter(ViewExecutable $view, QueryPluginBase $query) {
-  if ($view->id() == 'intercept_room_reservations' && $view->current_display == 'embed') {
+  if ($view->id() == 'intercept_room_reservations' && $view->current_display == 'page') {
     foreach ($query->where as &$condition_group) {
       // For each condition in condition group.
       foreach ($condition_group['conditions'] as &$condition) {
@@ -459,7 +459,7 @@ function intercept_room_reservation_views_query_alter(ViewExecutable $view, Quer
  * Implements hook_views_pre_view().
  */
 function intercept_room_reservation_views_pre_view(ViewExecutable $view, $display_id, array &$args) {
-  if ($view->id() == 'intercept_room_reservations' && $display_id == 'embed') {
+  if ($view->id() == 'intercept_room_reservations' && $display_id == 'page') {
     $exposed_input = $view->getExposedInput();
     if (!isset($exposed_input['date--start'])) {
       $date = new DateTime('now');
