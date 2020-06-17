@@ -232,7 +232,7 @@ function intercept_event_pathauto_alias_alter(&$alias, array &$context) {
     $alias_storage_helper = \Drupal::service('pathauto.alias_storage_helper');
     $module_handler = \Drupal::service('module_handler');
     $route_provider = \Drupal::service('router.route_provider');
-    $alias_manager = \Drupal::service('path.alias_manager');
+    $alias_manager = \Drupal::service('path_alias.manager');
     $alias_uniquifier = new AliasUniquifier($config_factory, $alias_storage_helper, $module_handler, $route_provider, $alias_manager);
     $unique_alias = $alias_uniquifier->uniquify($alias, $context['source'], $langcode);
     // Then ultimately make the alias for registration.
