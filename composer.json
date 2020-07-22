@@ -1,5 +1,5 @@
 {
-  "name": "drupal/intercept",
+  "name": "gcls/intercept",
   "type": "drupal-module",
   "description": "Drupal Intercept module.",
   "keywords": [
